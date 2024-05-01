@@ -17,7 +17,7 @@ public class UsuarioService {
                                String direccion,String numero,String tipo,int id_codigo_postal,int id_comuna,
                                int id_provincia,int id_region,String geolocalizacion,int id_zona_BDoc,String otro2,
                                String telefono,String codigo_area,String celular,String email,String RRSS1,String RRSS2,
-                               String otro3,int id_usuario){
+                               String otro3){
         UsuarioEntity usuario = new UsuarioEntity();
         usuario.setId_pais(id_pais);
         usuario.setRut(rut);
