@@ -1,6 +1,6 @@
-package Repositories;
+package com.example.BUSCAVET.Repositories;
 
-import Entities.UsuarioEntity;
+import com.example.BUSCAVET.Entities.UsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

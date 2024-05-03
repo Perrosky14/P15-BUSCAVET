@@ -1,7 +1,7 @@
-package Services;
+package com.example.BUSCAVET.Services;
 
-import Entities.MascotaEntity;
-import Repositories.MascotaRepository;
+import com.example.BUSCAVET.Entities.MascotaEntity;
+import com.example.BUSCAVET.Repositories.MascotaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

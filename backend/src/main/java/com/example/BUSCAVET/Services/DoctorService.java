@@ -1,7 +1,7 @@
-package Services;
+package com.example.BUSCAVET.Services;
 
-import Entities.DoctorEntity;
-import Repositories.DoctorRepository;
+import com.example.BUSCAVET.Entities.DoctorEntity;
+import com.example.BUSCAVET.Repositories.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

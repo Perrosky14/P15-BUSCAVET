@@ -1,7 +1,7 @@
-package Services;
+package com.example.BUSCAVET.Services;
 
-import Entities.SuperAdminEntity;
-import Repositories.SuperAdminRepository;
+import com.example.BUSCAVET.Entities.SuperAdminEntity;
+import com.example.BUSCAVET.Repositories.SuperAdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

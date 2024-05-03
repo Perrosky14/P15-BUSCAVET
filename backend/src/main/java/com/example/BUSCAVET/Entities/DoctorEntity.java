@@ -1,4 +1,4 @@
-package Entities;
+package com.example.BUSCAVET.Entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
