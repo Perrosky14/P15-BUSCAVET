@@ -13,10 +13,10 @@ import org.antlr.v4.runtime.misc.NotNull;
 @AllArgsConstructor
 @Data
 public class UsuarioEntity {
-
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false)
     private int id;
     private int id_pais;
     private String rut;

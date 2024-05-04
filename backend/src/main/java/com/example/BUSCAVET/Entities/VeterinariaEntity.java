@@ -16,6 +16,7 @@ public class VeterinariaEntity {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false)
     private int id;
     private int id_pais;
     private int id_segmento;
@@ -41,4 +42,5 @@ public class VeterinariaEntity {
     private String geolocaclizacion;
     private int id_zona_BDoc;
     private int id_servicio;
+
 }

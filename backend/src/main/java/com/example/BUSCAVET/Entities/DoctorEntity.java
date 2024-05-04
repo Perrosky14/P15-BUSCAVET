@@ -17,8 +17,8 @@ public class DoctorEntity {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private int id;
+    @Column(unique = true, nullable = false)
+    private Long id;
     private int id_institucion_vet_1;
     private int id_institucion_vet_2;
     private int id_institucion_vet_3;

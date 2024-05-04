@@ -16,7 +16,8 @@ public class MascotaEntity {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(unique = true, nullable = false)
+    private long id;
     private int id_usuario;
     private int id_categoria_animal;
     private int id_especie;

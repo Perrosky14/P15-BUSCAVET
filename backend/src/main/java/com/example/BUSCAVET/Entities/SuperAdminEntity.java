@@ -11,7 +11,6 @@ import org.antlr.v4.runtime.misc.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-
 public class SuperAdminEntity {
     @Id
     @NotNull
@@ -20,4 +19,5 @@ public class SuperAdminEntity {
     private Long id;
     private String correo;
     private String contrasenia;
+
 }
