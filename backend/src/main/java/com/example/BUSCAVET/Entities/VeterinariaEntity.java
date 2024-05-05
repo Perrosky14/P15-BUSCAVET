@@ -17,7 +17,8 @@ public class VeterinariaEntity {
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private int id;
+    private Long id;
+    private String contrasenia;
     private int id_pais;
     private int id_segmento;
     private int id_tipo_institucion_vet;
@@ -27,8 +28,8 @@ public class VeterinariaEntity {
     private String nombre_comercial;
     private String nombre_1_rep_legal;
     private String nombre_2_rep_legal;
-    private String reseña;
-    private String reseña_confirmada;
+    private String resenia;
+    private String resenia_confirmada;
     private String direccion;
     private String numero;
     private String tipo;

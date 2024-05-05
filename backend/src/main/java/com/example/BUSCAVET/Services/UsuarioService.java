@@ -13,7 +13,7 @@ public class UsuarioService {
     UsuarioRepository usuarioRepository;
 
     public void guardarUsuario(int id_pais,String rut,String nombre1,String nombre2,String apellido1,String apellido2,
-                               int id_genero,int dia_nac,int mes_nac,int año_nac,int id_nacionalidad,String otro,
+                               int id_genero,int dia_nac,int mes_nac,int anio_nac,int id_nacionalidad,String otro,
                                String direccion,String numero,String tipo,int id_codigo_postal,int id_comuna,
                                int id_provincia,int id_region,String geolocalizacion,int id_zona_BDoc,String otro2,
                                String telefono,String codigo_area,String celular,String email,String RRSS1,String RRSS2,
@@ -28,7 +28,7 @@ public class UsuarioService {
         usuario.setId_genero(id_genero);
         usuario.setDia_nac(dia_nac);
         usuario.setMes_nac(mes_nac);
-        usuario.setAño_nac(año_nac);
+        usuario.setAnio_nac(anio_nac);
         usuario.setId_nacionalidad(id_nacionalidad);
         usuario.setOtro(otro);
         usuario.setDireccion(direccion);
@@ -48,9 +48,43 @@ public class UsuarioService {
         usuario.setRRSS1(RRSS1);
         usuario.setRRSS2(RRSS2);
         usuario.setOtro3(otro3);
+        usuarioRepository.save(usuario);
     }
 
     public ArrayList<UsuarioEntity> obtenerUsuarios(){
         return (ArrayList<UsuarioEntity>) usuarioRepository.findAll();
     }
+
+    public UsuarioEntity obtenerPorId(Long id){
+        return usuarioRepository.findById(id).orElse(null);}
+
+    public UsuarioEntity actualizarUsuario(Long id, UsuarioEntity usuarioActualizado){
+        UsuarioEntity usuarioExistente = usuarioRepository.findById(id).orElse(null);
+        if (usuarioExistente != null){
+            usuarioExistente.setNombre1(usuarioActualizado.getNombre1());
+            usuarioExistente.setNombre2(usuarioActualizado.getNombre2());
+            usuarioExistente.setApellido1(usuarioActualizado.getApellido1());
+            usuarioExistente.setApellido2(usuarioActualizado.getApellido2());
+            usuarioExistente.setRut(usuarioActualizado.getRut());
+            usuarioExistente.setContrasenia(usuarioActualizado.getContrasenia());
+            usuarioExistente.setDia_nac(usuarioActualizado.getDia_nac());
+            usuarioExistente.setMes_nac(usuarioActualizado.getMes_nac());
+            usuarioExistente.setAnio_nac(usuarioActualizado.getAnio_nac());
+            usuarioExistente.setOtro(usuarioActualizado.getOtro());
+            usuarioExistente.setDireccion(usuarioActualizado.getDireccion());
+            usuarioExistente.setNumero(usuarioActualizado.getNumero());
+            usuarioExistente.setTipo(usuarioActualizado.getTipo());
+            usuarioExistente.setOtro2(usuarioActualizado.getOtro2());
+            usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
+            usuarioExistente.setCodigo_area(usuarioActualizado.getCodigo_area());
+            usuarioExistente.setCelular(usuarioActualizado.getCelular());
+            usuarioExistente.setEmail(usuarioActualizado.getEmail());
+            usuarioExistente.setRRSS1(usuarioActualizado.getRRSS1());
+            usuarioExistente.setRRSS2(usuarioActualizado.getRRSS2());
+            usuarioExistente.setOtro3(usuarioActualizado.getOtro3());
+            return usuarioRepository.save(usuarioExistente);
+        }
+        return null;
+    }
+    public void eliminarUsuario(Long id){usuarioRepository.deleteById(id);}
 }

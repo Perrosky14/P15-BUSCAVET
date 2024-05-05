@@ -17,7 +17,8 @@ public class UsuarioEntity {
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private int id;
+    private Long id;
+    private String contrasenia;
     private int id_pais;
     private String rut;
     private String nombre1;
@@ -27,7 +28,7 @@ public class UsuarioEntity {
     private int id_genero;
     private int dia_nac;
     private int mes_nac;
-    private int año_nac;
+    private int anio_nac;
     private int id_nacionalidad;
     private String otro;
     private String direccion;

@@ -19,6 +19,7 @@ public class DoctorEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id;
+    private String contrasenia;
     private int id_institucion_vet_1;
     private int id_institucion_vet_2;
     private int id_institucion_vet_3;
@@ -32,13 +33,13 @@ public class DoctorEntity {
     private int id_genero;
     private int dia_nac;
     private int mes_nac;
-    private int año_nac;
+    private int anio_nac;
     private int id_nacionalidad;
     private int id_especialidad_1;
     private int id_especialidad_2;
     private int id_especialidad_3;
-    private String resena;
-    private String resena_confirmada;
+    private String resenia;
+    private String resenia_confirmada;
     private int id_estado_medico_vet;
     private String telefono;
     private String codigo_area;
