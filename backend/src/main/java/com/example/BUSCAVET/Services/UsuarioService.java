@@ -12,13 +12,14 @@ public class UsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    public void guardarUsuario(int id_pais,String rut,String nombre1,String nombre2,String apellido1,String apellido2,
+    public void guardarUsuario(String contrasenia, int id_pais,String rut,String nombre1,String nombre2,String apellido1,String apellido2,
                                int id_genero,int dia_nac,int mes_nac,int anio_nac,int id_nacionalidad,String otro,
                                String direccion,String numero,String tipo,int id_codigo_postal,int id_comuna,
                                int id_provincia,int id_region,String geolocalizacion,int id_zona_BDoc,String otro2,
                                String telefono,String codigo_area,String celular,String email,String RRSS1,String RRSS2,
                                String otro3){
         UsuarioEntity usuario = new UsuarioEntity();
+        usuario.setContrasenia(contrasenia);
         usuario.setId_pais(id_pais);
         usuario.setRut(rut);
         usuario.setNombre1(nombre1);
@@ -61,19 +62,28 @@ public class UsuarioService {
     public UsuarioEntity actualizarUsuario(Long id, UsuarioEntity usuarioActualizado){
         UsuarioEntity usuarioExistente = usuarioRepository.findById(id).orElse(null);
         if (usuarioExistente != null){
+            usuarioExistente.setContrasenia(usuarioActualizado.getContrasenia());
+            usuarioExistente.setId_pais(usuarioActualizado.getId_pais());
+            usuarioExistente.setRut(usuarioActualizado.getRut());
             usuarioExistente.setNombre1(usuarioActualizado.getNombre1());
             usuarioExistente.setNombre2(usuarioActualizado.getNombre2());
             usuarioExistente.setApellido1(usuarioActualizado.getApellido1());
             usuarioExistente.setApellido2(usuarioActualizado.getApellido2());
-            usuarioExistente.setRut(usuarioActualizado.getRut());
-            usuarioExistente.setContrasenia(usuarioActualizado.getContrasenia());
+            usuarioExistente.setId_genero(usuarioActualizado.getId_genero());
             usuarioExistente.setDia_nac(usuarioActualizado.getDia_nac());
             usuarioExistente.setMes_nac(usuarioActualizado.getMes_nac());
             usuarioExistente.setAnio_nac(usuarioActualizado.getAnio_nac());
+            usuarioExistente.setId_genero(usuarioActualizado.getId_genero());
             usuarioExistente.setOtro(usuarioActualizado.getOtro());
             usuarioExistente.setDireccion(usuarioActualizado.getDireccion());
             usuarioExistente.setNumero(usuarioActualizado.getNumero());
             usuarioExistente.setTipo(usuarioActualizado.getTipo());
+            usuarioExistente.setId_codigo_postal(usuarioActualizado.getId_codigo_postal());
+            usuarioExistente.setId_comuna(usuarioActualizado.getId_comuna());
+            usuarioExistente.setId_provincia(usuarioActualizado.getId_provincia());
+            usuarioExistente.setId_region(usuarioActualizado.getId_region());
+            usuarioExistente.setGeolocalizacion(usuarioActualizado.getGeolocalizacion());
+            usuarioExistente.setId_zona_BDoc(usuarioActualizado.getId_zona_BDoc());
             usuarioExistente.setOtro2(usuarioActualizado.getOtro2());
             usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
             usuarioExistente.setCodigo_area(usuarioActualizado.getCodigo_area());

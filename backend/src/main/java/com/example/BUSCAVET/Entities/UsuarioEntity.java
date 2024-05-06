@@ -48,6 +48,5 @@ public class UsuarioEntity {
     private String RRSS1;
     private String RRSS2;
     private String otro3;
-    private int id_usuario;
 
 }

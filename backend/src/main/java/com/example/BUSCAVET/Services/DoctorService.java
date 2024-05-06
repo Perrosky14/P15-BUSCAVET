@@ -106,4 +106,5 @@ public class DoctorService {
     }
 
     public void eliminarDoctor(Long id){doctorRepository.deleteById(id);}
+
 }
