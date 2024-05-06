@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "Usuario")
@@ -48,5 +51,8 @@ public class UsuarioEntity {
     private String RRSS1;
     private String RRSS2;
     private String otro3;
+
+    @OneToMany(mappedBy = "usuario")
+    private List<MascotaEntity> mascotas = new ArrayList<>();
 
 }

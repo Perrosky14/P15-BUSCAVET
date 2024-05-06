@@ -18,7 +18,6 @@ public class MascotaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id;
-    private int id_usuario;
     private int id_categoria_animal;
     private int id_especie;
     private int id_raza;
@@ -33,5 +32,9 @@ public class MascotaEntity {
     private String color;
     private Double peso;
     private String otro2;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_asociado")
+    private UsuarioEntity usuario;
 
 }
