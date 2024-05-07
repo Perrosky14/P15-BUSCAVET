@@ -25,9 +25,8 @@ public class SuperAdminController {
     }
 
     @PostMapping("/nuevo-super-admin")
-    public String guardarSuperAdmin(@RequestParam("correo") String correo,
-                                    @RequestParam("contrasenia") String contrasenia){
-        superAdminService.guardarSuperAdmin(correo, contrasenia);
+    public String guardarSuperAdmin(@RequestBody SuperAdminEntity superAdmin){
+        superAdminService.guardarSuperAdmin(superAdmin);
         return "redirect:/nuevo-super-admin";
     }
 

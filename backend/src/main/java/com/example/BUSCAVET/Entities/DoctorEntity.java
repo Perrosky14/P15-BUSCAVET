@@ -54,4 +54,8 @@ public class DoctorEntity {
     private String asistente_celular;
     private String otro;
 
+    @ManyToOne
+    @JoinColumn(name = "veterinaria_asociada")
+    private VeterinariaEntity veterinaria;
+
 }

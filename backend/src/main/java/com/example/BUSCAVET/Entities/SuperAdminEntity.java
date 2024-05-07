@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "SuperAdmin")
 @NoArgsConstructor
@@ -19,5 +22,8 @@ public class SuperAdminEntity {
     private Long id;
     private String correo;
     private String contrasenia;
+
+    @OneToMany(mappedBy = "superAdmin")
+    private List<VeterinariaEntity> veterinarios = new ArrayList<>();
 
 }

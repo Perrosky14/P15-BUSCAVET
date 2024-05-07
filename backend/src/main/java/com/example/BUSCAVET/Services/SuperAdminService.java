@@ -12,10 +12,7 @@ public class SuperAdminService {
     @Autowired
     SuperAdminRepository superAdminRepository;
 
-    public void guardarSuperAdmin(String correo, String contrasenia){
-        SuperAdminEntity superAdmin = new SuperAdminEntity();
-        superAdmin.setCorreo(correo);
-        superAdmin.setContrasenia(contrasenia);
+    public void guardarSuperAdmin(SuperAdminEntity superAdmin){;
         superAdminRepository.save(superAdmin);
     }
 

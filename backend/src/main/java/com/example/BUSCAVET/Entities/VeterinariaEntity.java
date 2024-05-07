@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "Veterinaria")
@@ -40,8 +43,15 @@ public class VeterinariaEntity {
     private int id_comuna;
     private int id_provincia;
     private int id_region;
-    private String geolocaclizacion;
+    private String geolocalizacion;
     private int id_zona_BDoc;
     private int id_servicio;
+
+    @ManyToOne
+    @JoinColumn(name = "superadmin_asociado")
+    private SuperAdminEntity superAdmin;
+
+    @OneToMany(mappedBy = "veterinaria")
+    private List<DoctorEntity> doctores = new ArrayList<>();
 
 }
