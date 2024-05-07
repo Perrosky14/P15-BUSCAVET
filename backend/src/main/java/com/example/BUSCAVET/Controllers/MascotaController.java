@@ -3,6 +3,7 @@ package com.example.BUSCAVET.Controllers;
 
 import com.example.BUSCAVET.Entities.MascotaEntity;
 import com.example.BUSCAVET.Services.MascotaService;
+import com.example.BUSCAVET.Services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 public class MascotaController {
     @Autowired
     MascotaService mascotaService;
+    UsuarioService usaurioService;
 
     @GetMapping("/")
     public ArrayList<MascotaEntity> obtenerMascotas(){
@@ -41,6 +43,12 @@ public class MascotaController {
     @DeleteMapping("/{id}")
     public void eliminarMascota(@PathVariable Long id){
         mascotaService.eliminarMascota(id);
+    }
+
+    @PostMapping("/{idUsuario}")
+    public void registrarMascota(@PathVariable Long idUsuario, @RequestBody MascotaEntity mascota){
+        mascota.getUsuario().setId(idUsuario);
+        usaurioService.registrarMascota(idUsuario,mascota);
     }
 }
 
