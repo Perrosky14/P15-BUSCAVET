@@ -65,16 +65,4 @@ public class UsuarioService {
     }
     public void eliminarUsuario(Long id){usuarioRepository.deleteById(id);}
 
-    public ResponseEntity<String> registrarMascota(Long id, MascotaEntity mascota){
-        UsuarioEntity usuario = usuarioRepository.findById(id).orElse(null);
-        if (usuario != null){
-            mascota.setUsuario(usuario);
-            usuario.getMascotas().add(mascota);
-            usuarioRepository.save(usuario);
-            return ResponseEntity.ok("La mascota " + mascota.getNombre() + " ha sido registrada correctamente por " +
-                    "el usuario con el ID: " + id);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningun usuario que tenga el id: " + id);
-        }
-    }
 }
