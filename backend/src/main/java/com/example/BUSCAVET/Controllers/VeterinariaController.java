@@ -3,6 +3,7 @@ package com.example.BUSCAVET.Controllers;
 import com.example.BUSCAVET.Entities.DoctorEntity;
 import com.example.BUSCAVET.Entities.SuperAdminEntity;
 import com.example.BUSCAVET.Entities.VeterinariaEntity;
+import com.example.BUSCAVET.Services.DoctorService;
 import com.example.BUSCAVET.Services.SuperAdminService;
 import com.example.BUSCAVET.Services.VeterinariaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class VeterinariaController {
 
     @Autowired
     SuperAdminService superAdminService;
+
+    @Autowired
+    DoctorService doctorService;
 
     @GetMapping("/")
     public ArrayList<VeterinariaEntity> obtenerVeterinaria(){return veterinariaService.obtenerVeterinarias();}
@@ -65,6 +69,24 @@ public class VeterinariaController {
         return veterinariaService.modificarDoctorVeterinaria(idVeterinaria, idDoctor, doctorActualizado);
     }
 
-
+    @DeleteMapping("eliminarDoctor/{idVeterinaria}/{idDoctor}")
+    public ResponseEntity<?> eliminarDoctor(@PathVariable Long idVeterinaria, @PathVariable Long idDoctor){
+        VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
+        if (veterinaria != null) {
+            DoctorEntity doctor = doctorService.obtenerPorId(idDoctor);
+            if (doctor != null) {
+                if (veterinaria.equals(doctor.getVeterinaria())) {
+                    doctorService.eliminarDoctor(idDoctor);
+                    return ResponseEntity.status(HttpStatus.ACCEPTED).body("El doctor con id: "+ idDoctor + ", se ha eliminado correctamente");
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("La veterinaria con id: " + idVeterinaria + " no puede eliminar el doctor con id: " + idDoctor + ", ya que la veterinaria no creó dicho doctor. No tiene dicha autorización.");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningun doctor que tenga id: " + idDoctor);
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga el id: " + idVeterinaria + ", para eliminar el doctor.");
+        }
+    }
 
 }
