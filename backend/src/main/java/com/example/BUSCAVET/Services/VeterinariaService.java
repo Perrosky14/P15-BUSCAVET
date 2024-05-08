@@ -1,5 +1,6 @@
 package com.example.BUSCAVET.Services;
 
+import com.example.BUSCAVET.Entities.DoctorEntity;
 import com.example.BUSCAVET.Entities.VeterinariaEntity;
 import com.example.BUSCAVET.Repositories.VeterinariaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,9 @@ public class VeterinariaService {
 
     @Autowired
     VeterinariaRepository veterinariaRepository;
+
+    @Autowired
+    DoctorService doctorService;
 
     public void guardarVeterinaria(VeterinariaEntity veterinaria){
         veterinariaRepository.save(veterinaria);
@@ -56,4 +60,18 @@ public class VeterinariaService {
         return null;
     }
     public void eliminarVeterinaria(Long id){veterinariaRepository.deleteById(id);}
+
+
+    public DoctorEntity modificarDoctorVeterinaria(Long id_veterinaria, Long id_doctor, DoctorEntity doctorActualizado){
+        VeterinariaEntity veterinaria = veterinariaRepository.findById(id_veterinaria).orElse(null);
+        if(veterinaria != null){
+            DoctorEntity doctorExistente = doctorService.obtenerPorId(id_doctor);
+            if(doctorExistente != null && doctorExistente.getVeterinaria().getId().equals(id_veterinaria)){
+                return doctorService.actualizarDoctor(id_doctor, doctorActualizado);
+            }
+
+        }
+        return null;
+    }
+
 }

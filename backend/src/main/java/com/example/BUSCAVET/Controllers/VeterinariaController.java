@@ -1,5 +1,6 @@
 package com.example.BUSCAVET.Controllers;
 
+import com.example.BUSCAVET.Entities.DoctorEntity;
 import com.example.BUSCAVET.Entities.SuperAdminEntity;
 import com.example.BUSCAVET.Entities.VeterinariaEntity;
 import com.example.BUSCAVET.Services.SuperAdminService;
@@ -58,5 +59,12 @@ public class VeterinariaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningun superAdmin que tenga el id: " + idSuperAdmin);
         }
     }
+
+    @PostMapping("actualizarDoctor/{idVeterinaria}/{idDoctor}")
+    public DoctorEntity modificarDoctor(@PathVariable Long idVeterinaria, @PathVariable Long idDoctor, @RequestBody DoctorEntity doctorActualizado){
+        return veterinariaService.modificarDoctorVeterinaria(idVeterinaria, idDoctor, doctorActualizado);
+    }
+
+
 
 }

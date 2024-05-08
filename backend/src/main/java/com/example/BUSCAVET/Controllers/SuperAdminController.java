@@ -1,6 +1,6 @@
 package com.example.BUSCAVET.Controllers;
 
-import com.example.BUSCAVET.Entities.SuperAdminEntity;
+import com.example.BUSCAVET.Entities.*;
 import com.example.BUSCAVET.Services.SuperAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +37,46 @@ public class SuperAdminController {
 
     @DeleteMapping("/{id}")
     public void eliminarSuperAdmin(@PathVariable Long id){ superAdminService.eliminarSuperAdmin(id);}
+
+
+    //Veterinaria
+    @PutMapping("modificar-veterinaria/{idVeterinaria}")
+    public VeterinariaEntity actualizarVeterinaria(@PathVariable Long idVeterinaria, @RequestBody VeterinariaEntity veterinariaActualizada){
+        return superAdminService.actualizarVeterinaria(idVeterinaria, veterinariaActualizada);
+    }
+    @DeleteMapping("eliminar-veterinaria/{idVeterinaria}")
+    public void eliminarVeterinaria(@PathVariable Long idVeterinaria){
+        superAdminService.eliminarVeterinaria(idVeterinaria);
+    }
+
+    //Doctor
+    @PutMapping("modificar-doctor/{idDoctor}")
+    public DoctorEntity actualizarDoctor(@PathVariable Long idDoctor, @RequestBody DoctorEntity doctorActualizado){
+        return superAdminService.actualizarDoctor(idDoctor, doctorActualizado);
+    }
+    @DeleteMapping("eliminar-doctor/{idDoctor}")
+    public void eliminarDoctor(@PathVariable Long idDoctor){
+        superAdminService.eliminarDoctor(idDoctor);
+    }
+
+    //Usuario
+    @PutMapping("modificar-usuario/{idUsuario}")
+    public UsuarioEntity actualizarUsuario(@PathVariable Long idUsuario, @RequestBody UsuarioEntity usuarioActualizado){
+        return superAdminService.actualizarUsuario(idUsuario, usuarioActualizado);
+    }
+    @DeleteMapping("eliminar-usuario/{idUsuario}")
+    public void eliminarUsuario(@PathVariable Long idUsuario){
+        superAdminService.eliminarUsuario(idUsuario);
+    }
+
+    //Mascota
+    @PutMapping("modificar-mascota/{idMascota}")
+    public MascotaEntity actualizarMascota(@PathVariable Long idMascota, @RequestBody MascotaEntity mascotaActualizada){
+        return superAdminService.actualizarMascota(idMascota, mascotaActualizada);
+    }
+    @DeleteMapping("eliminar-mascota/{idMascota}")
+    public void eliminarMascota(@PathVariable Long idMascota){
+        superAdminService.eliminarMascota(idMascota);
+    }
 
 }
