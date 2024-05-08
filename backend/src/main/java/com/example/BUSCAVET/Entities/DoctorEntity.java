@@ -1,5 +1,6 @@
 package com.example.BUSCAVET.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,7 +56,8 @@ public class DoctorEntity {
     private String otro;
 
     @ManyToOne
-    @JoinColumn(name = "veterinaria_asociada")
+    @JoinColumn(name = "id_veterinaria_asociada")
+    @JsonBackReference
     private VeterinariaEntity veterinaria;
 
 }

@@ -1,5 +1,6 @@
 package com.example.BUSCAVET.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +24,8 @@ public class SuperAdminEntity {
     private String correo;
     private String contrasenia;
 
-    @OneToMany(mappedBy = "superAdmin")
+    @OneToMany(mappedBy = "superAdmin",cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<VeterinariaEntity> veterinarios = new ArrayList<>();
 
 }

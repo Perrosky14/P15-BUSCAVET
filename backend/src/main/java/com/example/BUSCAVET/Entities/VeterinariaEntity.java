@@ -1,5 +1,7 @@
 package com.example.BUSCAVET.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,10 +50,12 @@ public class VeterinariaEntity {
     private int id_servicio;
 
     @ManyToOne
-    @JoinColumn(name = "superadmin_asociado")
+    @JoinColumn(name = "id_superadmin_asociado")
+    @JsonBackReference
     private SuperAdminEntity superAdmin;
 
-    @OneToMany(mappedBy = "veterinaria")
+    @OneToMany(mappedBy = "veterinaria", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<DoctorEntity> doctores = new ArrayList<>();
 
 }
