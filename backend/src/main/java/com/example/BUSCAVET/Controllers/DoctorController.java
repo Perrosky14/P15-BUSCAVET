@@ -16,9 +16,6 @@ public class DoctorController {
     @Autowired
     DoctorService doctorService;
 
-    @Autowired
-    VeterinariaService veterinariaService;
-
     @GetMapping("/")
     public ArrayList<DoctorEntity> obtenerDoctores(){
         return doctorService.obtenerDoctor();
@@ -49,15 +46,4 @@ public class DoctorController {
         doctorService.eliminarDoctor(id);
     }
 
-    @PostMapping("/{idVeterinaria}")
-    public ResponseEntity<?> registrarDoctor(@PathVariable Long idVeterinaria, @RequestBody DoctorEntity doctor){
-        VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
-        if (veterinaria != null) {
-            doctor.setVeterinaria(veterinaria);
-            doctorService.guardarDoctor(doctor);
-            return ResponseEntity.status(HttpStatus.CREATED).body("El doctor " + doctor.getNombre1() + " " + doctor.getApellido1() + " ha sido registrado correctamente por la veterinaria con el ID: " + idVeterinaria);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga la id: " + idVeterinaria);
-        }
-    }
 }

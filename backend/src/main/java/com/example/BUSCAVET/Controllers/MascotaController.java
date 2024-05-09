@@ -50,16 +50,5 @@ public class MascotaController {
         mascotaService.eliminarMascota(id);
     }
 
-    @PostMapping("/{idUsuario}")
-    public ResponseEntity<?> registrarMascota(@PathVariable Long idUsuario, @RequestBody MascotaEntity mascota){
-        UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
-        if (usuario != null) {
-            mascota.setUsuario(usuario);
-            mascotaService.guardarMascota(mascota);
-            return ResponseEntity.status(HttpStatus.CREATED).body("La mascota " + mascota.getNombre() + " ha sido registrada correctamente por " + "el usuario con el ID: " + idUsuario);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningun usuario que tenga el id: " + idUsuario);
-        }
-    }
 }
 

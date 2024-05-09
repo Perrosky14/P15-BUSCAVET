@@ -46,36 +46,4 @@ public class SuperAdminService {
     }
     public void eliminarSuperAdmin(Long id){superAdminRepository.deleteById(id);}
 
-    public VeterinariaEntity actualizarVeterinaria(Long idVeterinaria, VeterinariaEntity veterinariaActulizada){
-        return veterinariaService.actualizarVeterinaria(idVeterinaria, veterinariaActulizada);
-    }
-
-    public DoctorEntity actualizarDoctor(Long idDoctor, DoctorEntity doctorActualizado){
-        return doctorService.actualizarDoctor(idDoctor, doctorActualizado);
-    }
-
-    public UsuarioEntity actualizarUsuario(Long idUsuario, UsuarioEntity usuarioActulizado){
-        return usuarioService.actualizarUsuario(idUsuario, usuarioActulizado);
-    }
-
-    public MascotaEntity actualizarMascota(Long idMascota, MascotaEntity mascotaActualizada){
-        return mascotaService.actualizarMascota(idMascota, mascotaActualizada);
-    }
-
-    public void eliminarVeterinaria(Long idVeterinaria){
-        veterinariaService.eliminarVeterinaria(idVeterinaria);
-    }
-
-    public void eliminarDoctor(Long idDoctor){
-        doctorService.eliminarDoctor(idDoctor);
-    }
-
-    public void eliminarUsuario(Long idUsuario){
-        usuarioService.eliminarUsuario(idUsuario);
-    }
-
-    public void eliminarMascota(Long idMascota){
-        mascotaService.eliminarMascota(idMascota);
-    }
-
 }
