@@ -2,52 +2,60 @@ package com.example.BUSCAVET.Controllers;
 
 
 import com.example.BUSCAVET.Entities.MascotaEntity;
-import com.example.BUSCAVET.Entities.UsuarioEntity;
 import com.example.BUSCAVET.Services.MascotaService;
-import com.example.BUSCAVET.Services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/mascota")
 public class MascotaController {
     @Autowired
     MascotaService mascotaService;
 
-    @Autowired
-    UsuarioService usuarioService;
-
-    @GetMapping("/")
+    @GetMapping("/obtener-mascotas")
     public ArrayList<MascotaEntity> obtenerMascotas(){
         return mascotaService.obtenerMascotas();
     }
 
-    @GetMapping("/{id}")
-    public MascotaEntity obtenerMascotaPorID(@PathVariable Long id){
-        return mascotaService.obtenerPorId(id);
+    @GetMapping("/obtener-mascota")
+    public ResponseEntity<?> obtenerMascotaPorID(@RequestBody Map<String, Object> requestBody){
+        Long idMascota = ((Number) requestBody.get("idMascota")).longValue();
+        MascotaEntity mascota = mascotaService.obtenerPorId(idMascota);
+        if (mascota == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna mascota que tenga la id: " + idMascota);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(mascota);
     }
 
-    @GetMapping("/nueva-mascota")
-    public String mascota(){
-        return "nueva-mascota";
-    }
     @PostMapping("/nueva-mascota")
-    public String guardarMascota(@RequestBody MascotaEntity mascota){
+    public ResponseEntity<?> guardarMascota(@RequestBody MascotaEntity mascota){
         mascotaService.guardarMascota(mascota);
-        return "redirect:/nueva-mascota";
+        return ResponseEntity.status(HttpStatus.CREATED).body("La mascota ha sido registrada correctamente.");
     }
 
-    @PutMapping("/{id}")
-    public MascotaEntity actualizarMascota(@PathVariable Long id, @RequestBody MascotaEntity mascotaActualizada){
-        return mascotaService.actualizarMascota(id, mascotaActualizada);
+    @PutMapping("/actualizar-mascota")
+    public ResponseEntity<?> actualizarMascota(@RequestBody Map<String, Object> requestBody){
+        Long idMascota = ((Number) requestBody.get("idMascota")).longValue();
+        if (mascotaService.obtenerPorId(idMascota) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna mascota que tenga la id: " + idMascota);
+        }
+        MascotaEntity mascotaActualizada = mascotaService.transformarMascota((Map<String, Object>) requestBody.get("mascotaActualizada"));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(mascotaService.actualizarMascota(idMascota, mascotaActualizada));
     }
 
-    @DeleteMapping("/{id}")
-    public void eliminarMascota(@PathVariable Long id){
-        mascotaService.eliminarMascota(id);
+    @DeleteMapping("/eliminar-mascota")
+    public ResponseEntity<?> eliminarMascota(@RequestBody Map<String, Object> requestBody){
+        Long idMascota = ((Number) requestBody.get("idMascota")).longValue();
+        if (mascotaService.obtenerPorId(idMascota) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna mascota que tenga la id: " + idMascota);
+        }
+        mascotaService.eliminarMascota(idMascota);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("La mascota con la id: " + idMascota + " se ha eliminado correctamente.");
     }
 
 }

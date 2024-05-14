@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Map;
+
 @Service
 public class VeterinariaService {
 
@@ -55,6 +57,36 @@ public class VeterinariaService {
             return veterinariaRepository.save(veterinariaExistente);
         }
         return null;
+    }
+
+    public VeterinariaEntity transformarDatosVeterinaria(Map<String, Object> veterinariaData) {
+        VeterinariaEntity veterinaria = new VeterinariaEntity();
+        veterinaria.setContrasenia((String) veterinariaData.get("contrasenia"));
+        veterinaria.setId_pais((Integer) veterinariaData.get("id_pais"));
+        veterinaria.setId_segmento((Integer) veterinariaData.get("id_segmento"));
+        veterinaria.setId_tipo_institucion_vet((Integer) veterinariaData.get("id_tipo_institucion_vet"));
+        veterinaria.setId_estado_institucion((Integer) veterinariaData.get("id_estado_institucion"));
+        veterinaria.setRut((String) veterinariaData.get("rut"));
+        veterinaria.setRazon_social((String) veterinariaData.get("razon_social"));
+        veterinaria.setNombre_comercial((String) veterinariaData.get("nombre_comercial"));
+        veterinaria.setNombre_1_rep_legal((String) veterinariaData.get("nombre_1_rep_legal"));
+        veterinaria.setNombre_2_rep_legal((String) veterinariaData.get("nombre_2_rep_legal"));
+        veterinaria.setResenia((String) veterinariaData.get("resenia"));
+        veterinaria.setResenia_confirmada((String) veterinariaData.get("resenia_confirmada"));
+        veterinaria.setDireccion((String) veterinariaData.get("direccion"));
+        veterinaria.setNumero((String) veterinariaData.get("numero"));
+        veterinaria.setTipo((String) veterinariaData.get("telefono"));
+        veterinaria.setCodigo_area((String) veterinariaData.get("codigo_area"));
+        veterinaria.setCelular((String) veterinariaData.get("celular"));
+        veterinaria.setId_codigo_postal((Integer) veterinariaData.get("id_codigo_postal"));
+        veterinaria.setId_comuna((Integer) veterinariaData.get("id_comuna"));
+        veterinaria.setId_provincia((Integer) veterinariaData.get("id_provincia"));
+        veterinaria.setId_region((Integer) veterinariaData.get("id_region"));
+        veterinaria.setGeolocalizacion((String) veterinariaData.get("geolocalizacion"));
+        veterinaria.setId_zona_BDoc((Integer) veterinariaData.get("id_zona_BDoc"));
+        veterinaria.setId_servicio((Integer) veterinariaData.get("id_servicio"));
+        veterinaria.setValidado((Boolean) veterinariaData.get("validado"));
+        return veterinaria;
     }
     public void eliminarVeterinaria(Long id){veterinariaRepository.deleteById(id);}
 

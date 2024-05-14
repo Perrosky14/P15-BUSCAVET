@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Map;
+
 @Service
 public class DoctorService {
 
@@ -62,6 +64,46 @@ public class DoctorService {
             return doctorRepository.save(doctorExistente);
         }
         return null;
+    }
+
+    public DoctorEntity transformarDatosDoctor(Map<String, Object> doctorData) {
+        DoctorEntity doctor = new DoctorEntity();
+        doctor.setContrasenia((String) doctorData.get("contrasenia"));
+        doctor.setId_institucion_vet_1((Integer) doctorData.get("id_institucion_vet_1"));
+        doctor.setId_institucion_vet_2((Integer) doctorData.get("id_institucion_vet_2"));
+        doctor.setId_institucion_vet_3((Integer) doctorData.get("id_institucion_vet_3"));
+        doctor.setId_pais((Integer) doctorData.get("id_pais"));
+        doctor.setRut((String) doctorData.get("rut"));
+        doctor.setMatricula((String) doctorData.get("matricula"));
+        doctor.setNombre1((String) doctorData.get("nombre1"));
+        doctor.setNombre2((String) doctorData.get("nombre2"));
+        doctor.setApellido1((String) doctorData.get("apellido1"));
+        doctor.setApellido2((String) doctorData.get("apellido2"));
+        doctor.setId_genero((Integer) doctorData.get("id_genero"));
+        doctor.setDia_nac((Integer) doctorData.get("dia_nac"));
+        doctor.setMes_nac((Integer) doctorData.get("mes_nac"));
+        doctor.setAnio_nac((Integer) doctorData.get("anio_nac"));
+        doctor.setId_nacionalidad((Integer) doctorData.get("id_nacionalidad"));
+        doctor.setId_especialidad_1((Integer) doctorData.get("id_especialidad_1"));
+        doctor.setId_especialidad_2((Integer) doctorData.get("id_especialidad_2"));
+        doctor.setId_especialidad_3((Integer) doctorData.get("id_especialidad_3"));
+        doctor.setResenia((String) doctorData.get("resenia"));
+        doctor.setResenia_confirmada((String) doctorData.get("resenia_confirmada"));
+        doctor.setId_estado_medico_vet((Integer) doctorData.get("id_estado_medico_vet"));
+        doctor.setTelefono((String) doctorData.get("telefono"));
+        doctor.setCodigo_area((String) doctorData.get("codigo_area"));
+        doctor.setCelular((String) doctorData.get("celular"));
+        doctor.setId_convenio((Integer) doctorData.get("id_convenio"));
+        doctor.setEmail((String) doctorData.get("email"));
+        doctor.setRRSS1((String) doctorData.get("rrss1"));
+        doctor.setRRSS2((String) doctorData.get("rrss2"));
+        doctor.setAsistente_nom((String) doctorData.get("asistente_nom"));
+        doctor.setAsistente_telefono((String) doctorData.get("asistente_telefono"));
+        doctor.setAsistente_codigo_area((String) doctorData.get("asistente_codigo_area"));
+        doctor.setAsistente_celular((String) doctorData.get("asistente_celular"));
+        doctor.setOtro((String) doctorData.get("otro"));
+        doctor.setValidado((Boolean) doctorData.get("validado"));
+        return doctor;
     }
 
     public void eliminarDoctor(Long id){doctorRepository.deleteById(id);}

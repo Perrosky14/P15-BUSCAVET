@@ -1,10 +1,8 @@
 package com.example.BUSCAVET.Controllers;
 
 import com.example.BUSCAVET.Entities.DoctorEntity;
-import com.example.BUSCAVET.Entities.SuperAdminEntity;
 import com.example.BUSCAVET.Entities.VeterinariaEntity;
 import com.example.BUSCAVET.Services.DoctorService;
-import com.example.BUSCAVET.Services.SuperAdminService;
 import com.example.BUSCAVET.Services.VeterinariaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/veterinaria")
 public class VeterinariaController {
@@ -22,82 +22,101 @@ public class VeterinariaController {
     @Autowired
     DoctorService doctorService;
 
-    @GetMapping("/")
+    @GetMapping("/obtener-veterinarias")
     public ArrayList<VeterinariaEntity> obtenerVeterinaria(){return veterinariaService.obtenerVeterinarias();}
 
-    @GetMapping("/{id}")
-    public VeterinariaEntity obtenerVeterinariaPorId(@PathVariable Long id){return veterinariaService.obtenerPorId(id);}
-
-    @GetMapping("/nueva-veterinaria")
-    public String veterinaria(){
-        return "nueva-veterinaria";
+    @GetMapping("/obtener-veterinaria")
+    public ResponseEntity<?> obtenerVeterinariaPorId(@RequestBody Map<String, Object> requestBody){
+        Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
+        VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
+        if (veterinaria == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado niguna veterinaria que tenga id: " + idVeterinaria);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(veterinaria);
     }
 
     @PostMapping("/nueva-veterinaria")
-    public String guardarVeterinaria(@RequestBody VeterinariaEntity veterinaria){
+    public ResponseEntity<?> guardarVeterinaria(@RequestBody VeterinariaEntity veterinaria){
         veterinariaService.guardarVeterinaria(veterinaria);
-        return "redirect:/nueva-veterinaria";
+        return ResponseEntity.status(HttpStatus.CREATED).body("La veterinaria se ha registrado correctamente.");
     }
 
-    @PutMapping("/{id}")
-    public VeterinariaEntity actualizarVeterinaria(@PathVariable Long id, @RequestBody VeterinariaEntity veterinariaActualizada){
-        return veterinariaService.actualizarVeterinaria(id, veterinariaActualizada);
+    @PutMapping("/actualizar-veterinaria")
+    public ResponseEntity<?> actualizarVeterinaria(@RequestBody Map<String, Object> requestBody){
+        Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
+        if (veterinariaService.obtenerPorId(idVeterinaria) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga la id: " + idVeterinaria);
+        }
+        VeterinariaEntity veterinariaActualizada = veterinariaService.transformarDatosVeterinaria((Map<String, Object>) requestBody.get("veterinariaActualizada"));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(veterinariaService.actualizarVeterinaria(idVeterinaria, veterinariaActualizada));
     }
 
-    @DeleteMapping("/{id}")
-    public void eliminarVeterinaria(@PathVariable Long id){
-        veterinariaService.eliminarVeterinaria(id);
+    @DeleteMapping("/eliminar-veterinaria")
+    public ResponseEntity<?> eliminarVeterinaria(@RequestBody Map<String, Object> requestBody){
+        Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
+        if (veterinariaService.obtenerPorId(idVeterinaria) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria con la id: " + idVeterinaria);
+        }
+        veterinariaService.eliminarVeterinaria(idVeterinaria);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("La veterinaria con la id: " + idVeterinaria + " se ha eliminado correctamente");
     }
 
-    @PostMapping("/crear-doctor/{idVeterinaria}")
-    public ResponseEntity<?> registrarDoctor(@PathVariable Long idVeterinaria, @RequestBody DoctorEntity doctor){
+    @PostMapping("/crear-doctor")
+    public ResponseEntity<?> registrarDoctor(@RequestBody Map<String, Object> requestBody){
+        Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
         VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
         if (veterinaria != null) {
+            DoctorEntity doctor = doctorService.transformarDatosDoctor((Map<String, Object>) requestBody.get("doctor"));
             doctor.setVeterinaria(veterinaria);
             doctorService.guardarDoctor(doctor);
-            return ResponseEntity.status(HttpStatus.CREATED).body("El doctor " + doctor.getNombre1() + " " + doctor.getApellido1() + " ha sido registrado correctamente por la veterinaria con el ID: " + idVeterinaria);
+            return ResponseEntity.status(HttpStatus.CREATED).body("El doctor " + doctor.getNombre1() + " " + doctor.getApellido1() + " ha sido registrado correctamente por la veterinaria con la id: " + idVeterinaria);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga la id: " + idVeterinaria);
         }
     }
 
-    @PutMapping("/actualizar-doctor/{idVeterinaria}/{idDoctor}")
-    public ResponseEntity<?> modificarDoctor(@PathVariable Long idVeterinaria, @PathVariable Long idDoctor, @RequestBody DoctorEntity doctorActualizado){
+    @PutMapping("/modificar-doctor")
+    public ResponseEntity<?> modificarDoctor(@RequestBody Map<String, Object> requestBody){
+        Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
         VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
         if (veterinaria != null) {
+            Long idDoctor = ((Number) requestBody.get("idDoctor")).longValue();
             DoctorEntity doctor = doctorService.obtenerPorId(idDoctor);
             if (doctor != null) {
                 if (veterinaria.equals(doctor.getVeterinaria())) {
-                    doctorService.actualizarDoctor(idDoctor, doctorActualizado);
-                    return ResponseEntity.status(HttpStatus.ACCEPTED).body("El doctor con id: " + idDoctor + ", se ha modificado correctamente.");
+                    doctor = doctorService.transformarDatosDoctor((Map<String, Object>) requestBody.get("doctorActualizado"));
+                    doctorService.actualizarDoctor(idDoctor, doctor);
+                    return ResponseEntity.status(HttpStatus.ACCEPTED).body("El doctor con la id: " + idDoctor + " se ha modificado correctamente.");
                 } else {
-                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("La veterinaria con id: " + idVeterinaria + " no puede modificar el doctor con id: " + idDoctor + ", ya que la veterinaria no creó dicho doctor. No tiene dicha autorización.");
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("La veterinaria con la id: " + idVeterinaria + " no puede modificar el doctor con id: " + idDoctor + ", ya que la veterinaria no creó dicho doctor. No tiene dicha autorización.");
                 }
             } else  {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningun doctor que tenga id: " + idDoctor);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún doctor que tenga la id: " + idDoctor);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga el id: " + idVeterinaria + ", para eliminar el doctor.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga la id: " + idVeterinaria + " para eliminar el doctor.");
         }
     }
 
-    @DeleteMapping("/eliminar-doctor/{idVeterinaria}/{idDoctor}")
-    public ResponseEntity<?> eliminarDoctor(@PathVariable Long idVeterinaria, @PathVariable Long idDoctor){
+    @DeleteMapping("/eliminar-doctor")
+    public ResponseEntity<?> eliminarDoctor(@RequestBody Map<String, Object> requestBody){
+        Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
         VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
         if (veterinaria != null) {
+            Long idDoctor = ((Number) requestBody.get("idDoctor")).longValue();
             DoctorEntity doctor = doctorService.obtenerPorId(idDoctor);
             if (doctor != null) {
                 if (veterinaria.equals(doctor.getVeterinaria())) {
                     doctorService.eliminarDoctor(idDoctor);
-                    return ResponseEntity.status(HttpStatus.ACCEPTED).body("El doctor con id: "+ idDoctor + ", se ha eliminado correctamente.");
+                    return ResponseEntity.status(HttpStatus.ACCEPTED).body("El doctor con la id: "+ idDoctor + " se ha eliminado correctamente.");
                 } else {
-                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("La veterinaria con id: " + idVeterinaria + " no puede eliminar el doctor con id: " + idDoctor + ", ya que la veterinaria no creó dicho doctor. No tiene dicha autorización.");
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("La veterinaria con la id: " + idVeterinaria + " no puede eliminar el doctor con la id: " + idDoctor + ", ya que la veterinaria no creó dicho doctor. No tiene dicha autorización.");
                 }
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún doctor que tenga id: " + idDoctor);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún doctor que tenga la id: " + idDoctor);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga el id: " + idVeterinaria + ", para eliminar el doctor.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga la id: " + idVeterinaria + " para eliminar el doctor.");
         }
     }
 

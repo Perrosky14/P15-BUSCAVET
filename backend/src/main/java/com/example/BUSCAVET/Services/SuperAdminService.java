@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Map;
+
 @Service
 public class SuperAdminService {
 
@@ -43,6 +45,13 @@ public class SuperAdminService {
             return superAdminRepository.save(superAdminExistente);
         }
         return null;
+    }
+
+    public SuperAdminEntity transformarSuperAdmin(Map<String, Object> superAdminData) {
+        SuperAdminEntity superAdmin = new SuperAdminEntity();
+        superAdmin.setCorreo((String) superAdminData.get("correo"));
+        superAdmin.setContrasenia((String) superAdminData.get("contrasenia"));
+        return superAdmin;
     }
     public void eliminarSuperAdmin(Long id){superAdminRepository.deleteById(id);}
 

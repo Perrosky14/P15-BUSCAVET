@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/superAdmin")
 public class SuperAdminController {
@@ -27,145 +29,179 @@ public class SuperAdminController {
     @Autowired
     MascotaService mascotaService;
 
-    @GetMapping("/")
+    @GetMapping("/obtener-superAdmins")
     public ArrayList<SuperAdminEntity> obtenerSuperAdmin(){return superAdminService.obtenerSuperAdmin();}
 
-    @GetMapping("/{id}")
-    public SuperAdminEntity obtenerSuperAdminPorId(@PathVariable Long id){return superAdminService.obtenerPorId(id);}
-
-    @GetMapping("/nuevo-super-admin")
-    public String superAdmin(){
-        return "nuevo-super-admin";
+    @GetMapping("/obtener-superAdmin")
+    public ResponseEntity<?> obtenerSuperAdminPorId(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
+        SuperAdminEntity superAdmin = superAdminService.obtenerPorId(idSuperAdmin);
+        if (superAdmin == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin con la id: " + idSuperAdmin);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(superAdmin);
     }
 
-    @PostMapping("/nuevo-super-admin")
-    public String guardarSuperAdmin(@RequestBody SuperAdminEntity superAdmin){
+    @PostMapping("/nuevo-superAdmin")
+    public ResponseEntity<?> guardarSuperAdmin(@RequestBody SuperAdminEntity superAdmin){
         superAdminService.guardarSuperAdmin(superAdmin);
-        return "redirect:/nuevo-super-admin";
+        return ResponseEntity.status(HttpStatus.CREATED).body("El superAdmin se ha registrado correctamente.");
     }
 
-    @PutMapping("/{id}")
-    public SuperAdminEntity actualizarSuperAdmin(@PathVariable Long id, @RequestBody SuperAdminEntity superAdminActualizado){
-        return superAdminService.actualizarSuperAdmin(id,superAdminActualizado);
+    @PutMapping("/actualizar-superAdmin")
+    public ResponseEntity<?> actualizarSuperAdmin(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
+        if (superAdminService.obtenerPorId(idSuperAdmin) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin con la id: " + idSuperAdmin);
+        }
+        SuperAdminEntity superAdminActualizado = superAdminService.transformarSuperAdmin((Map<String, Object>) requestBody.get("superAdminActualizado"));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(superAdminService.actualizarSuperAdmin(idSuperAdmin,superAdminActualizado));
     }
 
-    @DeleteMapping("/{id}")
-    public void eliminarSuperAdmin(@PathVariable Long id){ superAdminService.eliminarSuperAdmin(id);}
-
+    @DeleteMapping("/eliminar-superAdmin")
+    public ResponseEntity<?> eliminarSuperAdmin(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
+        if (usuarioService.obtenerPorId(idSuperAdmin) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin con la id: " + idSuperAdmin);
+        }
+        superAdminService.eliminarSuperAdmin(idSuperAdmin);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("El superAdmin con la id: " + idSuperAdmin + " se ha eliminado correctamente.");
+    }
 
     //Veterinaria
-    @PostMapping("/crear-veterinaria/{idSuperAdmin}")
-    public ResponseEntity<?> registrarVeterinaria(@PathVariable Long idSuperAdmin, @RequestBody VeterinariaEntity veterinaria){
+    @PostMapping("/crear-veterinaria")
+    public ResponseEntity<?> registrarVeterinaria(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         SuperAdminEntity superAdmin = superAdminService.obtenerPorId(idSuperAdmin);
         if (superAdmin != null) {
-            veterinaria.setSuperAdmin(superAdmin);
+            VeterinariaEntity veterinaria = veterinariaService.transformarDatosVeterinaria((Map<String, Object>) requestBody.get("veterinaria"));
             veterinariaService.guardarVeterinaria(veterinaria);
-            return ResponseEntity.status(HttpStatus.CREATED).body("La veterinaria " + veterinaria.getNombre_comercial() + " ha sido registrada correctamente por el superAdmin con el ID: " + idSuperAdmin);
+            return ResponseEntity.status(HttpStatus.CREATED).body("La veterinaria " + veterinaria.getNombre_comercial() + " ha sido registrada correctamente por el superAdmin con la id: " + idSuperAdmin);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga el id: " + idSuperAdmin);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
         }
     }
 
-    @PutMapping("/modificar-veterinaria/{idSuperAdmin}/{idVeterinaria}")
-    public ResponseEntity<?> actualizarVeterinaria(@PathVariable Long idSuperAdmin, @PathVariable Long idVeterinaria, @RequestBody VeterinariaEntity veterinariaActualizada){
+    @PutMapping("/modificar-veterinaria")
+    public ResponseEntity<?> actualizarVeterinaria(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            Long idVeterinaria =  ((Number) requestBody.get("idVeterinaria")).longValue();
             if (veterinariaService.obtenerPorId(idVeterinaria) != null) {
+                VeterinariaEntity veterinariaActualizada = veterinariaService.transformarDatosVeterinaria((Map<String, Object>) requestBody.get("veterinariaActualizada"));
                 veterinariaService.actualizarVeterinaria(idVeterinaria, veterinariaActualizada);
-                return ResponseEntity.status(HttpStatus.CREATED).body("La veterinaria " + veterinariaActualizada.getNombre_comercial() + " ha sido modificada correctamente por el superAdmin con el ID: " + idSuperAdmin);
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("La veterinaria " + veterinariaActualizada.getNombre_comercial() + " ha sido modificada correctamente por el superAdmin con la id: " + idSuperAdmin);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ninguna veterinaria que tenga id: " + idVeterinaria);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ninguna veterinaria que tenga la id: " + idVeterinaria);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga el id: " + idSuperAdmin);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
         }
     }
-    @DeleteMapping("/eliminar-veterinaria/{idSuperAdmin}/{idVeterinaria}")
-    public ResponseEntity<?> eliminarVeterinaria(@PathVariable Long idSuperAdmin, @PathVariable Long idVeterinaria){
+    @DeleteMapping("/eliminar-veterinaria")
+    public ResponseEntity<?> eliminarVeterinaria(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
             if (veterinariaService.obtenerPorId(idVeterinaria) != null) {
                 veterinariaService.eliminarVeterinaria(idVeterinaria);
-                return ResponseEntity.status(HttpStatus.ACCEPTED).body("La veterinaria con id: " + idVeterinaria + ", ha sido eliminada correctamente.");
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("La veterinaria con la id: " + idVeterinaria + ", ha sido eliminada correctamente.");
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ninguna veterinaria que tenga id: " + idVeterinaria);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ninguna veterinaria que tenga la id: " + idVeterinaria);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga el id: " + idSuperAdmin);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
         }
     }
 
     //Doctor
-    @PutMapping("/modificar-doctor/{idSuperAdmin}/{idDoctor}")
-    public ResponseEntity<?> actualizarDoctor(@PathVariable Long idSuperAdmin, @PathVariable Long idDoctor, @RequestBody DoctorEntity doctorActualizado){
+    @PutMapping("/modificar-doctor")
+    public ResponseEntity<?> actualizarDoctor(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            Long idDoctor = ((Number) requestBody.get("idDoctor")).longValue();
             if (doctorService.obtenerPorId(idDoctor) != null) {
+                DoctorEntity doctorActualizado = doctorService.transformarDatosDoctor((Map<String, Object>) requestBody.get("doctorActualizado"));
                 doctorService.actualizarDoctor(idDoctor, doctorActualizado);
-                return ResponseEntity.status(HttpStatus.CREATED).body("El Doctor " + doctorActualizado.getNombre1() + " " + doctorActualizado.getApellido1() + " ha sido modificado correctamente por el superAdmin con el ID: " + idSuperAdmin);
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("El Doctor " + doctorActualizado.getNombre1() + " " + doctorActualizado.getApellido1() + " ha sido modificado correctamente por el superAdmin con la id: " + idSuperAdmin);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ningún doctor que tenga id: " + idDoctor);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ningún doctor que tenga la id: " + idDoctor);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga el id: " + idSuperAdmin);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
         }
     }
-    @DeleteMapping("/eliminar-doctor/{idSuperAdmin}/{idDoctor}")
-    public ResponseEntity<?> eliminarDoctor(@PathVariable Long idSuperAdmin, @PathVariable Long idDoctor){
+    @DeleteMapping("/eliminar-doctor")
+    public ResponseEntity<?> eliminarDoctor(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            Long idDoctor = ((Number) requestBody.get("idDoctor")).longValue();
             if (doctorService.obtenerPorId(idDoctor) != null) {
                 doctorService.eliminarDoctor(idDoctor);
-                return ResponseEntity.status(HttpStatus.ACCEPTED).body("El doctor con id: " + idDoctor + ", ha sido eliminado correctamente.");
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("El doctor con la id: " + idDoctor + ", ha sido eliminado correctamente.");
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ningún doctor que tenga id: " + idDoctor);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ningún doctor que tenga la id: " + idDoctor);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga el id: " + idSuperAdmin);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
         }
     }
 
     //Usuario
-    @PutMapping("/modificar-usuario/{idSuperAdmin}/{idUsuario}")
-    public ResponseEntity<?> actualizarUsuario(@PathVariable Long idSuperAdmin,@PathVariable Long idUsuario, @RequestBody UsuarioEntity usuarioActualizado){
+    @PutMapping("/modificar-usuario")
+    public ResponseEntity<?> actualizarUsuario(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
             if (usuarioService.obtenerPorId(idUsuario) != null) {
+                UsuarioEntity usuarioActualizado = usuarioService.transformarDatosUsuario((Map<String, Object>) requestBody.get("usuarioActualizado"));
                 usuarioService.actualizarUsuario(idUsuario, usuarioActualizado);
-                return ResponseEntity.status(HttpStatus.CREATED).body("El usuario " + usuarioActualizado.getNombre1() + " " + usuarioActualizado.getApellido1() + " ha sido modificado correctamente por el superAdmin con el ID: " + idSuperAdmin);
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("El usuario " + usuarioActualizado.getNombre1() + " " + usuarioActualizado.getApellido1() + " ha sido modificado correctamente por el superAdmin con la id: " + idSuperAdmin);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ningún usuario que tenga id: " + idUsuario);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ningún usuario que tenga la id: " + idUsuario);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga el id: " + idSuperAdmin);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
         }
     }
-    @DeleteMapping("/eliminar-usuario/{idSuperAdmin}/{idUsuario}")
-    public ResponseEntity<?> eliminarUsuario(@PathVariable long idSuperAdmin, @PathVariable Long idUsuario){
+    @DeleteMapping("/eliminar-usuario")
+    public ResponseEntity<?> eliminarUsuario(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
             if (usuarioService.obtenerPorId(idUsuario) != null) {
                 usuarioService.eliminarUsuario(idUsuario);
-                return ResponseEntity.status(HttpStatus.ACCEPTED).body("El usuario con id: " + idUsuario + ", ha sido eliminado correctamente.");
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("El usuario con la id: " + idUsuario + ", ha sido eliminado correctamente.");
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ningún usuario que tenga id: " + idUsuario);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ningún usuario que tenga la id: " + idUsuario);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga el id: " + idSuperAdmin);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
         }
     }
 
     //Mascota
-    @PutMapping("/modificar-mascota/{idSuperAdmin}/{idMascota}")
-    public ResponseEntity<?> actualizarMascota(@PathVariable Long idSuperAdmin, @PathVariable Long idMascota, @RequestBody MascotaEntity mascotaActualizada){
+    @PutMapping("/modificar-mascota")
+    public ResponseEntity<?> actualizarMascota(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            Long idMascota = ((Number) requestBody.get("idMascota")).longValue();
             if (mascotaService.obtenerPorId(idMascota) != null) {
+                MascotaEntity mascotaActualizada = mascotaService.transformarMascota((Map<String, Object>) requestBody.get("mascotaActualizada"));
                 mascotaService.actualizarMascota(idMascota, mascotaActualizada);
-                return ResponseEntity.status(HttpStatus.CREATED).body("La mascota " + mascotaActualizada.getNombre() + " ha sido modificado correctamente por el superAdmin con el ID: " + idSuperAdmin);
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("La mascota " + mascotaActualizada.getNombre() + " ha sido modificado correctamente por el superAdmin con la id: " + idSuperAdmin);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ninguna mascota que tenga id: " + idMascota);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se a encontrado ninguna mascota que tenga la id: " + idMascota);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga el id: " + idSuperAdmin);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
         }
     }
-    @DeleteMapping("/eliminar-mascota/{idSuperAdmin}/{idMascota}")
-    public ResponseEntity<?> eliminarMascota(@PathVariable Long idSuperAdmin, @PathVariable Long idMascota){
+    @DeleteMapping("/eliminar-mascota")
+    public ResponseEntity<?> eliminarMascota(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            Long idMascota = ((Number) requestBody.get("idMascota")).longValue();
             if (mascotaService.obtenerPorId(idMascota) != null) {
                 mascotaService.eliminarMascota(idMascota);
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body("La mascota con id: " + idMascota + ", ha sido eliminada correctamente.");

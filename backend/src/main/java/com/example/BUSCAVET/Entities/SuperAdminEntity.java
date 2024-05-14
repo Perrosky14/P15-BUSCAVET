@@ -24,8 +24,4 @@ public class SuperAdminEntity {
     private String correo;
     private String contrasenia;
 
-    @OneToMany(mappedBy = "superAdmin",cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<VeterinariaEntity> veterinarios = new ArrayList<>();
-
 }

@@ -54,6 +54,7 @@ public class DoctorEntity {
     private String asistente_codigo_area;
     private String asistente_celular;
     private String otro;
+    private Boolean validado;
 
     @ManyToOne
     @JoinColumn(name = "id_veterinaria_asociada")

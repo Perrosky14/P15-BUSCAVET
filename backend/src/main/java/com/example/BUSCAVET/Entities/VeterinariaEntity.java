@@ -48,11 +48,7 @@ public class VeterinariaEntity {
     private String geolocalizacion;
     private int id_zona_BDoc;
     private int id_servicio;
-
-    @ManyToOne
-    @JoinColumn(name = "id_superadmin_asociado")
-    @JsonBackReference
-    private SuperAdminEntity superAdmin;
+    private Boolean validado;
 
     @OneToMany(mappedBy = "veterinaria", cascade = CascadeType.ALL)
     @JsonManagedReference
