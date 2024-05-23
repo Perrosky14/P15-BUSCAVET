@@ -1,22 +1,21 @@
-
 import styled from "styled-components";
 import { createGlobalStyle } from 'styled-components';
-import NavbarComponent from "./NavbarComponent";
+import NavbarComponent2 from "./Navbar2Component";
 
-const FichaMascotaComponent = () => {
+const ListaMascotaComponent = () => {
 
 return (
     <div>
-        <NavbarComponent></NavbarComponent>
+        <NavbarComponent2></NavbarComponent2>
         <GlobalStyle />    
-        <h1>hola3</h1>
+        <h1>Hola </h1>
         <HomeStyle>
         </HomeStyle>
     </div>
 );
 }
 
-export default FichaMascotaComponent;
+export default ListaMascotaComponent;
 
 
 const GlobalStyle = createGlobalStyle`
@@ -54,6 +53,4 @@ margin: 20px;
 padding: 20px;
 transition: .3s
 }
-
-
 `
