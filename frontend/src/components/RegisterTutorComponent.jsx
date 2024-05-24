@@ -17,6 +17,7 @@ import FormControl from "@mui/material/FormControl";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
+import NavbarComponent from "./NavbarComponent";
 
 const styles = {
     container: {
@@ -316,6 +317,7 @@ export default function RegisterTutorComponent() {
 
     return (
     <>
+        <NavbarComponent/>
         <ThemeProvider theme={theme}>
             <div style={styles.container}>
                 <Card sx = {styles.card}>

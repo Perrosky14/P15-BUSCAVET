@@ -12,6 +12,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from '@mui/icons-material/Close';
+import NavbarComponent from "./NavbarComponent";
 
 const styles = {
     container: {
@@ -123,6 +124,7 @@ export default function RegisterComponent() {
 
     return (
     <>
+        <NavbarComponent/>
         <ThemeProvider theme={theme}>
             <div style={styles.container}>
                 <Card sx = {styles.card}>

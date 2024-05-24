@@ -22,6 +22,7 @@ import Link from "@mui/material/Link";
 import PropTypes from 'prop-types';
 import theme from "./styles/themeComponent";
 import { ThemeProvider } from "@mui/material/styles";
+import NavbarComponent from "./NavbarComponent";
 
 const styles = {
     container: {
@@ -116,6 +117,7 @@ export default function UserSessionComponent() {
 
     return (
         <>
+            <NavbarComponent/>
             <ThemeProvider theme={theme}>
                 <div style={styles.container}>
                     <Card sx ={styles.card}>
