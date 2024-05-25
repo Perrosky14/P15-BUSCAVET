@@ -11,13 +11,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import GroupIcon from '@mui/icons-material/Group';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import FormControl from "@mui/material/FormControl";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import NavbarComponent from "./NavbarComponent";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { es } from "date-fns/locale";
 
 const styles = {
     container: {
@@ -66,17 +68,54 @@ const styles = {
 export default function RegisterTutorComponent() {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
-    const [openFecha, setOpenFecha] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [usuario, setUsuario] = useState({
+        rut: "",
+        nombre1: "",
+        nombre2: "",
+        apellido1: "",
+        apellido2: "",
+        genero: "",
+        fechaNacimiento: null,
+        direccion: "",
+        numero: "",
+        tipo: "",
+        comuna: "",
+        ciudad: "",
+        codigoPostal: "",
+        telefono: "",
+        celular: "",
+    });
 
-    const [selectedFecha, setSelectedFecha] = useState(null);
-
-    const handleFechaChange = (date) => {
-        setSelectedFecha(date);
+    const cambiarCampo = (campo, valor) => {
+        setUsuario({
+            ...usuario,
+            [campo]: valor,
+        });
     };
 
-    const handleIconFecha = () => {
-        setOpenFecha(true);
-      };
+    const validateDatosTutor = () => {
+        let newErrors = {};
+        if (!usuario.nombre1) newErrors.nombre1 = "Primer nombre es requerido";
+        if (!usuario.nombre2) newErrors.nombre2 = "Segundo nombre es requerido";
+        if (!usuario.apellido1) newErrors.apellido1 = "Primer apellido es requerido";
+        if (!usuario.apellido2) newErrors.apellido2 = "Segundo apellido es requerido";
+        if (!usuario.genero) newErrors.genero = "El genero es requerido";
+        if (!usuario.celular) newErrors.celular = "El numero celular es requerido";
+        if (!usuario.fechaNacimiento) newErrors.fechaNacimiento = "La fecha de nacimiento es requerido";
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const validateDireccionManual = () => {
+        let newErrors = {};
+        if (!usuario.direccion) newErrors.direccion = "La calle es requerida";
+        if (!usuario.numero) newErrors.numero = "El número es requerido";
+        if (!usuario.comuna) newErrors.comuna = "La comuna es requerido";
+        if (!usuario.ciudad) newErrors.ciudad = "La ciudad es requerida";
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleRegister = () => {
         navigate('/registro');
@@ -87,7 +126,12 @@ export default function RegisterTutorComponent() {
     };
 
     const handleNext = () => {
-        setStep(step + 1);
+        if (step === 1 && validateDatosTutor()) {
+            setStep(step + 1);
+        }
+        else {
+            
+        }
     };
 
     const handleBack = () => {
@@ -102,6 +146,12 @@ export default function RegisterTutorComponent() {
         setStep(step - 100);
     };
 
+    const handleManualFinish = () => {
+        if (validateDireccionManual()) {
+            setStep(3);
+        };
+    };
+
     const cardDatosTutor = (
         <Fragment>
             <CardContent>
@@ -114,16 +164,32 @@ export default function RegisterTutorComponent() {
                 </div>
                 <Grid container spacing={2} sx={{ mt: 3 }}>
                     <Grid item xs={6}>
-                        <TextField id="primer-nombre" label="Primer nombre" variant="outlined" fullWidth />
+                        <TextField 
+                            id="primer-nombre" label="Primer nombre" variant="outlined" fullWidth required
+                            value={usuario.nombre1} onChange={(e) => cambiarCampo("nombre1", e.target.value)}
+                            error={!!errors.nombre1} helperText={errors.nombre1}
+                        />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField id="segundo-nombre" label="Segundo nombre" variant="outlined" fullWidth />
+                        <TextField 
+                            id="segundo-nombre" label="Segundo nombre" variant="outlined" fullWidth required
+                            value={usuario.nombre2} onChange={(e) => cambiarCampo("nombre2", e.target.value)}
+                            error={!!errors.nombre2} helperText={errors.nombre2}
+                            />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField id="primer-apellido" label="Primer apellido" variant="outlined" fullWidth />
+                        <TextField 
+                        id="primer-apellido" label="Primer apellido" variant="outlined" fullWidth required
+                        value={usuario.apellido1} onChange={(e) => cambiarCampo("apellido1", e.target.value)}
+                        error={!!errors.apellido1} helperText={errors.apellido1}
+                        />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField id="segundo-apellido" label="Segundo apellido" variant="outlined" fullWidth />
+                        <TextField 
+                        id="segundo-apellido" label="Segundo apellido" variant="outlined" fullWidth required
+                        value={usuario.apellido2} onChange={(e) => cambiarCampo("apellido2", e.target.value)}
+                        error={!!errors.apellido2} helperText={errors.apellido2}
+                        />
                     </Grid>
                 </Grid>
                 <Grid container spacing={2} sx={{ mt: 1 }} alignItems="center">
@@ -132,7 +198,11 @@ export default function RegisterTutorComponent() {
                     </Grid>
                     <Grid item>
                         <FormControl component="fieldset">
-                            <RadioGroup row aria-label="genero" name="genero">
+                            <RadioGroup 
+                                row aria-label="genero" name="genero" required
+                                value={usuario.genero} onChange={(e) => cambiarCampo("genero", e.target.value)}
+                                error={!!errors.genero} helperText={errors.genero}
+                                >
                                 <FormControlLabel value="Mujer" control={<Radio />} label="Mujer" />
                                 <FormControlLabel value="Hombre" control={<Radio />} label="Hombre" />
                                 <FormControlLabel value="Otro" control={<Radio />} label="Otro" />
@@ -142,26 +212,33 @@ export default function RegisterTutorComponent() {
                 </Grid>
                 <Grid container spacing={2} sx={{ mt: 1 }}>
                     <Grid item xs={6}>
-                        <TextField id="numero-celular" label="Número celular" variant="outlined" fullWidth />
+                        <TextField 
+                        id="numero-celular" label="Número celular" variant="outlined" fullWidth required
+                        value={usuario.celular} onChange={(e) => cambiarCampo("celular", e.target.value)}
+                        error={!!errors.celular} helperText={errors.celular}
+                        />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField id="numero-telefono" label="Número teléfono" variant="outlined" helperText="Opcional" fullWidth />
+                        <TextField 
+                        id="numero-telefono" label="Número teléfono" variant="outlined" fullWidth required
+                        value={usuario.telefono} onChange={(e) => cambiarCampo("telefono", e.target.value)}
+                        helperText="Opcional"
+                        />
                     </Grid>
                 </Grid>
                 <Grid container sx={{ mt: 1 }}>
                     <Grid item xs={12}>
-                        <TextField label="Fecha de Nacimiento"
-                            value={selectedFecha}
-                            onChange={(e) => setSelectedFecha(e.target.value)}
-                            fullWidth
-                            InputProps={{
-                                endAdornment: (
-                                    <IconButton onClick={handleIconFecha}>
-                                        <CalendarTodayIcon />
-                                    </IconButton>
-                                ),
-                            }}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
+                            <DatePicker 
+                                label="Fecha de nacimiento" required
+                                value={usuario.fechaNacimiento} 
+                                onChange={(fecha) => cambiarCampo("fechaNacimiento", fecha)}
+                                renderInput={(params) => <TextField {...params} fullWidth/>}
+                                error={!!errors.fechaNacimiento} helperText={errors.fechaNacimiento}
+                                inputFormat="dd/MM/yyyy"
+                                disableFuture
+                            />
+                        </LocalizationProvider>
                     </Grid>
                 </Grid>
             </CardContent>
@@ -242,34 +319,58 @@ export default function RegisterTutorComponent() {
                 </div>
                 <Grid container spacing={2} sx={{ mt: 3 }}>
                     <Grid item xs={12}>
-                        <TextField id="calle" label="Calle" variant="outlined" fullWidth/>
+                        <TextField
+                            id="calle" label="Calle" variant="outlined" fullWidth required
+                            value={usuario.direccion} onChange={(e) => cambiarCampo("direccion", e.target.value)}
+                            error={!!errors.direccion} helperText={errors.direccion}
+                        />
                     </Grid>
                 </Grid>
                 <Grid container spacing={2} sx={{ mt: 1 }}>
                     <Grid item xs={6}>
-                        <TextField id="numero" label="Número" variant="outlined" fullWidth/>
+                        <TextField
+                            id="numero" label="Número" variant="outlined" fullWidth required
+                            value={usuario.numero} onChange={(e) => cambiarCampo("numero", e.target.value)}
+                            error={!!errors.numero} helperText={errors.numero}
+                        />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField id="busca-direccion" label="Departamento/Block" variant="outlined" helperText="Opcional" fullWidth/>
+                        <TextField
+                            id="busca-direccion" label="Departamento/Block" variant="outlined" fullWidth required
+                            value={usuario.tipo} onChange={(e) => cambiarCampo("tipo", e.target.value)}
+                            helperText="Opcional"
+                        />
                     </Grid>
                 </Grid>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <TextField id="comuna" label="Comuna" variant="outlined" fullWidth/>
+                        <TextField
+                            id="comuna" label="Comuna" variant="outlined" fullWidth required
+                            value={usuario.comuna} onChange={(e) => cambiarCampo("comuna", e.target.value)}
+                            error={!!errors.comuna} helperText={errors.comuna}
+                        />
                     </Grid>
                 </Grid>
                 <Grid container spacing={2} sx={{ mt: 1 }}>
                     <Grid item xs={6}>
-                        <TextField id="ciudad" label="Ciudad" variant="outlined" fullWidth/>
+                        <TextField
+                            id="ciudad" label="Ciudad" variant="outlined" fullWidth required
+                            value={usuario.ciudad} onChange={(e) => cambiarCampo("ciudad", e.target.value)}
+                            error={!!errors.ciudad} helperText={errors.ciudad}
+                        />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField id="codigo-postal" label="Código postal" variant="outlined" fullWidth/>
+                        <TextField
+                            id="codigo-postal" label="Código postal" variant="outlined" fullWidth
+                            value={usuario.codigoPostal} onChange={(e) => cambiarCampo("codigoPostal", e.target.value)}
+                            helperText="Opcional"
+                        />
                     </Grid>
                 </Grid>
             </CardContent>
             <CardActions>
                 <Button variant="contained" onClick={handleManualBack} fullWidth>Atrás</Button>
-                <Button variant="contained" fullWidth>Guardar Información</Button>
+                <Button variant="contained" onClick={handleManualFinish} fullWidth>Guardar Información</Button>
             </CardActions>
         </Fragment>
     );
