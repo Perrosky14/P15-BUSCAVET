@@ -4,7 +4,7 @@ import theme from "./styles/themeComponent";
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import { ThemeProvider } from "@mui/material/styles";
-import { Button, Card, CardHeader, CardMedia, Grid, InputAdornment, Tooltip, Typography } from "@mui/material";
+import { Button, Card, CardHeader, CardMedia, FormHelperText, Grid, InputAdornment, Tooltip, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from '@mui/icons-material/Close';
@@ -197,16 +197,17 @@ export default function RegisterTutorComponent() {
                         <Typography textAlign="left">Género:</Typography>
                     </Grid>
                     <Grid item>
-                        <FormControl component="fieldset">
+                        <FormControl component="fieldset" error={!!errors.genero}>
                             <RadioGroup 
                                 row aria-label="genero" name="genero" required
-                                value={usuario.genero} onChange={(e) => cambiarCampo("genero", e.target.value)}
-                                error={!!errors.genero} helperText={errors.genero}
+                                value={usuario.genero} 
+                                onChange={(e) => cambiarCampo("genero", e.target.value)}
                                 >
                                 <FormControlLabel value="Mujer" control={<Radio />} label="Mujer" />
                                 <FormControlLabel value="Hombre" control={<Radio />} label="Hombre" />
                                 <FormControlLabel value="Otro" control={<Radio />} label="Otro" />
                             </RadioGroup>
+                            {!!errors.genero && <FormHelperText>{errors.genero}</FormHelperText>}
                         </FormControl>
                     </Grid>
                 </Grid>
@@ -230,11 +231,17 @@ export default function RegisterTutorComponent() {
                     <Grid item xs={12}>
                         <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
                             <DatePicker 
-                                label="Fecha de nacimiento" required
+                                label="Fecha de nacimiento"
                                 value={usuario.fechaNacimiento} 
                                 onChange={(fecha) => cambiarCampo("fechaNacimiento", fecha)}
-                                renderInput={(params) => <TextField {...params} fullWidth/>}
-                                error={!!errors.fechaNacimiento} helperText={errors.fechaNacimiento}
+                                renderInput={(params) => 
+                                <TextField 
+                                    {...params} 
+                                    fullWidth
+                                    required
+                                    error={!!errors.fechaNacimiento}
+                                    helperText={errors.fechaNacimiento}
+                                />}
                                 inputFormat="dd/MM/yyyy"
                                 disableFuture
                             />
