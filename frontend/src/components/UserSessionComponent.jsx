@@ -119,7 +119,7 @@ export default function UserSessionComponent() {
     const handleSubmitRegister = (event) => {
         event.preventDefault();
         if(validateDatosUsuario()) {
-            navigate('/registro');
+            navigate('/registro', {state: {usuario}});
         }
     };
 
@@ -230,7 +230,7 @@ export default function UserSessionComponent() {
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <TextField id="outlined-basic-email-login" label="Dirección Email" variant="outlined" fullWidth requiered
+                        <TextField id="outlined-basic-email-login" label="Dirección Email" variant="outlined" fullWidth required
                         />
                     </Grid>
                     <Grid item xs={12}>

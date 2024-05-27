@@ -1,12 +1,11 @@
 import { useState, Fragment } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import theme from "./styles/themeComponent";
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import { ThemeProvider } from "@mui/material/styles";
 import { Button, Card, Typography } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
@@ -62,6 +61,9 @@ export default function RegisterComponent() {
     const navigate = useNavigate();
     const [tipoUsuario, setTipoUsuario] = useState("");
 
+    const location = useLocation();
+    const { usuario } = location.state;
+
     const handleTipoUsuarioChange = (event) => {
         setTipoUsuario(event.target.value);
     };
@@ -72,11 +74,11 @@ export default function RegisterComponent() {
 
     const handleContinue = () => {
         if (tipoUsuario === "Tutor de mascota") {
-            navigate('/registroTutor');
+            navigate('/registroTutor', {state: {usuario}});
         } else if (tipoUsuario === "Veterinario") {
-            navigate('/registroVeterinario');
+            navigate('/registroVeterinario', {state: {usuario}});
         } else if (tipoUsuario === "Centro veterinario") {
-            navigate('/registroCentro');
+            navigate('/registroCentro', {state: {usuario}});
         }
     };
 
