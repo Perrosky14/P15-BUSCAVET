@@ -46,7 +46,9 @@ const styles = {
     },
 
     button: {
-        with: '90%',
+        with: '100%',
+        height: '50px',
+        borderRadius: '16px',
     },
 };
 
@@ -107,11 +109,32 @@ export default function UserSessionComponent() {
         });
     };
 
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    };
+
+    const validatePassword = (password) => {
+        const re = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        return re.test(password);
+    };
+
     const validateDatosUsuario = () => {
         let newErrors = {};
-        if (!usuario.email) newErrors.email = "El correo es requerido";
-        if (usuario.contrasenia !== confirmPassword) newErrors.contrasenia = "Las contraseñas no coinciden";
-        if (!usuario.contrasenia && !confirmPassword) newErrors.contrasenia = "Las contraseñas son requeridas";
+        if (!usuario.email) {
+            newErrors.email = "El correo es requerido";
+        } else if (!validateEmail(usuario.email)) {
+            newErrors.email = "El correo no es valido";
+        }
+
+        if (!usuario.contrasenia && !confirmPassword) {
+            newErrors.contrasenia = "Las contraseñas son requeridas";
+        } else if (usuario.contrasenia !== confirmPassword) {
+            newErrors.contrasenia = "Las contraseñas no coinciden";
+        } else if (!validatePassword(usuario.contrasenia)) {
+            newErrors.contrasenia = "La contraseña debe tener al menos 8 caracteres y ser alfanumérica";
+        }
+        
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     }
@@ -193,14 +216,14 @@ export default function UserSessionComponent() {
                         </FormControl>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography variant="subtitle2" align="left">8+ caracteres</Typography>
+                        <Typography variant="subtitle2" align="left">8+ caracteres y alfanumérica</Typography>
                     </Grid>
                 </Grid>
             </CardContent>
             <CardActions>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Button variant="contained" onClick={handleSubmitRegister} fullWidth>Crear Perfil</Button>
+                        <Button variant="contained" sx={styles.button} onClick={handleSubmitRegister} fullWidth>Crear Perfil</Button>
                     </Grid>
                 </Grid>
             </CardActions>
@@ -260,7 +283,7 @@ export default function UserSessionComponent() {
             <CardActions>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Button variant="contained" fullWidth>Iniciar Sesión</Button>
+                        <Button variant="contained" sx={styles.button} fullWidth>Iniciar Sesión</Button>
                     </Grid>
                 </Grid>
             </CardActions>

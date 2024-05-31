@@ -64,6 +64,8 @@ const styles = {
 
     button: {
         with: '100%',
+        height: '50px',
+        borderRadius: '16px',
     },
 };
 
@@ -152,9 +154,6 @@ export default function RegisterTutorComponent() {
             cambiarCampo("dia_nac", parseInt(dia));
             cambiarCampo("mes_nac", parseInt(mes));
             cambiarCampo("anio_nac", parseInt(anio));
-            setStep(step + 1);
-        }
-        else {
             setStep(step + 1);
         }
     };
@@ -293,8 +292,8 @@ export default function RegisterTutorComponent() {
                 </Grid>
             </CardContent>
             <CardActions>
-                <Button variant="contained" onClick={handleRegister} fullWidth>Atrás</Button>
-                <Button variant="contained" onClick={handleNext} fullWidth>Siguiente</Button>
+                <Button variant="contained" sx={styles.button} onClick={handleRegister} fullWidth>Atrás</Button>
+                <Button variant="contained" sx={styles.button} onClick={handleNext} fullWidth>Siguiente</Button>
             </CardActions>
         </Fragment>
     );
@@ -351,8 +350,8 @@ export default function RegisterTutorComponent() {
                 </Grid>
             </CardContent>
             <CardActions>
-                <Button variant="contained" onClick={handleBack} fullWidth>Atrás</Button>
-                <Button variant="contained" onClick={handleFinish} fullWidth>Guardar Información</Button>
+                <Button variant="contained" sx={styles.button} onClick={handleBack} fullWidth>Atrás</Button>
+                <Button variant="contained" sx={styles.button} onClick={handleFinish} fullWidth>Guardar Información</Button>
             </CardActions>
         </Fragment>
     );
@@ -419,8 +418,8 @@ export default function RegisterTutorComponent() {
                 </Grid>
             </CardContent>
             <CardActions>
-                <Button variant="contained" onClick={handleManualBack} fullWidth>Atrás</Button>
-                <Button variant="contained" onClick={handleManualFinish} fullWidth>Guardar Información</Button>
+                <Button variant="contained" sx={styles.button} onClick={handleManualBack} fullWidth>Atrás</Button>
+                <Button variant="contained" sx={styles.button} onClick={handleManualFinish} fullWidth>Guardar Información</Button>
             </CardActions>
         </Fragment>
     );
@@ -446,7 +445,7 @@ export default function RegisterTutorComponent() {
                 <Typography variant="h4" sx={{ fontWeight: 'bold' }}>¡Te has registrado exitosamente!</Typography>
             </CardContent>
             <CardActions sx={{ mt: 1 }}>
-                <Button variant="contained" fullWidth onClick={() => navigate('/usuario')}>Ir al sitio web</Button>
+                <Button variant="contained" sx={styles.button} fullWidth onClick={() => navigate('/usuario')}>Ir al sitio web</Button>
             </CardActions>
         </Fragment>
     );

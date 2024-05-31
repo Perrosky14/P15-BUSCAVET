@@ -18,7 +18,7 @@ const styles = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh', // Ocupa toda la altura de la pantalla
+        height: '75vh', // Ocupa toda la altura de la pantalla
     },
 
     card: {
@@ -54,6 +54,8 @@ const styles = {
 
     button: {
         with: '100%',
+        height: '50px',
+        borderRadius: '16px',
     },
 };
 
@@ -119,7 +121,7 @@ export default function RegisterComponent() {
                 </FormControl>
             </CardContent>
             <CardActions>
-                <Button variant="contained" type="submit" fullWidth onClick={handleContinue}>Continuar</Button>
+                <Button variant="contained" sx={styles.button} fullWidth onClick={handleContinue}>Continuar</Button>
             </CardActions>
         </Fragment>
     );
