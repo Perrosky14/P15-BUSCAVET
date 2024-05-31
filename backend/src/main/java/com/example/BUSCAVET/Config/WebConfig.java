@@ -1,4 +1,4 @@
-package com.example.BUSCAVET.config;
+package com.example.BUSCAVET.Config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
