@@ -1,11 +1,11 @@
 package com.example.BUSCAVET.Services;
 
-import com.example.BUSCAVET.Entities.MascotaEntity;
+import com.example.BUSCAVET.Entities.Rol;
 import com.example.BUSCAVET.Entities.UsuarioEntity;
 import com.example.BUSCAVET.Repositories.UsuarioRepository;
+import com.example.BUSCAVET.Security.AuthResponse;
+import com.example.BUSCAVET.Security.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,8 +17,13 @@ public class UsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    public void guardarUsuario(UsuarioEntity usuario){
+    @Autowired
+    JWTService jwtService;
+
+    public AuthResponse guardarUsuario(UsuarioEntity usuario){
+        usuario.setRol(Rol.USUARIO);
         usuarioRepository.save(usuario);
+        return AuthResponse.builder().token(jwtService.getTokenUsuario(usuario)).build();
     }
 
     public ArrayList<UsuarioEntity> obtenerUsuarios(){

@@ -1,6 +1,7 @@
 package com.example.BUSCAVET.Controllers;
 
 import com.example.BUSCAVET.Entities.*;
+import com.example.BUSCAVET.Security.AuthResponse;
 import com.example.BUSCAVET.Services.MascotaService;
 import com.example.BUSCAVET.Services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class UsuarioController {
     @PostMapping("/nuevo-usuario")
     public ResponseEntity<?> guardarUsuario(@RequestBody UsuarioEntity usuario){
         usuarioService.guardarUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body("El usuario ha sido registrado correctamente.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse());
     }
 
     @PutMapping("/actualizar-usuario")
