@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
 import { createGlobalStyle } from 'styled-components';
-import NavbarComponent from "./NavbarComponent";
+import Navbar2Component from "./Navbar2Component";
 import Modal from './Modal/Modal';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
@@ -20,7 +20,7 @@ const HomeComponent = () => {
 
     return (
         <div>
-            <NavbarComponent></NavbarComponent>
+            <Navbar2Component></Navbar2Component>
             <GlobalStyle /> 
             <button onClick={openModal}>Open Modal</button>
                 <Modal isOpen={isModalOpen} onClose={closeModal}>
@@ -29,7 +29,6 @@ const HomeComponent = () => {
                     <CloseButton aria-label="Hide" onClick={closeModal}/>
                     <h2>O registrate con tu email</h2>
                 </Modal>
-            <h1>hola3</h1>
             <HomeStyle>
             </HomeStyle>
         </div>
