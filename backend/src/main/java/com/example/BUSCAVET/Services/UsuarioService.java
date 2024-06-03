@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -37,6 +38,10 @@ public class UsuarioService {
 
     public UsuarioEntity obtenerPorId(Long id){
         return usuarioRepository.findById(id).orElse(null);}
+
+    public Optional<UsuarioEntity> obtenerPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
 
     public UsuarioEntity actualizarUsuario(Long id, UsuarioEntity usuarioActualizado){
         UsuarioEntity usuarioExistente = usuarioRepository.findById(id).orElse(null);

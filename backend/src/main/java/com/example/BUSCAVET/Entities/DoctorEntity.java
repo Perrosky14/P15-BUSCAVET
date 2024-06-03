@@ -6,15 +6,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 
 @Entity
-@Table(name = "Doctor")
+@Table(name = "Doctor", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 
-public class DoctorEntity {
+public class DoctorEntity implements UserDetails {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +52,7 @@ public class DoctorEntity {
     private String codigo_area;
     private String celular;
     private int id_convenio;
+    @Column(nullable = false)
     private String email;
     private String RRSS1;
     private String RRSS2;
@@ -55,10 +62,46 @@ public class DoctorEntity {
     private String asistente_celular;
     private String otro;
     private Boolean validado;
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
 
     @ManyToOne
     @JoinColumn(name = "id_veterinaria_asociada")
     @JsonBackReference
     private VeterinariaEntity veterinaria;
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(rol.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.contrasenia;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
 }

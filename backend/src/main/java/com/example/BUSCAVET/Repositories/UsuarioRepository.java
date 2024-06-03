@@ -11,9 +11,6 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long>{
 
-    @Query(value = "select e from UsuarioEntity e where e.nombre1 = nombre1", nativeQuery = true)
-    UsuarioEntity findByNameCustomQuery(@Param("nombre1") String nombre1);
-
-    Optional<UsuarioEntity> findByEmail(String email);
+    Optional<UsuarioEntity> findByEmail(@Param("email") String email);
 
 }

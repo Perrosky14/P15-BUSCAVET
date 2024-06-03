@@ -1,7 +1,6 @@
 package com.example.BUSCAVET.Controllers;
 
 import com.example.BUSCAVET.Entities.*;
-import com.example.BUSCAVET.Security.AuthResponse;
 import com.example.BUSCAVET.Services.MascotaService;
 import com.example.BUSCAVET.Services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuario")
@@ -33,6 +33,16 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario);
         }
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(usuario);
+    }
+
+    @GetMapping("/obtener-usuario-email")
+    public ResponseEntity<?> obtenerUsuarioPorEmail(@RequestBody Map<String, Object> requestBody) {
+        String email = ((String) requestBody.get("email"));
+        Optional<UsuarioEntity> usuario = usuarioService.obtenerPorEmail(email);
+        if (!usuario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga el email: " + email);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(usuario.get());
     }
 
     @PostMapping("/nuevo-usuario")

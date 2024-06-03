@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/veterinaria")
@@ -35,10 +36,19 @@ public class VeterinariaController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(veterinaria);
     }
 
+    @GetMapping("/obtener-veterinaria-email")
+    public ResponseEntity<?> obtenerVeterinariaPorEmail(@RequestBody Map<String, Object> requestBody) {
+        String email = ((String) requestBody.get("email"));
+        Optional<VeterinariaEntity> veterinaria = veterinariaService.obtenerPorEmail(email);
+        if (!veterinaria.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga el email: " + email);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(veterinaria.get());
+    }
+
     @PostMapping("/nueva-veterinaria")
     public ResponseEntity<?> guardarVeterinaria(@RequestBody VeterinariaEntity veterinaria){
-        veterinariaService.guardarVeterinaria(veterinaria);
-        return ResponseEntity.status(HttpStatus.CREATED).body("La veterinaria se ha registrado correctamente.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(veterinariaService.guardarVeterinaria(veterinaria));
     }
 
     @PutMapping("/actualizar-veterinaria")

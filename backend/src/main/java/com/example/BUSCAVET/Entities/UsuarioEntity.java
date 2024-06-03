@@ -25,7 +25,7 @@ public class UsuarioEntity implements UserDetails {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
+    @Column(name = "id", unique = true, nullable = false)
     private Long id;
     private String contrasenia;
     private int id_pais;
