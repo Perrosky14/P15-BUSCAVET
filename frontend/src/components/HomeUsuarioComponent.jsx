@@ -1,78 +1,69 @@
-import React, { useState } from 'react';
-import styled from "styled-components";
-import { createGlobalStyle } from 'styled-components';
+import React from "react";
 import NavbarUsuarioComponent from "./NavbarUsuarioComponent";
-import Modal from './Modal/Modal';
-import Button from 'react-bootstrap/Button';
-import CloseButton from 'react-bootstrap/CloseButton';
+import { styled } from '@mui/system';
+import { TextField, Typography } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 
-const HomeComponent = () => {
-    const [isModalOpen, setModalOpen] = useState(false);
-  
-    const openModal = () => {
-      setModalOpen(true);
-    };
-  
-    const closeModal = () => {
-      setModalOpen(false);
-    };
-    
+const Container = styled('div')({
+  display: 'flex',
+  height: '100vh',
+});
 
-    return (
-        <div>
-            <NavbarUsuarioComponent></NavbarUsuarioComponent>
-            <GlobalStyle /> 
-            <button onClick={openModal}>Open Modal</button>
-                <Modal isOpen={isModalOpen} onClose={closeModal}>
-                    <Button variant="light">Registro</Button>{' '}
-                    <Button variant="light">Log in</Button>{' '}
-                    <CloseButton aria-label="Hide" onClick={closeModal}/>
-                    <h2>O registrate con tu email</h2>
-                </Modal>
-            <HomeStyle>
-            </HomeStyle>
-        </div>
-    );
+const Content = styled('div')({
+  flexGrow: 1,
+  padding: '20px',
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const Header = styled('div')({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '20px',
+});
+
+const WelcomeMessage = styled(Typography)({
+  fontSize: '24px',
+  fontWeight: 'bold',
+});
+
+const SearchBar = styled('div')({
+  display: 'flex',
+  alignItems: 'center',
+  border: '1px solid #ccc',
+  borderRadius: '24px',
+  padding: '8px 16px',
+  maxWidth: '400px',
+  width: '100%',
+});
+
+const SearchInput = styled(TextField)({
+  marginLeft: '8px',
+  width: '100%',
+});
+
+function HomeUsuarioComponent() {
+  return (
+    <Container>
+      <NavbarUsuarioComponent />
+      <Content>
+        <Header>
+          <WelcomeMessage>Bienvenido</WelcomeMessage>
+          <SearchBar>
+            <SearchIcon color="action" />
+            <SearchInput
+              placeholder="Buscar hora veterinaria"
+              variant="outlined"
+              size="small"
+              InputProps={{ disableUnderline: true }}
+            />
+          </SearchBar>
+        </Header>
+        {/* Aquí puedes añadir el contenido adicional que desees */}
+      </Content>
+    </Container>
+  );
 }
 
-export default HomeComponent;
-
-
-const GlobalStyle = createGlobalStyle`
-    body { 
-        background-color: #FBFBFB;
-`
-const HomeStyle = styled.nav`
-
-.text-center {
-    text-align: center;
-    justify-content: center;
-    padding-top: 8px;
-    color: #fff;
-}
-
-.box-area{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-}
-
-.single-box{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 400px;
-    height: auto;
-    border-radius: 4px;
-    background-color: #fff;
-    text-align: center;
-    margin: 20px;
-    padding: 20px;
-    transition: .3s
-}
-
-
-`
+export default HomeUsuarioComponent;
