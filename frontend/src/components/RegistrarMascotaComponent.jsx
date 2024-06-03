@@ -10,7 +10,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import CloseIcon from '@mui/icons-material/Close';
 import { es } from 'date-fns/locale';
-import NavbarComponent from "./NavbarComponent";
+import Navbar2Component from "./Navbar2Component";
 import theme from "./styles/themeComponent";
 
 const styles = {
@@ -309,7 +309,7 @@ export default function RegistarMascotaComponent() {
 
     return (
         <>
-            <NavbarComponent />
+            <Navbar2Component />
             <ThemeProvider theme={theme}>
                 <div style={styles.container}>
                     {renderCardContent()}

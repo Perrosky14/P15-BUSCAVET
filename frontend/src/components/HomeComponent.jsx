@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
 import { createGlobalStyle } from 'styled-components';
-import Navbar2Component from "./Navbar2Component";
+import NavbarComponent from "./NavbarComponent";
 import Modal from './Modal/Modal';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
@@ -20,7 +20,7 @@ const HomeComponent = () => {
 
     return (
         <div>
-            <Navbar2Component></Navbar2Component>
+            <NavbarComponent></NavbarComponent>
             <GlobalStyle /> 
             <button onClick={openModal}>Open Modal</button>
                 <Modal isOpen={isModalOpen} onClose={closeModal}>

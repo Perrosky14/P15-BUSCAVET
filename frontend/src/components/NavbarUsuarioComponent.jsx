@@ -128,7 +128,7 @@ function VerticalNavbarComponent() {
           <ListItemTextStyled primary="Configuración" />
         </ListItemStyled>
       </List>
-      <Logout button component="a" href="/cerrar_sesion">
+      <Logout button component="a" href="/">
         <ListItemIconLogoutStyled><ExitToApp /></ListItemIconLogoutStyled>
         <ListItemTextStyled primary="Cerrar sesión" />
       </Logout>

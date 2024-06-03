@@ -50,6 +50,7 @@ function HomeUsuarioComponent() {
       <Content>
         <Header>
           <WelcomeMessage>Bienvenido</WelcomeMessage>
+          <h5>hay 3 citas confirmadas para hoy</h5>
           <SearchBar>
             <SearchIcon color="action" />
             <SearchInput
@@ -60,7 +61,8 @@ function HomeUsuarioComponent() {
             />
           </SearchBar>
         </Header>
-        {/* Aquí puedes añadir el contenido adicional que desees */}
+        
+        
       </Content>
     </Container>
   );
