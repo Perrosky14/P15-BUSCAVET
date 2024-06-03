@@ -6,6 +6,7 @@ import com.example.BUSCAVET.Repositories.UsuarioRepository;
 import com.example.BUSCAVET.Security.AuthResponse;
 import com.example.BUSCAVET.Security.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,8 +21,12 @@ public class UsuarioService {
     @Autowired
     JWTService jwtService;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     public AuthResponse guardarUsuario(UsuarioEntity usuario){
         usuario.setRol(Rol.USUARIO);
+        usuario.setContrasenia(passwordEncoder.encode(usuario.getContrasenia()));
         usuarioRepository.save(usuario);
         return AuthResponse.builder().token(jwtService.getToken(usuario)).build();
     }
