@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "Usuario", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -53,6 +53,7 @@ public class UsuarioEntity implements UserDetails {
     private String telefono;
     private String codigo_area;
     private String celular;
+    @Column(nullable = false)
     private String email;
     private String RRSS1;
     private String RRSS2;
@@ -71,12 +72,12 @@ public class UsuarioEntity implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return this.contrasenia;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return this.email;
     }
 
     @Override

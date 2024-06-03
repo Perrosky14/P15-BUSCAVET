@@ -37,8 +37,7 @@ public class UsuarioController {
 
     @PostMapping("/nuevo-usuario")
     public ResponseEntity<?> guardarUsuario(@RequestBody UsuarioEntity usuario){
-        usuarioService.guardarUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse());
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.guardarUsuario(usuario));
     }
 
     @PutMapping("/actualizar-usuario")

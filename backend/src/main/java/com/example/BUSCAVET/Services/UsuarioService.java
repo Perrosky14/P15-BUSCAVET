@@ -23,7 +23,7 @@ public class UsuarioService {
     public AuthResponse guardarUsuario(UsuarioEntity usuario){
         usuario.setRol(Rol.USUARIO);
         usuarioRepository.save(usuario);
-        return AuthResponse.builder().token(jwtService.getTokenUsuario(usuario)).build();
+        return AuthResponse.builder().token(jwtService.getToken(usuario)).build();
     }
 
     public ArrayList<UsuarioEntity> obtenerUsuarios(){
