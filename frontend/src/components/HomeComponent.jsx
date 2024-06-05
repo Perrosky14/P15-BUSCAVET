@@ -27,7 +27,7 @@ const HomeComponent = () => {
                     <Button variant="light">Registro</Button>{' '}
                     <Button variant="light">Log in</Button>{' '}
                     <CloseButton aria-label="Hide" onClick={closeModal}/>
-                    <h2>hola desde la modal</h2>
+                    <h2>O registrate con tu email</h2>
                 </Modal>
             <h1>hola3</h1>
             <HomeStyle>
