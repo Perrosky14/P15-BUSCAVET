@@ -1,19 +1,41 @@
 import React from "react";
 import styled from "styled-components";
 
+const navStyle = {
+};
+
+const headerStyle = {
+  backgroundColor: "#FBFBFB",
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  height: "85px",
+  padding: "5px 10%"
+};
+
+const logoContainerStyle = {
+  marginRight: "auto" 
+};
+
+const logoStyle = {
+  width: "200px", /* Establece el ancho del logo */
+  height: "auto" /*  Se ajusta proporcionalmente al ancho */
+};
+
 function NavbarComponent2(){
     return(
         <>
         <NavStyle>
-            <header class="header">
-                <div class="logo">
-                    <h1>BUSCAVET</h1>
-                </div>
+        <nav style={navStyle}>
+                <header className="header" style={headerStyle}>
+                    <div className="logo-container" style={logoContainerStyle}>
+                        <img src="/images/logo-buscavet-5.png" alt="Logo buscavet" style={logoStyle} />
+                    </div>
                 <nav>
                 </nav>
-                <a class="btn" href="/log in"><button> Iniciar Sesion</button></a>
-                <a class="btn-2" href="/register"><button>Registrarse</button></a>
-            </header>
+                <a class="btn" href="/usuario"><button>Volver</button></a>
+                </header>
+                </nav>
             </NavStyle>
         </>
     )
@@ -68,4 +90,21 @@ const NavStyle = styled.nav`
     color: #000000;
     transform: scale(1.1);
 }
+headerStyle = {
+  backgroundColor: "#FBFBFB",
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  height: "85px",
+  padding: "5px 10%"
+};
+
+logoContainerStyle = {
+  marginRight: "auto" 
+};
+
+logoStyle = {
+  width: "200px", /* Establece el ancho del logo */
+  height: "auto" /*  Se ajusta proporcionalmente al ancho */
+
 `
