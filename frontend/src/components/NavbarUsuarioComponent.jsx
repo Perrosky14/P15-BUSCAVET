@@ -4,7 +4,7 @@ import { Settings, MonitorHeart, CalendarMonth, MarkEmailRead, BarChart, ExitToA
 import ImageIcon from '@mui/icons-material/Image';
 import { styled } from '@mui/system';
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const DrawerStyled = styled(Drawer)({
   width: drawerWidth,

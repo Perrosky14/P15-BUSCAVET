@@ -24,10 +24,6 @@ class MascotaService {
     return axios.delete(API_URL + mascotaId);
   }
 
-  getListaMascotas(){
-    return axios.get(API_URL + "/lista-caja");
-}
-
 }
 
 export default new MascotaService();
