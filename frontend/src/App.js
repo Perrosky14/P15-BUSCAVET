@@ -1,5 +1,6 @@
 import './App.module.css';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import SuperAdminControls from './components/SuperAdminComponents/UserList';
 import UserSessionComponent from './components/UserSessionComponent';
 import RegisterComponent from './components/RegisterComponent';
 import RegisterTutorComponent from './components/RegisterTutorComponent'
@@ -13,6 +14,7 @@ function App() {
     <div>
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<SuperAdminControls />} />
         <Route path="/" element={<HomeComponent />} />
         <Route path="/registrar_mascota" element={<RegistarMascotaComponent/>} />
         <Route path="/lista_mascota" element={<ListaMascotaComponent/>} />

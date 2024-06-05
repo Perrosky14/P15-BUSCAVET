@@ -29,7 +29,7 @@ const HomeComponent = () => {
                     <CloseButton aria-label="Hide" onClick={closeModal}/>
                     <h2>O registrate con tu email</h2>
                 </Modal>
-            <h1>hola3</h1>
+            <h1>hola</h1>
             <HomeStyle>
             </HomeStyle>
         </div>
