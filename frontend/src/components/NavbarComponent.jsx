@@ -27,7 +27,7 @@ function NavbarComponent(){
             <nav style={navStyle}>
                 <header className="header" style={headerStyle}>
                     <div className="logo-container" style={logoContainerStyle}>
-                        <img src="/images/logo-buscavet-5.png" alt="Logo buscavet" style={logoStyle} />
+                        <img src="/images/Logo-buscavet-5.png" alt="Logo buscavet" style={logoStyle} />
                     </div>
                     <nav>
                     </nav>
