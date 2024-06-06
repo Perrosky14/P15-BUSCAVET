@@ -35,10 +35,18 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
     (response) => response,
     (error) => {
+        const originalRequest = error.config;
+        const isloginRequest = originalRequest.includes('/login');
         //En el caso que el token esta adulterado
         if (error.response && error.response.status === 403) {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
+            //No redirigir si es un intento de inicio de sesión.
+            if (isloginRequest) {
+                return Promise.reject(error);
+            } else {
+                //Para otras solicitudes o error de token adulterado, bad request, etc.
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }

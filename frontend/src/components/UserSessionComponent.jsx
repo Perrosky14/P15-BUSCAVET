@@ -150,16 +150,14 @@ export default function UserSessionComponent() {
         
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-    }
+    };
 
     const errorLogin = () => {
-        let newErrors = {}
-        newErrors.email = "Las credenciales no coinciden vuelva intentarlo nuevamente";
-        newErrors.password = "Las credenciales no coinciden vuelva intentarlo nuevamente";
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    }
+        setErrors({
+            emailLogin: "Las credenciales no coinciden vuelva intentarlo nuevamente",
+            password: "Las credenciales no coinciden vuelva intentarlo nuevamente"
+        });
+    };
 
     const handleSubmitRegister = (event) => {
         event.preventDefault();
@@ -304,10 +302,10 @@ export default function UserSessionComponent() {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <FormControl variant="outlined" fullWidth>
+                        <FormControl variant="outlined" fullWidth error={!!errors.password}>
                             <InputLabel htmlFor="outlined-adornment-password-login">Contraseña</InputLabel>
                             <OutlinedInput
-                                id="outlined-adornment-password-login"
+                                id="outlined-adornment-password-login" label="Contraseña" required
                                 type={showPassword ? 'text' : 'password'}
                                 value={usuarioLogin.password} onChange={(e) => cambiarCampoLogin("password", e.target.value)}
                                 endAdornment={
@@ -322,9 +320,8 @@ export default function UserSessionComponent() {
                                     </IconButton>
                                 </InputAdornment>
                                 }
-                                label="Contraseña"
                             />
-                            {!errors.password && <FormHelperText>{errors.password}</FormHelperText>}
+                            {!!errors.password && <FormHelperText>{errors.password}</FormHelperText>}
                         </FormControl>
                     </Grid>
                 </Grid>
