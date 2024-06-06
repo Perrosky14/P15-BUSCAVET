@@ -1,5 +1,6 @@
 package com.example.BUSCAVET.Entities;
 
+import com.example.BUSCAVET.Security.CustomUserDetails;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 
-public class DoctorEntity implements UserDetails {
+public class DoctorEntity implements CustomUserDetails {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,6 +83,21 @@ public class DoctorEntity implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+    @Override
+    public String getNombre() {
+        return this.nombre1;
+    }
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
+
+    @Override
+    public Rol getRol() {
+        return this.rol;
     }
 
     @Override

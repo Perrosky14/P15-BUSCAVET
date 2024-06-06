@@ -1,5 +1,6 @@
 package com.example.BUSCAVET.Entities;
 
+import com.example.BUSCAVET.Security.CustomUserDetails;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -21,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class VeterinariaEntity implements UserDetails {
+public class VeterinariaEntity implements CustomUserDetails {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,6 +76,21 @@ public class VeterinariaEntity implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+    @Override
+    public String getNombre() {
+        return this.nombre_comercial;
+    }
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
+
+    @Override
+    public Rol getRol() {
+        return this.rol;
     }
 
     @Override

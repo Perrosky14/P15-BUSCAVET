@@ -20,10 +20,19 @@ public class JWTService {
     private static final String SECRET_KEY="586E3272357538782F413F4428472B4B6250655368566B597033733676397924";
 
     public String getToken(UserDetails usuario) {
-        return getToken(new HashMap<>(), usuario);
+        CustomUserDetails usuarioModificado = (CustomUserDetails) usuario;
+
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("rol", usuarioModificado.getRol());
+        extraClaims.put("nombre", usuarioModificado.getNombre());
+        extraClaims.put("id", usuarioModificado.getId());
+
+        return getToken(extraClaims, usuario);
     }
 
     private String getToken(Map<String, Object> extraClaims, UserDetails user) {
+
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
