@@ -24,6 +24,7 @@ import theme from "./styles/themeComponent";
 import { ThemeProvider } from "@mui/material/styles";
 import NavbarComponent from "./NavbarComponent";
 import { FormHelperText, Grid } from "@mui/material";
+import LoginService from "../services/LoginService";
 
 const styles = {
     container: {
@@ -91,6 +92,10 @@ export default function UserSessionComponent() {
         email: "",
         contrasenia: "",
     });
+    const [usuarioLogin, setUsuarioLogin] = useState({
+        email: "",
+        password: "",
+    });
     const [confirmPassword , setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -100,6 +105,13 @@ export default function UserSessionComponent() {
     const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
       event.preventDefault();
+    };
+
+    const cambiarCampoLogin = (campo, valor) => {
+        setUsuarioLogin({
+            ...usuarioLogin,
+            [campo]: valor,
+        });
     };
 
     const cambiarCampo = (campo, valor) => {
@@ -139,6 +151,15 @@ export default function UserSessionComponent() {
         return Object.keys(newErrors).length === 0;
     }
 
+    const errorLogin = () => {
+        let newErrors = {}
+        newErrors.email = "Las credenciales no coinciden vuelva intentarlo nuevamente";
+        newErrors.password = "Las credenciales no coinciden vuelva intentarlo nuevamente";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    }
+
     const handleSubmitRegister = (event) => {
         event.preventDefault();
         if(validateDatosUsuario()) {
@@ -146,9 +167,17 @@ export default function UserSessionComponent() {
         }
     };
 
-    const handleSubmitLogin = (event) => {
-        event.preventDefault();
-        navigate('/HomeComponent.jsx');
+    const handleSubmitLogin = async () => {
+        try {
+            const response = await LoginService.login(usuarioLogin);
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+            navigate('/usuario');
+            console.log('Usuario logueado exitosamente:', response);
+        } catch (error) {
+            errorLogin();
+            console.error('Error al loguear usuario', error);
+        }
     }
 
     const [value, setValue] = useState(0);
@@ -253,7 +282,10 @@ export default function UserSessionComponent() {
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <TextField id="outlined-basic-email-login" label="Dirección Email" variant="outlined" fullWidth required
+                        <TextField 
+                            id="outlined-basic-email-login" label="Dirección Email" variant="outlined" fullWidth required
+                            value={usuarioLogin.email} onChange={(e) => cambiarCampoLogin("email", e.target.value)}
+                            error={!!errors.emailLogin}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -262,6 +294,7 @@ export default function UserSessionComponent() {
                             <OutlinedInput
                                 id="outlined-adornment-password-login"
                                 type={showPassword ? 'text' : 'password'}
+                                value={usuarioLogin.password} onChange={(e) => cambiarCampoLogin("password", e.target.value)}
                                 endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
@@ -276,6 +309,7 @@ export default function UserSessionComponent() {
                                 }
                                 label="Contraseña"
                             />
+                            {!errors.password && <FormHelperText>{errors.password}</FormHelperText>}
                         </FormControl>
                     </Grid>
                 </Grid>
@@ -283,7 +317,7 @@ export default function UserSessionComponent() {
             <CardActions>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Button variant="contained" sx={styles.button} fullWidth>Iniciar Sesión</Button>
+                        <Button variant="contained" sx={styles.button} onClick={handleSubmitLogin} fullWidth>Iniciar Sesión</Button>
                     </Grid>
                 </Grid>
             </CardActions>
