@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/superAdmin")
@@ -42,10 +43,19 @@ public class SuperAdminController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(superAdmin);
     }
 
+    @GetMapping("/obtener-superAdmin-email")
+    public ResponseEntity<?> obtenerSuperAdminPorEmail(@RequestBody Map<String, Object> requestBody) {
+        String email = ((String) requestBody.get("email"));
+        Optional<SuperAdminEntity> superAdmin = superAdminService.obtenerPorEmail(email);
+        if (!superAdmin.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga el email: " + email);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(superAdmin.get());
+    }
+
     @PostMapping("/nuevo-superAdmin")
     public ResponseEntity<?> guardarSuperAdmin(@RequestBody SuperAdminEntity superAdmin){
-        superAdminService.guardarSuperAdmin(superAdmin);
-        return ResponseEntity.status(HttpStatus.CREATED).body("El superAdmin se ha registrado correctamente.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(superAdminService.guardarSuperAdmin(superAdmin));
     }
 
     @PutMapping("/actualizar-superAdmin")
@@ -61,7 +71,7 @@ public class SuperAdminController {
     @DeleteMapping("/eliminar-superAdmin")
     public ResponseEntity<?> eliminarSuperAdmin(@RequestBody Map<String, Object> requestBody){
         Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
-        if (usuarioService.obtenerPorId(idSuperAdmin) == null) {
+        if (superAdminService.obtenerPorId(idSuperAdmin) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin con la id: " + idSuperAdmin);
         }
         superAdminService.eliminarSuperAdmin(idSuperAdmin);

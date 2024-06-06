@@ -21,7 +21,6 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 import UsuarioService from "../services/UsuarioService";
-import { format } from "date-fns";
 
 const styles = {
     container: {
@@ -173,9 +172,9 @@ export default function RegisterTutorComponent() {
     const handleManualFinish = async () => {
         if (validateDireccionManual()) {
             try {
-                const usuarioJSON = JSON.stringify(usuarioGuardar);
-                console.log('Datos enviados:', usuarioJSON);
                 const response = await UsuarioService.guardarUsuario(usuarioGuardar);
+                const token = response.data.token;
+                localStorage.setItem('token', token);
                 console.log('Usuario registrado exitosamente:', response);
                 setStep(3);
             } catch (error) {
@@ -187,6 +186,8 @@ export default function RegisterTutorComponent() {
     const handleFinish = async () => {
         try {
             const response = await UsuarioService.guardarUsuario(usuarioGuardar);
+            const token = response.data.token;
+            localStorage.setItem('token', token);
             console.log('Usuario registrado exitosamente:', response);
             setStep(3);
         } catch (error) {
