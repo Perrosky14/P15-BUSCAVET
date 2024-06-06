@@ -25,6 +25,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import NavbarComponent from "./NavbarComponent";
 import { FormHelperText, Grid } from "@mui/material";
 import LoginService from "../services/LoginService";
+import { jwtDecode } from "jwt-decode";
 
 const styles = {
     container: {
@@ -172,7 +173,21 @@ export default function UserSessionComponent() {
             const response = await LoginService.login(usuarioLogin);
             const token = response.data.token;
             localStorage.setItem('token', token);
-            navigate('/usuario');
+            const tokenDecodificado = jwtDecode(token);
+            const rol = tokenDecodificado.rol;
+            
+            if(rol === "USUARIO") {
+                navigate('/usuario');
+            } else if (rol === "VETERINARIO") {
+                navigate('/veterinario');
+            } else if (rol === "VETERINARIA") {
+                navigate('/veterinaria');
+            } else if (rol === "SUPERADMIN") {
+                navigate('/superadmin');
+            } else {
+                navigate('/error');
+            }
+            
             console.log('Usuario logueado exitosamente:', response);
         } catch (error) {
             errorLogin();
