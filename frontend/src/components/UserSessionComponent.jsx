@@ -26,6 +26,7 @@ import NavbarComponent from "./NavbarComponent";
 import { FormHelperText, Grid } from "@mui/material";
 import LoginService from "../services/LoginService";
 import { jwtDecode } from "jwt-decode";
+import RegisterEmailService from "../services/RegisterEmailService";
 
 const styles = {
     container: {
@@ -132,12 +133,29 @@ export default function UserSessionComponent() {
         return re.test(password);
     };
 
-    const validateDatosUsuario = () => {
+    const validateDatosUsuario = async () => {
         let newErrors = {};
         if (!usuario.email) {
             newErrors.email = "El correo es requerido";
         } else if (!validateEmail(usuario.email)) {
             newErrors.email = "El correo no es valido";
+        } else {
+            //Verificación de si el email ya está registrado
+            try {
+                const response = await RegisterEmailService.verifyEmail(usuario.email);
+                if (response.status === 302) {
+                    newErrors.email = "Este email ya está registrado";
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 302) {
+                    newErrors.email = "Este email ya está registrado";
+                } else if(error.response && error.response.status === 404) {
+
+                } else {
+                    console.error('Error al verificar el email', error);
+                    newErrors.email = "Error al verificar el email. Inténtelo de nuevo más tarde.";
+                }
+            }
         }
 
         if (!usuario.contrasenia && !confirmPassword) {
@@ -159,9 +177,11 @@ export default function UserSessionComponent() {
         });
     };
 
-    const handleSubmitRegister = (event) => {
+    const handleSubmitRegister = async (event) => {
+        localStorage.removeItem('token');
         event.preventDefault();
-        if(validateDatosUsuario()) {
+        const isValid = await validateDatosUsuario();
+        if(isValid) {
             navigate('/registro', {state: {usuario}});
         }
     };

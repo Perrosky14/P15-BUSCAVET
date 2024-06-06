@@ -36,7 +36,7 @@ axios.interceptors.response.use(
     (response) => response,
     (error) => {
         const originalRequest = error.config;
-        const isloginRequest = originalRequest.includes('/login');
+        const isloginRequest = originalRequest.url && originalRequest.url.includes('/login');
         //En el caso que el token esta adulterado
         if (error.response && error.response.status === 403) {
             //No redirigir si es un intento de inicio de sesión.
