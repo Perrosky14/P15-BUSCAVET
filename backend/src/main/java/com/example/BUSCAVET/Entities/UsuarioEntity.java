@@ -66,6 +66,10 @@ public class UsuarioEntity implements CustomUserDetails {
     @JsonManagedReference
     private List<MascotaEntity> mascotas = new ArrayList<>();
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "usuario_bloqueHora")
+    private List<BloqueHoraEntity> horaAgendada = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(rol.name()));
