@@ -1,8 +1,8 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import NavbarUsuarioComponent from "./NavbarUsuarioComponent";
 import { styled } from '@mui/system';
-import { TextField, Typography, Card, CardContent, List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Box, IconButton, Menu, MenuItem } from "@mui/material";
-import SearchIcon from '@mui/icons-material/Search';
+import { Typography, Card, CardContent, List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Box, IconButton, Menu, MenuItem, Button } from "@mui/material";
 import { MoreVert, StarBorder as StarBorderIcon, ColorLens, FitnessCenter } from '@mui/icons-material';
 
 const Container = styled('div')({
@@ -29,25 +29,18 @@ const WelcomeMessage = styled(Typography)({
   fontWeight: 'bold',
 });
 
-const SearchBar = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  border: '1px solid #ccc',
-  borderRadius: '24px',
-  padding: '8px 16px',
-  maxWidth: '400px',
-  width: '100%',
-});
-
-const SearchInput = styled(TextField)({
-  marginLeft: '8px',
-  width: '100%',
+const BackButton = styled(Button)({
+  backgroundColor: '#FF4081',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#E73370',
+  },
 });
 
 const MascotaListContainer = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'flex-end', // Cambiado a 'flex-end' para alinear a la derecha
+  alignItems: 'center',
   marginTop: '20px',
   marginBottom: '20px',
   width: '100%',
@@ -56,7 +49,6 @@ const MascotaListContainer = styled(Box)({
 const MascotaCard = styled(Card)({
   width: '100%',
   maxWidth: '600px',
-  margin: '0 20px',
 });
 
 const mascotaData = [
@@ -89,15 +81,8 @@ const mascotaData = [
   },
 ];
 
-const PinkCard = styled(Card)({
-  backgroundColor: '#FFC0CB', // Cambiado a un tono de rosa
-  width: '100%',
-  maxWidth: '600px',
-  margin: '0 20px',
-  marginBottom: '20px',
-});
-
 function HomeUsuarioComponent() {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedIndex, setSelectedIndex] = React.useState(null);
 
@@ -111,6 +96,10 @@ function HomeUsuarioComponent() {
     setSelectedIndex(null);
   };
 
+  const handleBackClick = () => {
+    navigate('/usuario');
+  };
+
   return (
     <Container>
       <NavbarUsuarioComponent />
@@ -120,24 +109,10 @@ function HomeUsuarioComponent() {
             <WelcomeMessage>Hola, Cristian! Bienvenido</WelcomeMessage>
             <Typography>Hay 3 nuevas citas programadas para hoy</Typography>
           </div>
-          <SearchBar>
-            <SearchIcon color="action" />
-            <SearchInput
-              placeholder="Buscar hora veterinaria"
-              variant="outlined"
-              size="small"
-              InputProps={{ disableUnderline: true }}
-            />
-          </SearchBar>
+          <BackButton onClick={handleBackClick}>
+            Volver
+          </BackButton>
         </Header>
-        <PinkCard>
-          {/* Asegúrate de agregar contenido aquí */}
-          <CardContent>
-            <Typography variant="h5" component="div" sx={{ textAlign: 'center' }}>
-              Contenido de la Card Rosa
-            </Typography>
-          </CardContent>
-        </PinkCard>
         <MascotaListContainer>
           <Typography variant="h5" component="div" sx={{ marginBottom: '16px', textAlign: 'center' }}>
             Tus mascotas

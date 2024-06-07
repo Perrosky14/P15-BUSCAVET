@@ -89,7 +89,7 @@ const Logout = styled(ListItemStyled)({
   },
 });
 
-function VerticalNavbarComponent() {
+function VerticalNavbarComponent({ userName }) {
   return (
     <DrawerStyled
       variant="permanent"
@@ -102,7 +102,7 @@ function VerticalNavbarComponent() {
           <ImageIcon />
         </AvatarStyled>
         <div>
-          <UserName>Hola, Cristián!</UserName>
+          <UserName>Hola, {userName}!</UserName>
           <UserWelcome>Bienvenido</UserWelcome>
         </div>
       </UserInfo>

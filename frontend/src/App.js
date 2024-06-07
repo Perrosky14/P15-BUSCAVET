@@ -18,6 +18,7 @@ function App() {
         <Route path="/registrar_mascota" element={<RegistarMascotaComponent/>} />
         <Route path="/lista_mascota" element={<ListaMascotaComponent/>} />
         <Route path="/ficha_mascota" element={<FichaMascotaComponent />} />
+        <Route path="/usuario" element={<HomeUsuarioComponent />} />
         <Route path="/login" element={< UserSessionComponent/>}/>
         <Route path="/registro" element={<RegisterComponent/>}/>
         <Route path="/registroTutor" element = {<RegisterTutorComponent/>}/>

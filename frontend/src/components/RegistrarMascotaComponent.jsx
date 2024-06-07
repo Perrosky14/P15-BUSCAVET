@@ -28,7 +28,7 @@ export default function RegistarMascotaComponent() {
     const [currentCard, setCurrentCard] = useState(1);
     const [mascotaData, setMascotaData] = useState({
         especie: '', raza: '', sexo: '', nombre: '', fechaNacimiento: null, historialMedico: null,
-        estatura: '', color: '', peso: '', foto: null, tipoExotico: ''
+        estatura: '', color: '', peso: '', foto: null, tipoExotico: '',
     });
 
     const [errors, setErrors] = useState({});
