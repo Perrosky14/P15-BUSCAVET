@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/doctor")
@@ -31,10 +32,19 @@ public class DoctorController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(doctor);
     }
 
+    @GetMapping("/obtener-doctor-email")
+    public ResponseEntity<?> obtenerDoctorPorEmail(@RequestBody Map<String, Object> requestBody) {
+        String email = ((String) requestBody.get("email"));
+        Optional<DoctorEntity> doctor = doctorService.obtenerPorEmail(email);
+        if (!doctor.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún doctor que tenga el email: " + email);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(doctor.get());
+    }
+
     @PostMapping("/nuevo-doctor")
     public ResponseEntity<?> guardarDoctor(@RequestBody DoctorEntity doctor) {
-        doctorService.guardarDoctor(doctor);
-        return ResponseEntity.status(HttpStatus.CREATED).body("El doctor ha sido registrado correctamente.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(doctorService.guardarDoctor(doctor));
     }
 
     @PutMapping("/actualizar-doctor")

@@ -1,12 +1,17 @@
 package com.example.BUSCAVET.Services;
 
 import com.example.BUSCAVET.Entities.DoctorEntity;
+import com.example.BUSCAVET.Entities.Rol;
 import com.example.BUSCAVET.Repositories.DoctorRepository;
+import com.example.BUSCAVET.Security.AuthResponse;
+import com.example.BUSCAVET.Security.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class DoctorService {
@@ -14,8 +19,17 @@ public class DoctorService {
     @Autowired
     DoctorRepository doctorRepository;
 
-    public void guardarDoctor(DoctorEntity doctor){
+    @Autowired
+    JWTService jwtService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    public AuthResponse guardarDoctor(DoctorEntity doctor){
+        doctor.setRol(Rol.VETERINARIO);
+        doctor.setContrasenia(passwordEncoder.encode(doctor.getContrasenia()));
         doctorRepository.save(doctor);
+        return AuthResponse.builder().token(jwtService.getToken(doctor)).build();
     }
 
     public ArrayList<DoctorEntity> obtenerDoctor(){
@@ -23,6 +37,10 @@ public class DoctorService {
 
     public DoctorEntity obtenerPorId(Long id){
         return doctorRepository.findById(id).orElse(null);}
+
+    public Optional<DoctorEntity> obtenerPorEmail(String email) {
+        return doctorRepository.findByEmail(email);
+    }
 
     public DoctorEntity actualizarDoctor(Long id, DoctorEntity doctorActualizado){
         DoctorEntity doctorExistente = doctorRepository.findById(id).orElse(null);

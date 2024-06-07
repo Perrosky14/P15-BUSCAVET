@@ -1,15 +1,17 @@
 package com.example.BUSCAVET.Services;
 
-import com.example.BUSCAVET.Entities.MascotaEntity;
+import com.example.BUSCAVET.Entities.Rol;
 import com.example.BUSCAVET.Entities.UsuarioEntity;
 import com.example.BUSCAVET.Repositories.UsuarioRepository;
+import com.example.BUSCAVET.Security.AuthResponse;
+import com.example.BUSCAVET.Security.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -17,8 +19,17 @@ public class UsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    public void guardarUsuario(UsuarioEntity usuario){
+    @Autowired
+    JWTService jwtService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    public AuthResponse guardarUsuario(UsuarioEntity usuario){
+        usuario.setRol(Rol.USUARIO);
+        usuario.setContrasenia(passwordEncoder.encode(usuario.getContrasenia()));
         usuarioRepository.save(usuario);
+        return AuthResponse.builder().token(jwtService.getToken(usuario)).build();
     }
 
     public ArrayList<UsuarioEntity> obtenerUsuarios(){
@@ -27,6 +38,10 @@ public class UsuarioService {
 
     public UsuarioEntity obtenerPorId(Long id){
         return usuarioRepository.findById(id).orElse(null);}
+
+    public Optional<UsuarioEntity> obtenerPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
 
     public UsuarioEntity actualizarUsuario(Long id, UsuarioEntity usuarioActualizado){
         UsuarioEntity usuarioExistente = usuarioRepository.findById(id).orElse(null);
