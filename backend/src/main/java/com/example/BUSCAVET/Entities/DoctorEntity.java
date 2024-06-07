@@ -77,6 +77,11 @@ public class DoctorEntity implements CustomUserDetails {
     @JsonManagedReference(value = "doctor_bloqueHora")
     private List<BloqueHoraEntity> bloqueHoras = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "id_bloque_horario_asociado")
+    @JsonBackReference(value = "doctor_bloqueHorario")
+    private BloqueHorarioEntity bloqueHorario;
+
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(rol.name()));
     }
