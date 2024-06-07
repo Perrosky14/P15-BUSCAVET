@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 
 const ConfirmModal = ({ show, handleClose, handleConfirm, message }) => {
     const [hoverConfirm, setHoverConfirm] = useState(false);
@@ -17,28 +17,28 @@ const ConfirmModal = ({ show, handleClose, handleConfirm, message }) => {
     };
 
     return (
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Confirmación</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{message}</Modal.Body>
-            <Modal.Footer>
+        <Dialog open={show} onClose={handleClose}>
+            <DialogTitle>Confirmación</DialogTitle>
+            <DialogContent dividers>
+                <Typography>{message}</Typography>
+            </DialogContent>
+            <DialogActions>
                 <Button
-                    style={buttonConfirmStyle}
+                    onClick={handleConfirm}
                     onMouseEnter={() => setHoverConfirm(true)}
                     onMouseLeave={() => setHoverConfirm(false)}
-                    onClick={handleConfirm}
+                    style={buttonConfirmStyle}
                 >
                     Confirmar
                 </Button>
                 <Button
-                    style={buttonCancelStyle}
                     onClick={handleClose}
+                    style={buttonCancelStyle}
                 >
                     Cancelar
                 </Button>
-            </Modal.Footer>
-        </Modal>
+            </DialogActions>
+        </Dialog>
     );
 };
 

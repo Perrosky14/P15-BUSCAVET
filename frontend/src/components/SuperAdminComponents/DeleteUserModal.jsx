@@ -1,9 +1,28 @@
-import React, { useState } from 'react';
-import ConfirmModal from './ConfirmModal'; // Importa el nuevo componente
+import React from 'react';
 import DoctorService from '../../services/DoctorService';
 import UsuarioService from '../../services/UsuarioService';
 import MascotaService from '../../services/MascotaService';
 import VeterinariaService from '../../services/VeterinariaService';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
+
+const ConfirmModal = ({ show, handleClose, handleConfirm, message }) => {
+    return (
+        <Dialog open={show} onClose={handleClose}>
+            <DialogTitle>Confirmar Acción</DialogTitle>
+            <DialogContent dividers>
+                <Typography>{message}</Typography>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                    Cancelar
+                </Button>
+                <Button onClick={handleConfirm} color="primary">
+                    Confirmar
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
+};
 
 const DeleteUserModal = ({ show, handleClose, user, handleDelete, reloadCurrentPage }) => {
     const handleConfirmDelete = () => {

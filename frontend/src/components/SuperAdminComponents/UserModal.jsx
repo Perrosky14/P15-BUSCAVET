@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import UserDetailsModal from './UserDetailsModal';
 
 const UserModal = ({ showModal, handleClose, userDetails, isEditMode, handleSave }) => {
@@ -42,64 +43,55 @@ const UserModal = ({ showModal, handleClose, userDetails, isEditMode, handleSave
 
     return (
         <>
-            <div className={`modal ${showModal ? 'd-block' : 'd-none'}`} tabIndex="-1" role="dialog">
-                <div className="modal-dialog" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">{isEditMode ? 'Editar Usuario' : 'Detalles del Usuario'}</h5>
-                            <button
-                                type="button"
-                                className="close"
-                                onClick={handleClose}
-                                aria-label="Close"
-                                style={{ position: 'absolute', right: '15px', top: '15px' }}
-                            >
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div className="modal-body">
-                            <p><strong>ID:</strong> {user.id}</p>
-                            <p><strong>Nombre:</strong> {user.name}</p>
-                            <p><strong>Tipo:</strong> {user.tipo}</p>
-                        </div>
-                        <div className="modal-footer">
-                            {isEditMode ? (
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    style={buttonDetailsStyle}
-                                    onMouseEnter={() => setHoverDetails(true)}
-                                    onMouseLeave={() => setHoverDetails(false)}
-                                    onClick={handleEditDetailsClick}
-                                >
-                                    Editar Detalles
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    style={buttonDetailsStyle}
-                                    onMouseEnter={() => setHoverDetails(true)}
-                                    onMouseLeave={() => setHoverDetails(false)}
-                                    onClick={handleDetailsClick}
-                                >
-                                    Detalles
-                                </button>
-                            )}
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={handleClose}
-                                style={buttonCloseStyle}
-                                onMouseEnter={() => setHoverClose(true)}
-                                onMouseLeave={() => setHoverClose(false)}
-                            >
-                                Cerrar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Dialog open={showModal} onClose={handleClose} maxWidth="sm" fullWidth>
+                <DialogTitle>
+                    {isEditMode ? 'Editar Usuario' : 'Detalles del Usuario'}
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleClose}
+                        sx={{ position: 'absolute', right: 8, top: 8, color: 'grey.500' }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent dividers>
+                    <Typography variant="body1"><strong>ID:</strong> {user.id}</Typography>
+                    <Typography variant="body1"><strong>Nombre:</strong> {user.name}</Typography>
+                    <Typography variant="body1"><strong>Tipo:</strong> {user.tipo}</Typography>
+                </DialogContent>
+                <DialogActions>
+                    {isEditMode ? (
+                        <Button
+                            variant="contained"
+                            style={buttonDetailsStyle}
+                            onMouseEnter={() => setHoverDetails(true)}
+                            onMouseLeave={() => setHoverDetails(false)}
+                            onClick={handleEditDetailsClick}
+                        >
+                            Editar Detalles
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="contained"
+                            style={buttonDetailsStyle}
+                            onMouseEnter={() => setHoverDetails(true)}
+                            onMouseLeave={() => setHoverDetails(false)}
+                            onClick={handleDetailsClick}
+                        >
+                            Detalles
+                        </Button>
+                    )}
+                    <Button
+                        variant="contained"
+                        onClick={handleClose}
+                        style={buttonCloseStyle}
+                        onMouseEnter={() => setHoverClose(true)}
+                        onMouseLeave={() => setHoverClose(false)}
+                    >
+                        Cerrar
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <UserDetailsModal
                 showModal={showDetailsModal}
                 handleClose={handleDetailsModalClose}

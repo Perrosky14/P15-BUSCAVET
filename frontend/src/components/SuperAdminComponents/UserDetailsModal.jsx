@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import DoctorService from '../../services/DoctorService';
 import UsuarioService from '../../services/UsuarioService';
 import VeterinariaService from '../../services/VeterinariaService';
 import MascotaService from '../../services/MascotaService';
 import ConfirmModal from './ConfirmModal'; // Asegúrate de que la ruta sea correcta
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    Typography,
+    IconButton,
+    TextField,
+    Grid
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const UserDetailsModal = ({ showModal, handleClose, userDetails, isEditMode, reloadCurrentPage }) => {
     const [details, setDetails] = useState(userDetails);
@@ -325,56 +336,49 @@ const UserDetailsModal = ({ showModal, handleClose, userDetails, isEditMode, rel
 
     return (
         <>
-            <div className={`modal ${showModal ? 'd-block' : 'd-none'}`} tabIndex="-1" role="dialog">
-                <div className="modal-dialog modal-lg" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">Detalles del Usuario</h5>
-                            <button
-                                type="button"
-                                className="close"
-                                onClick={handleClose}
-                                aria-label="Close"
-                                style={{ position: 'absolute', right: '15px', top: '15px' }}
-                            >
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div className="modal-body" style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
-                            <p><strong>ID:</strong> {details.id} </p>
-                            <p><strong>Nombre Completo:</strong> {details.name}</p>
-                            <p><strong>Tipo:</strong> {details.tipo}</p>
-                            {details.tipo === 'Doctor' && renderDoctorDetails(details)}
-                            {details.tipo === 'Usuario' && renderUsuarioDetails(details)}
-                            {details.tipo === 'Veterinaria' && renderVeterinariaDetails(details)}
-                            {details.tipo === 'Mascota' && renderMascotaDetails(details)}
-                        </div>
-                        <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={changesMade ? handleSave : null}
-                                style={buttonDetailsStyle}
-                                onMouseEnter={() => changesMade && setHoverDetails(true)}
-                                onMouseLeave={() => changesMade && setHoverDetails(false)}
-                                disabled={!changesMade}
-                            >
-                                Guardar
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={handleClose}
-                                style={buttonCloseStyle}
-                                onMouseEnter={() => setHoverClose(true)}
-                                onMouseLeave={() => setHoverClose(false)}
-                            >
-                                Cerrar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Dialog open={showModal} onClose={handleClose} maxWidth="md" fullWidth>
+                <DialogTitle>
+                    Detalles del Usuario
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleClose}
+                        sx={{ position: 'absolute', right: 8, top: 8, color: 'grey.500' }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent dividers style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
+                    <Typography variant="body1"><strong>ID:</strong> {details.id}</Typography>
+                    <Typography variant="body1"><strong>Nombre Completo:</strong> {details.name}</Typography>
+                    <Typography variant="body1"><strong>Tipo:</strong> {details.tipo}</Typography>
+                    {/* Render the details based on the user type */}
+                    {details.tipo === 'Doctor' && renderDoctorDetails(details)}
+                    {details.tipo === 'Usuario' && renderUsuarioDetails(details)}
+                    {details.tipo === 'Veterinaria' && renderVeterinariaDetails(details)}
+                    {details.tipo === 'Mascota' && renderMascotaDetails(details)}
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        onClick={changesMade ? handleSave : null}
+                        style={buttonDetailsStyle}
+                        onMouseEnter={() => changesMade && setHoverDetails(true)}
+                        onMouseLeave={() => changesMade && setHoverDetails(false)}
+                        disabled={!changesMade}
+                    >
+                        Guardar
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={handleClose}
+                        style={buttonCloseStyle}
+                        onMouseEnter={() => setHoverClose(true)}
+                        onMouseLeave={() => setHoverClose(false)}
+                    >
+                        Cerrar
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <ConfirmModal
                 show={showConfirmModal}
                 handleClose={handleCloseConfirmModal}

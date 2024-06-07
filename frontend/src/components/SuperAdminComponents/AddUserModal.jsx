@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, FormControlLabel } from '@mui/material';
 import DoctorService from '../../services/DoctorService';
 import UsuarioService from '../../services/UsuarioService';
 import MascotaService from '../../services/MascotaService';
@@ -47,10 +47,10 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
     });
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, checked, type } = e.target;
         setUserData({
             ...userData,
-            [name]: value
+            [name]: type === 'checkbox' ? checked : value,
         });
     };
 
@@ -109,852 +109,818 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
 
     const buttonConfirmStyle = {
         backgroundColor: hoverConfirm ? '#e03a5e' : '#ff436f',
-        borderColor: hoverConfirm ? '#e03a5e' : '#ff436f',
-        color: 'white'
+        color: 'white',
     };
 
     const buttonCancelStyle = {
         backgroundColor: '#6c757d',
-        borderColor: '#6c757d',
-        color: 'white'
+        color: 'white',
     };
 
     const renderCommonFields = () => (
         <>
-            <Form.Group controlId="formNombre1">
-                <Form.Label>Nombre 1</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="nombre1"
-                    value={userData.nombre1}
-                    onChange={handleChange}
-                    placeholder="Nombre 1"
-                />
-            </Form.Group>
-            <Form.Group controlId="formNombre2">
-                <Form.Label>Nombre 2</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="nombre2"
-                    value={userData.nombre2}
-                    onChange={handleChange}
-                    placeholder="Nombre 2"
-                />
-            </Form.Group>
-            <Form.Group controlId="formApellido1">
-                <Form.Label>Apellido 1</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="apellido1"
-                    value={userData.apellido1}
-                    onChange={handleChange}
-                    placeholder="Apellido 1"
-                />
-            </Form.Group>
-            <Form.Group controlId="formApellido2">
-                <Form.Label>Apellido 2</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="apellido2"
-                    value={userData.apellido2}
-                    onChange={handleChange}
-                    placeholder="Apellido 2"
-                />
-            </Form.Group>
-            <Form.Group controlId="formRut">
-                <Form.Label>RUT</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="rut"
-                    value={userData.rut}
-                    onChange={handleChange}
-                    placeholder="RUT"
-                />
-            </Form.Group>
-            <Form.Group controlId="formTelefono">
-                <Form.Label>Teléfono</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="telefono"
-                    value={userData.telefono}
-                    onChange={handleChange}
-                    placeholder="Teléfono"
-                />
-            </Form.Group>
-            <Form.Group controlId="formCelular">
-                <Form.Label>Celular</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="celular"
-                    value={userData.celular}
-                    onChange={handleChange}
-                    placeholder="Celular"
-                />
-            </Form.Group>
-            <Form.Group controlId="formEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                    type="email"
-                    name="email"
-                    value={userData.email}
-                    onChange={handleChange}
-                    placeholder="Email"
-                />
-            </Form.Group>
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre 1"
+                name="nombre1"
+                value={userData.nombre1}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre 2"
+                name="nombre2"
+                value={userData.nombre2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Apellido 1"
+                name="apellido1"
+                value={userData.apellido1}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Apellido 2"
+                name="apellido2"
+                value={userData.apellido2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="RUT"
+                name="rut"
+                value={userData.rut}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Teléfono"
+                name="telefono"
+                value={userData.telefono}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Celular"
+                name="celular"
+                value={userData.celular}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Email"
+                name="email"
+                value={userData.email}
+                onChange={handleChange}
+                variant="outlined"
+            />
         </>
     );
 
     const renderDoctorForm = () => (
         <>
             {renderCommonFields()}
-            <Form.Group controlId="formContrasenia">
-                <Form.Label>Contraseña</Form.Label>
-                <Form.Control
-                    type="password"
-                    name="contrasenia"
-                    value={userData.contrasenia}
-                    onChange={handleChange}
-                    placeholder="Contraseña"
-                />
-            </Form.Group>
-            <Form.Group controlId="formInstitucionVet1">
-                <Form.Label>Institución Veterinaria 1</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_institucion_vet_1"
-                    value={userData.id_institucion_vet_1}
-                    onChange={handleChange}
-                    placeholder="ID Institución Vet 1"
-                />
-            </Form.Group>
-            <Form.Group controlId="formInstitucionVet2">
-                <Form.Label>Institución Veterinaria 2</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_institucion_vet_2"
-                    value={userData.id_institucion_vet_2}
-                    onChange={handleChange}
-                    placeholder="ID Institución Vet 2"
-                />
-            </Form.Group>
-            <Form.Group controlId="formInstitucionVet3">
-                <Form.Label>Institución Veterinaria 3</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_institucion_vet_3"
-                    value={userData.id_institucion_vet_3}
-                    onChange={handleChange}
-                    placeholder="ID Institución Vet 3"
-                />
-            </Form.Group>
-            <Form.Group controlId="formPais">
-                <Form.Label>País</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_pais"
-                    value={userData.id_pais}
-                    onChange={handleChange}
-                    placeholder="ID País"
-                />
-            </Form.Group>
-            <Form.Group controlId="formMatricula">
-                <Form.Label>Matrícula</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="matricula"
-                    value={userData.matricula}
-                    onChange={handleChange}
-                    placeholder="Matrícula"
-                />
-            </Form.Group>
-            <Form.Group controlId="formGenero">
-                <Form.Label>Género</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_genero"
-                    value={userData.id_genero}
-                    onChange={handleChange}
-                    placeholder="ID Género"
-                />
-            </Form.Group>
-            <Form.Group controlId="formDiaNac">
-                <Form.Label>Día de Nacimiento</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="dia_nac"
-                    value={userData.dia_nac}
-                    onChange={handleChange}
-                    placeholder="Día de Nacimiento"
-                />
-            </Form.Group>
-            <Form.Group controlId="formMesNac">
-                <Form.Label>Mes de Nacimiento</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="mes_nac"
-                    value={userData.mes_nac}
-                    onChange={handleChange}
-                    placeholder="Mes de Nacimiento"
-                />
-            </Form.Group>
-            <Form.Group controlId="formAnioNac">
-                <Form.Label>Año de Nacimiento</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="anio_nac"
-                    value={userData.anio_nac}
-                    onChange={handleChange}
-                    placeholder="Año de Nacimiento"
-                />
-            </Form.Group>
-            <Form.Group controlId="formNacionalidad">
-                <Form.Label>Nacionalidad</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_nacionalidad"
-                    value={userData.id_nacionalidad}
-                    onChange={handleChange}
-                    placeholder="ID Nacionalidad"
-                />
-            </Form.Group>
-            <Form.Group controlId="formEspecialidad1">
-                <Form.Label>Especialidad 1</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_especialidad_1"
-                    value={userData.id_especialidad_1}
-                    onChange={handleChange}
-                    placeholder="ID Especialidad 1"
-                />
-            </Form.Group>
-            <Form.Group controlId="formEspecialidad2">
-                <Form.Label>Especialidad 2</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_especialidad_2"
-                    value={userData.id_especialidad_2}
-                    onChange={handleChange}
-                    placeholder="ID Especialidad 2"
-                />
-            </Form.Group>
-            <Form.Group controlId="formEspecialidad3">
-                <Form.Label>Especialidad 3</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_especialidad_3"
-                    value={userData.id_especialidad_3}
-                    onChange={handleChange}
-                    placeholder="ID Especialidad 3"
-                />
-            </Form.Group>
-            <Form.Group controlId="formResenia">
-                <Form.Label>Reseña</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="resenia"
-                    value={userData.resenia}
-                    onChange={handleChange}
-                    placeholder="Reseña"
-                />
-            </Form.Group>
-            <Form.Group controlId="formReseniaConfirmada">
-                <Form.Label>Reseña Confirmada</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="resenia_confirmada"
-                    value={userData.resenia_confirmada}
-                    onChange={handleChange}
-                    placeholder="Reseña Confirmada"
-                />
-            </Form.Group>
-            <Form.Group controlId="formEstadoMedicoVet">
-                <Form.Label>Estado Médico Veterinario</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_estado_medico_vet"
-                    value={userData.id_estado_medico_vet}
-                    onChange={handleChange}
-                    placeholder="ID Estado Médico Veterinario"
-                />
-            </Form.Group>
-            <Form.Group controlId="formCodigoArea">
-                <Form.Label>Código de Área</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="codigo_area"
-                    value={userData.codigo_area}
-                    onChange={handleChange}
-                    placeholder="Código de Área"
-                />
-            </Form.Group>
-            <Form.Group controlId="formRRSS1">
-                <Form.Label>Red Social 1</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="RRSS1"
-                    value={userData.RRSS1}
-                    onChange={handleChange}
-                    placeholder="Red Social 1"
-                />
-            </Form.Group>
-            <Form.Group controlId="formRRSS2">
-                <Form.Label>Red Social 2</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="RRSS2"
-                    value={userData.RRSS2}
-                    onChange={handleChange}
-                    placeholder="Red Social 2"
-                />
-            </Form.Group>
-            <Form.Group controlId="formAsistenteNom">
-                <Form.Label>Nombre del Asistente</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="asistente_nom"
-                    value={userData.asistente_nom}
-                    onChange={handleChange}
-                    placeholder="Nombre del Asistente"
-                />
-            </Form.Group>
-            <Form.Group controlId="formAsistenteTelefono">
-                <Form.Label>Teléfono del Asistente</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="asistente_telefono"
-                    value={userData.asistente_telefono}
-                    onChange={handleChange}
-                    placeholder="Teléfono del Asistente"
-                />
-            </Form.Group>
-            <Form.Group controlId="formAsistenteCodigoArea">
-                <Form.Label>Código de Área del Asistente</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="asistente_codigo_area"
-                    value={userData.asistente_codigo_area}
-                    onChange={handleChange}
-                    placeholder="Código de Área del Asistente"
-                />
-            </Form.Group>
-            <Form.Group controlId="formAsistenteCelular">
-                <Form.Label>Celular del Asistente</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="asistente_celular"
-                    value={userData.asistente_celular}
-                    onChange={handleChange}
-                    placeholder="Celular del Asistente"
-                />
-            </Form.Group>
-            <Form.Group controlId="formOtro">
-                <Form.Label>Otro</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="otro"
-                    value={userData.otro}
-                    onChange={handleChange}
-                    placeholder="Otro"
-                />
-            </Form.Group>
-            <Form.Group controlId="formValidado">
-                <Form.Check
-                    type="checkbox"
-                    name="validado"
-                    checked={userData.validado}
-                    onChange={(e) => setUserData({ ...userData, validado: e.target.checked })}
-                    label="Validado"
-                />
-            </Form.Group>
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Contraseña"
+                type="password"
+                name="contrasenia"
+                value={userData.contrasenia}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Institución Veterinaria 1"
+                type="number"
+                name="id_institucion_vet_1"
+                value={userData.id_institucion_vet_1}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Institución Veterinaria 2"
+                type="number"
+                name="id_institucion_vet_2"
+                value={userData.id_institucion_vet_2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Institución Veterinaria 3"
+                type="number"
+                name="id_institucion_vet_3"
+                value={userData.id_institucion_vet_3}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="País"
+                type="number"
+                name="id_pais"
+                value={userData.id_pais}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Matrícula"
+                name="matricula"
+                value={userData.matricula}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Género"
+                type="number"
+                name="id_genero"
+                value={userData.id_genero}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Día de Nacimiento"
+                type="number"
+                name="dia_nac"
+                value={userData.dia_nac}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Mes de Nacimiento"
+                type="number"
+                name="mes_nac"
+                value={userData.mes_nac}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Año de Nacimiento"
+                type="number"
+                name="anio_nac"
+                value={userData.anio_nac}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nacionalidad"
+                type="number"
+                name="id_nacionalidad"
+                value={userData.id_nacionalidad}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Especialidad 1"
+                type="number"
+                name="id_especialidad_1"
+                value={userData.id_especialidad_1}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Especialidad 2"
+                type="number"
+                name="id_especialidad_2"
+                value={userData.id_especialidad_2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Especialidad 3"
+                type="number"
+                name="id_especialidad_3"
+                value={userData.id_especialidad_3}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Reseña"
+                name="resenia"
+                value={userData.resenia}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Reseña Confirmada"
+                name="resenia_confirmada"
+                value={userData.resenia_confirmada}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Estado Médico Veterinario"
+                type="number"
+                name="id_estado_medico_vet"
+                value={userData.id_estado_medico_vet}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Código de Área"
+                name="codigo_area"
+                value={userData.codigo_area}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Red Social 1"
+                name="RRSS1"
+                value={userData.RRSS1}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Red Social 2"
+                name="RRSS2"
+                value={userData.RRSS2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre del Asistente"
+                name="asistente_nom"
+                value={userData.asistente_nom}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Teléfono del Asistente"
+                name="asistente_telefono"
+                value={userData.asistente_telefono}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Código de Área del Asistente"
+                name="asistente_codigo_area"
+                value={userData.asistente_codigo_area}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Celular del Asistente"
+                name="asistente_celular"
+                value={userData.asistente_celular}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Otro"
+                name="otro"
+                value={userData.otro}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={userData.validado}
+                        onChange={handleChange}
+                        name="validado"
+                        color="primary"
+                    />
+                }
+                label="Validado"
+            />
         </>
     );
 
     const renderUsuarioForm = () => (
         <>
             {renderCommonFields()}
-            <Form.Group controlId="formDireccion">
-                <Form.Label>Dirección</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="direccion"
-                    value={userData.direccion}
-                    onChange={handleChange}
-                    placeholder="Dirección"
-                />
-            </Form.Group>
-            <Form.Group controlId="formNumero">
-                <Form.Label>Número</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="numero"
-                    value={userData.numero}
-                    onChange={handleChange}
-                    placeholder="Número"
-                />
-            </Form.Group>
-            <Form.Group controlId="formTipoUsuario">
-                <Form.Label>Tipo</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="tipo"
-                    value={userData.tipo}
-                    onChange={handleChange}
-                    placeholder="Tipo"
-                />
-            </Form.Group>
-            <Form.Group controlId="formCodigoPostal">
-                <Form.Label>Código Postal</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_codigo_postal"
-                    value={userData.id_codigo_postal}
-                    onChange={handleChange}
-                    placeholder="ID Código Postal"
-                />
-            </Form.Group>
-            <Form.Group controlId="formComuna">
-                <Form.Label>Comuna</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_comuna"
-                    value={userData.id_comuna}
-                    onChange={handleChange}
-                    placeholder="ID Comuna"
-                />
-            </Form.Group>
-            <Form.Group controlId="formProvincia">
-                <Form.Label>Provincia</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_provincia"
-                    value={userData.id_provincia}
-                    onChange={handleChange}
-                    placeholder="ID Provincia"
-                />
-            </Form.Group>
-            <Form.Group controlId="formRegion">
-                <Form.Label>Región</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_region"
-                    value={userData.id_region}
-                    onChange={handleChange}
-                    placeholder="ID Región"
-                />
-            </Form.Group>
-            <Form.Group controlId="formGeolocalizacion">
-                <Form.Label>Geolocalización</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="geolocalizacion"
-                    value={userData.geolocalizacion}
-                    onChange={handleChange}
-                    placeholder="Geolocalización"
-                />
-            </Form.Group>
-            <Form.Group controlId="formZonaBDoc">
-                <Form.Label>Zona BDoc</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_zona_BDoc"
-                    value={userData.id_zona_BDoc}
-                    onChange={handleChange}
-                    placeholder="ID Zona BDoc"
-                />
-            </Form.Group>
-            <Form.Group controlId="formOtro2">
-                <Form.Label>Otro 2</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="otro2"
-                    value={userData.otro2}
-                    onChange={handleChange}
-                    placeholder="Otro 2"
-                />
-            </Form.Group>
-            <Form.Group controlId="formOtro3">
-                <Form.Label>Otro 3</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="otro3"
-                    value={userData.otro3}
-                    onChange={handleChange}
-                    placeholder="Otro 3"
-                />
-            </Form.Group>
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Dirección"
+                name="direccion"
+                value={userData.direccion}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Número"
+                name="numero"
+                value={userData.numero}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Tipo"
+                name="tipo"
+                value={userData.tipo}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Código Postal"
+                type="number"
+                name="id_codigo_postal"
+                value={userData.id_codigo_postal}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Comuna"
+                type="number"
+                name="id_comuna"
+                value={userData.id_comuna}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Provincia"
+                type="number"
+                name="id_provincia"
+                value={userData.id_provincia}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Región"
+                type="number"
+                name="id_region"
+                value={userData.id_region}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Geolocalización"
+                name="geolocalizacion"
+                value={userData.geolocalizacion}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Zona BDoc"
+                type="number"
+                name="id_zona_BDoc"
+                value={userData.id_zona_BDoc}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Otro 2"
+                name="otro2"
+                value={userData.otro2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Otro 3"
+                name="otro3"
+                value={userData.otro3}
+                onChange={handleChange}
+                variant="outlined"
+            />
         </>
     );
 
     const renderVeterinariaForm = () => (
         <>
             {renderCommonFields()}
-            <Form.Group controlId="formContrasenia">
-                <Form.Label>Contraseña</Form.Label>
-                <Form.Control
-                    type="password"
-                    name="contrasenia"
-                    value={userData.contrasenia}
-                    onChange={handleChange}
-                    placeholder="Contraseña"
-                />
-            </Form.Group>
-            <Form.Group controlId="formSegmento">
-                <Form.Label>Segmento</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_segmento"
-                    value={userData.id_segmento}
-                    onChange={handleChange}
-                    placeholder="ID Segmento"
-                />
-            </Form.Group>
-            <Form.Group controlId="formTipoInstitucionVet">
-                <Form.Label>Tipo de Institución Veterinaria</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_tipo_institucion_vet"
-                    value={userData.id_tipo_institucion_vet}
-                    onChange={handleChange}
-                    placeholder="ID Tipo de Institución Veterinaria"
-                />
-            </Form.Group>
-            <Form.Group controlId="formEstadoInstitucion">
-                <Form.Label>Estado de la Institución</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_estado_institucion"
-                    value={userData.id_estado_institucion}
-                    onChange={handleChange}
-                    placeholder="ID Estado de la Institución"
-                />
-            </Form.Group>
-            <Form.Group controlId="formRazonSocial">
-                <Form.Label>Razón Social</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="razon_social"
-                    value={userData.razon_social}
-                    onChange={handleChange}
-                    placeholder="Razón Social"
-                />
-            </Form.Group>
-            <Form.Group controlId="formNombreComercial">
-                <Form.Label>Nombre Comercial</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="nombre_comercial"
-                    value={userData.nombre_comercial}
-                    onChange={handleChange}
-                    placeholder="Nombre Comercial"
-                />
-            </Form.Group>
-            <Form.Group controlId="formNombre1RepLegal">
-                <Form.Label>Nombre 1 Representante Legal</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="nombre_1_rep_legal"
-                    value={userData.nombre_1_rep_legal}
-                    onChange={handleChange}
-                    placeholder="Nombre 1 Representante Legal"
-                />
-            </Form.Group>
-            <Form.Group controlId="formNombre2RepLegal">
-                <Form.Label>Nombre 2 Representante Legal</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="nombre_2_rep_legal"
-                    value={userData.nombre_2_rep_legal}
-                    onChange={handleChange}
-                    placeholder="Nombre 2 Representante Legal"
-                />
-            </Form.Group>
-            <Form.Group controlId="formDireccion">
-                <Form.Label>Dirección</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="direccion"
-                    value={userData.direccion}
-                    onChange={handleChange}
-                    placeholder="Dirección"
-                />
-            </Form.Group>
-            <Form.Group controlId="formNumero">
-                <Form.Label>Número</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="numero"
-                    value={userData.numero}
-                    onChange={handleChange}
-                    placeholder="Número"
-                />
-            </Form.Group>
-            <Form.Group controlId="formCodigoPostal">
-                <Form.Label>Código Postal</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_codigo_postal"
-                    value={userData.id_codigo_postal}
-                    onChange={handleChange}
-                    placeholder="ID Código Postal"
-                />
-            </Form.Group>
-            <Form.Group controlId="formComuna">
-                <Form.Label>Comuna</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_comuna"
-                    value={userData.id_comuna}
-                    onChange={handleChange}
-                    placeholder="ID Comuna"
-                />
-            </Form.Group>
-            <Form.Group controlId="formProvincia">
-                <Form.Label>Provincia</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_provincia"
-                    value={userData.id_provincia}
-                    onChange={handleChange}
-                    placeholder="ID Provincia"
-                />
-            </Form.Group>
-            <Form.Group controlId="formRegion">
-                <Form.Label>Región</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_region"
-                    value={userData.id_region}
-                    onChange={handleChange}
-                    placeholder="ID Región"
-                />
-            </Form.Group>
-            <Form.Group controlId="formGeolocalizacion">
-                <Form.Label>Geolocalización</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="geolocalizacion"
-                    value={userData.geolocalizacion}
-                    onChange={handleChange}
-                    placeholder="Geolocalización"
-                />
-            </Form.Group>
-            <Form.Group controlId="formZonaBDoc">
-                <Form.Label>Zona BDoc</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_zona_BDoc"
-                    value={userData.id_zona_BDoc}
-                    onChange={handleChange}
-                    placeholder="ID Zona BDoc"
-                />
-            </Form.Group>
-            <Form.Group controlId="formServicio">
-                <Form.Label>Servicio</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_servicio"
-                    value={userData.id_servicio}
-                    onChange={handleChange}
-                    placeholder="ID Servicio"
-                />
-            </Form.Group>
-            <Form.Group controlId="formValidado">
-                <Form.Check
-                    type="checkbox"
-                    name="validado"
-                    checked={userData.validado}
-                    onChange={(e) => setUserData({ ...userData, validado: e.target.checked })}
-                    label="Validado"
-                />
-            </Form.Group>
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Contraseña"
+                type="password"
+                name="contrasenia"
+                value={userData.contrasenia}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Segmento"
+                type="number"
+                name="id_segmento"
+                value={userData.id_segmento}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Tipo de Institución Veterinaria"
+                type="number"
+                name="id_tipo_institucion_vet"
+                value={userData.id_tipo_institucion_vet}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Estado de la Institución"
+                type="number"
+                name="id_estado_institucion"
+                value={userData.id_estado_institucion}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Razón Social"
+                name="razon_social"
+                value={userData.razon_social}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre Comercial"
+                name="nombre_comercial"
+                value={userData.nombre_comercial}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre 1 Representante Legal"
+                name="nombre_1_rep_legal"
+                value={userData.nombre_1_rep_legal}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre 2 Representante Legal"
+                name="nombre_2_rep_legal"
+                value={userData.nombre_2_rep_legal}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Dirección"
+                name="direccion"
+                value={userData.direccion}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Número"
+                name="numero"
+                value={userData.numero}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Código Postal"
+                type="number"
+                name="id_codigo_postal"
+                value={userData.id_codigo_postal}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Comuna"
+                type="number"
+                name="id_comuna"
+                value={userData.id_comuna}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Provincia"
+                type="number"
+                name="id_provincia"
+                value={userData.id_provincia}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Región"
+                type="number"
+                name="id_region"
+                value={userData.id_region}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Geolocalización"
+                name="geolocalizacion"
+                value={userData.geolocalizacion}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Zona BDoc"
+                type="number"
+                name="id_zona_BDoc"
+                value={userData.id_zona_BDoc}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Servicio"
+                type="number"
+                name="id_servicio"
+                value={userData.id_servicio}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={userData.validado}
+                        onChange={handleChange}
+                        name="validado"
+                        color="primary"
+                    />
+                }
+                label="Validado"
+            />
         </>
     );
 
     const renderMascotaForm = () => (
         <>
-            <Form.Group controlId="formCategoriaAnimal">
-                <Form.Label>Categoría Animal</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_categoria_animal"
-                    value={userData.id_categoria_animal}
-                    onChange={handleChange}
-                    placeholder="ID Categoría Animal"
-                />
-            </Form.Group>
-            <Form.Group controlId="formEspecie">
-                <Form.Label>Especie</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_especie"
-                    value={userData.id_especie}
-                    onChange={handleChange}
-                    placeholder="ID Especie"
-                />
-            </Form.Group>
-            <Form.Group controlId="formRaza">
-                <Form.Label>Raza</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_raza"
-                    value={userData.id_raza}
-                    onChange={handleChange}
-                    placeholder="ID Raza"
-                />
-            </Form.Group>
-            <Form.Group controlId="formSexo">
-                <Form.Label>Sexo</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id_sexo"
-                    value={userData.id_sexo}
-                    onChange={handleChange}
-                    placeholder="ID Sexo"
-                />
-            </Form.Group>
-            <Form.Group controlId="formNombre">
-                <Form.Label>Nombre</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="nombre"
-                    value={userData.nombre}
-                    onChange={handleChange}
-                    placeholder="Nombre"
-                />
-            </Form.Group>
-            <Form.Group controlId="formDiaNac">
-                <Form.Label>Día de Nacimiento</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="dia_nac"
-                    value={userData.dia_nac}
-                    onChange={handleChange}
-                    placeholder="Día de Nacimiento"
-                />
-            </Form.Group>
-            <Form.Group controlId="formMesNac">
-                <Form.Label>Mes de Nacimiento</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="mes_nac"
-                    value={userData.mes_nac}
-                    onChange={handleChange}
-                    placeholder="Mes de Nacimiento"
-                />
-            </Form.Group>
-            <Form.Group controlId="formAnioNac">
-                <Form.Label>Año de Nacimiento</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="anio_nac"
-                    value={userData.anio_nac}
-                    onChange={handleChange}
-                    placeholder="Año de Nacimiento"
-                />
-            </Form.Group>
-            <Form.Group controlId="formHistorialConsulta">
-                <Form.Label>Historial de Consulta</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="historial_consulta"
-                    value={userData.historial_consulta}
-                    onChange={handleChange}
-                    placeholder="Historial de Consulta"
-                />
-            </Form.Group>
-            <Form.Group controlId="formEstatura">
-                <Form.Label>Estatura</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="estatura"
-                    value={userData.estatura}
-                    onChange={handleChange}
-                    placeholder="Estatura"
-                />
-            </Form.Group>
-            <Form.Group controlId="formColor">
-                <Form.Label>Color</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="color"
-                    value={userData.color}
-                    onChange={handleChange}
-                    placeholder="Color"
-                />
-            </Form.Group>
-            <Form.Group controlId="formPeso">
-                <Form.Label>Peso</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="peso"
-                    value={userData.peso}
-                    onChange={handleChange}
-                    placeholder="Peso"
-                />
-            </Form.Group>
-            <Form.Group controlId="formOtro">
-                <Form.Label>Otro</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="otro"
-                    value={userData.otro}
-                    onChange={handleChange}
-                    placeholder="Otro"
-                />
-            </Form.Group>
-            <Form.Group controlId="formOtro2">
-                <Form.Label>Otro 2</Form.Label>
-                <Form.Control
-                    type="text"
-                    name="otro2"
-                    value={userData.otro2}
-                    onChange={handleChange}
-                    placeholder="Otro 2"
-                />
-            </Form.Group>
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Categoría Animal"
+                type="number"
+                name="id_categoria_animal"
+                value={userData.id_categoria_animal}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Especie"
+                type="number"
+                name="id_especie"
+                value={userData.id_especie}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Raza"
+                type="number"
+                name="id_raza"
+                value={userData.id_raza}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Sexo"
+                type="number"
+                name="id_sexo"
+                value={userData.id_sexo}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre"
+                name="nombre"
+                value={userData.nombre}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Día de Nacimiento"
+                type="number"
+                name="dia_nac"
+                value={userData.dia_nac}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Mes de Nacimiento"
+                type="number"
+                name="mes_nac"
+                value={userData.mes_nac}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Año de Nacimiento"
+                type="number"
+                name="anio_nac"
+                value={userData.anio_nac}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Historial de Consulta"
+                name="historial_consulta"
+                value={userData.historial_consulta}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Estatura"
+                type="number"
+                name="estatura"
+                value={userData.estatura}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Color"
+                name="color"
+                value={userData.color}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Peso"
+                type="number"
+                name="peso"
+                value={userData.peso}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Otro"
+                name="otro"
+                value={userData.otro}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Otro 2"
+                name="otro2"
+                value={userData.otro2}
+                onChange={handleChange}
+                variant="outlined"
+            />
         </>
     );
 
     return (
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Agregar Usuario</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form>
-                    <Form.Group controlId="formTipo">
-                        <Form.Label>Tipo</Form.Label>
-                        <Form.Control as="select" name="tipo" value={userData.tipo} onChange={handleChange}>
-                            <option value="">Seleccione un tipo</option>
-                            <option value="Doctor">Doctor</option>
-                            <option value="Usuario">Usuario</option>
-                            <option value="Veterinaria">Veterinaria</option>
-                            <option value="Mascota">Mascota</option>
-                        </Form.Control>
-                    </Form.Group>
-                    {userData.tipo === 'Doctor' && renderDoctorForm()}
-                    {userData.tipo === 'Usuario' && renderUsuarioForm()}
-                    {userData.tipo === 'Veterinaria' && renderVeterinariaForm()}
-                    {userData.tipo === 'Mascota' && renderMascotaForm()}
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
+        <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+            <DialogTitle>Agregar Usuario</DialogTitle>
+            <DialogContent dividers>
+                <FormControl fullWidth margin="dense" variant="outlined">
+                    <InputLabel>Tipo</InputLabel>
+                    <Select
+                        name="tipo"
+                        value={userData.tipo}
+                        onChange={handleChange}
+                        label="Tipo"
+                    >
+                        <MenuItem value="">Seleccione un tipo</MenuItem>
+                        <MenuItem value="Doctor">Doctor</MenuItem>
+                        <MenuItem value="Usuario">Usuario</MenuItem>
+                        <MenuItem value="Veterinaria">Veterinaria</MenuItem>
+                        <MenuItem value="Mascota">Mascota</MenuItem>
+                    </Select>
+                </FormControl>
+                {userData.tipo === 'Doctor' && renderDoctorForm()}
+                {userData.tipo === 'Usuario' && renderUsuarioForm()}
+                {userData.tipo === 'Veterinaria' && renderVeterinariaForm()}
+                {userData.tipo === 'Mascota' && renderMascotaForm()}
+            </DialogContent>
+            <DialogActions>
                 <Button
-                    style={buttonConfirmStyle}
+                    onClick={handleSaveUser}
                     onMouseEnter={() => setHoverConfirm(true)}
                     onMouseLeave={() => setHoverConfirm(false)}
-                    onClick={handleSaveUser}
+                    style={buttonConfirmStyle}
                 >
                     Guardar
                 </Button>
                 <Button
-                    style={buttonCancelStyle}
                     onClick={handleClose}
+                    style={buttonCancelStyle}
                 >
                     Cancelar
                 </Button>
-            </Modal.Footer>
-        </Modal>
+            </DialogActions>
+        </Dialog>
     );
 };
 

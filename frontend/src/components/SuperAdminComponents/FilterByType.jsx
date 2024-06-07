@@ -1,22 +1,66 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 const FilterByType = ({ onFilterChange }) => {
     return (
-        <div className="filter-by-type d-flex align-items-center mb-3">
-            <label htmlFor="filterOptions" className="mr-2 filter-by-type">Filtrar por tipo:</label>
-            <select
+        <FormControl
+            variant="outlined"
+            sx={{
+                minWidth: 130, // Reducido el tamaño mínimo
+                '& .MuiOutlinedInput-root': {
+                    '& fieldset': {
+                        borderColor: '#ff436f', // Rosado
+                    },
+                    '&:hover fieldset': {
+                        borderColor: '#ff436f', // Rosado en hover
+                    },
+                    '&.Mui-focused fieldset': {
+                        borderColor: '#ff436f', // Rosado en focus
+                    },
+                    '& .MuiSelect-select': {
+                        padding: '8px 14px', // Ajustar padding para tamaño más pequeño
+                        fontSize: '14px', // Asegurar el tamaño de fuente consistente
+                    },
+                },
+                '& .MuiInputLabel-root': {
+                    color: '#ff436f', // Color del label
+                    fontSize: '14px', // Tamaño de fuente consistente
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                    color: '#ff436f', // Color del label en focus
+                },
+                fontSize: '14px', // Tamaño de fuente consistente
+            }}
+        >
+            <InputLabel id="filter-options-label">Filtrar por tipo</InputLabel>
+            <Select
+                labelId="filter-options-label"
                 id="filterOptions"
-                className="form-control w-auto filter-by-type"
                 onChange={(e) => onFilterChange(e.target.value)}
+                label="Filtrar por tipo"
+                MenuProps={{
+                    PaperProps: {
+                        sx: {
+                            '& .MuiMenuItem-root': {
+                                fontSize: '14px', // Tamaño de fuente consistente
+                                '&.Mui-selected': {
+                                    backgroundColor: '#ff436f1a', // Fondo rosado claro al seleccionar
+                                },
+                                '&:hover': {
+                                    backgroundColor: '#ff436f1a', // Fondo rosado claro al pasar el mouse
+                                },
+                            },
+                        },
+                    },
+                }}
             >
-                <option value="">Todos</option>
-                <option value="Mascota">Mascota</option>
-                <option value="Veterinaria">Veterinaria</option>
-                <option value="Doctor">Doctor</option>
-                <option value="Usuario">Usuario</option>
-            </select>
-        </div>
+                <MenuItem value="">Todos</MenuItem>
+                <MenuItem value="Mascota">Mascota</MenuItem>
+                <MenuItem value="Veterinaria">Veterinaria</MenuItem>
+                <MenuItem value="Doctor">Doctor</MenuItem>
+                <MenuItem value="Usuario">Usuario</MenuItem>
+            </Select>
+        </FormControl>
     );
 };
 
