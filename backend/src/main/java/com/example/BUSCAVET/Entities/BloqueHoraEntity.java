@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
@@ -24,6 +25,9 @@ public class BloqueHoraEntity {
     private int idCentro;
     private String motivo;
     private Boolean activo;
+    private Boolean tomadoTemporal;
+    private Boolean agendadoPorUsuario;
+    private LocalDate fecha;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime tiempoAtencion;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")

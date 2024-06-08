@@ -21,6 +21,9 @@ public class BloqueHorarioService {
     @Autowired
     DoctorRepository doctorRepository;
 
+    @Autowired
+    BloqueHoraService bloqueHoraService;
+
     public void guardarBloqueHorario(BloqueHorarioEntity bloqueHorario) {
         bloqueHorarioRepository.save(bloqueHorario);
     }
@@ -66,6 +69,12 @@ public class BloqueHorarioService {
         bloqueHorario.setHoraInicio(LocalTime.parse((String) bloqueHorarioData.get("horaInicio")));
         bloqueHorario.setHoraFinal(LocalTime.parse((String) bloqueHorarioData.get("horaFinal")));
         return bloqueHorario;
+    }
+
+    public void crearBloquesHoras(DoctorEntity veterinario, BloqueHorarioEntity bloqueHorario) {
+        bloqueHorario.setDoctor(veterinario);
+        bloqueHorarioRepository.save(bloqueHorario);
+        bloqueHoraService.crearBloquesHoraInicial(veterinario, bloqueHorario);
     }
 
     public void eliminarBloqueHorario(Long id) {
