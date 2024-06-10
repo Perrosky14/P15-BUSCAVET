@@ -8,47 +8,34 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "BloqueHora")
+@Table(name = "BloqueHorario")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class BloqueHoraEntity {
+public class BloqueHorarioEntity {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
-    private int idCentro;
-    private String motivo;
-    private Boolean activo;
-    private Boolean tomadoTemporal;
-    private Boolean agendadoPorUsuario;
-    private LocalDate fecha;
+    private String turno;
+    private Integer cantidadBloquesPorDia;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime tiempoAtencion;
+    private LocalTime tiempoBloques;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime tiempoPausas;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime tiempoTrabajoTurno;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime horaInicio;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime bloqueoTemporal;
+    private LocalTime horaFinal;
 
-
-    @ManyToOne
-    @JoinColumn(name = "id_usuario_asociado")
-    @JsonBackReference(value = "usuario_bloqueHora")
-    private UsuarioEntity usuario;
-
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_veterinario_asociado")
-    @JsonBackReference(value = "doctor_bloqueHora")
+    @JsonBackReference(value = "doctor_bloqueHorario")
     private DoctorEntity doctor;
-
-    @ManyToOne
-    @JoinColumn(name = "id_mascota_asociada")
-    @JsonBackReference(value = "mascota_bloqueHora")
-    private MascotaEntity mascota;
-
 }

@@ -1,6 +1,8 @@
 package com.example.BUSCAVET.Controllers;
 
+import com.example.BUSCAVET.Entities.BloqueHorarioEntity;
 import com.example.BUSCAVET.Entities.DoctorEntity;
+import com.example.BUSCAVET.Services.BloqueHorarioService;
 import com.example.BUSCAVET.Services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,9 @@ import java.util.Optional;
 public class DoctorController {
     @Autowired
     DoctorService doctorService;
+
+    @Autowired
+    BloqueHorarioService bloqueHorarioService;
 
     @GetMapping("/obtener-doctores")
     public ArrayList<DoctorEntity> obtenerDoctores(){
@@ -45,6 +50,18 @@ public class DoctorController {
     @PostMapping("/nuevo-doctor")
     public ResponseEntity<?> guardarDoctor(@RequestBody DoctorEntity doctor) {
         return ResponseEntity.status(HttpStatus.CREATED).body(doctorService.guardarDoctor(doctor));
+    }
+
+    @PostMapping("/crear-bloquesHora")
+    public ResponseEntity<?> crearBloquesHora(@RequestBody Map<String, Object> requestBody) {
+        Long idVeterinario = ((Number) requestBody.get("idVeterinario")).longValue();
+        DoctorEntity veterinario = doctorService.obtenerPorId(idVeterinario);
+        if (veterinario == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún doctor que tenga la id: " + idVeterinario);
+        }
+        BloqueHorarioEntity bloqueHorario = bloqueHorarioService.transformarBloqueHorario((Map<String, Object>) requestBody.get("bloqueHorario"));
+        bloqueHorarioService.crearBloquesHoras(veterinario, bloqueHorario);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Se ha creado los bloques de hora para el veterinario de forma correcta.");
     }
 
     @PutMapping("/actualizar-doctor")
