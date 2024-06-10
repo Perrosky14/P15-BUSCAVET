@@ -37,7 +37,7 @@ public class BloqueHoraController {
         return bloqueHoraService.obtenerBloquesHoras();
     }
 
-    @GetMapping("/obtener-bloqueHora")
+    @PostMapping("/obtener-bloqueHora")
     public ResponseEntity<?> obtenerBloqueHoraPorId(@RequestBody Map<String, Object> requestBody) {
         Long idBloqueHora = ((Number) requestBody.get("idBloqueHora")).longValue();
         BloqueHoraEntity bloqueHora = bloqueHoraService.obtenerPorId(idBloqueHora);
@@ -47,7 +47,7 @@ public class BloqueHoraController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(bloqueHora);
     }
 
-    @GetMapping("/obtener-bloquesHora-usuario")
+    @PostMapping("/obtener-bloquesHora-usuario")
     public ResponseEntity<?> obtenerBloquesHoraPorUsuario(@RequestBody Map<String, Object> requesBody) {
         Long idUsuario = ((Number) requesBody.get("idUsuario")).longValue();
         UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
@@ -57,7 +57,7 @@ public class BloqueHoraController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario);
     }
 
-    @GetMapping("/obtener-bloquesHora-veterinario")
+    @PostMapping("/obtener-bloquesHora-veterinario")
     public ResponseEntity<?> obtenerBloquesHoraPorVeterinario(@RequestBody Map<String, Object> requestBody) {
         Long idVeterinario = ((Number) requestBody.get("idVeterinario")).longValue();
         DoctorEntity veterinario = doctorService.obtenerPorId(idVeterinario);
@@ -67,7 +67,7 @@ public class BloqueHoraController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún veterinario que tenga la id: " + idVeterinario);
     }
 
-    @GetMapping("/obtener-bloquesHora-mascota")
+    @PostMapping("/obtener-bloquesHora-mascota")
     public ResponseEntity<?> obtenerBloquesHoraPorMascota(@RequestBody Map<String, Object> requestBody) {
         Long idMascota = ((Number) requestBody.get("idMascota")).longValue();
         MascotaEntity mascota = mascotaService.obtenerPorId(idMascota);
@@ -81,6 +81,49 @@ public class BloqueHoraController {
     public ResponseEntity<?> guardarBloqueHora(@RequestBody BloqueHoraEntity bloqueHora) {
         bloqueHoraService.guardarBloqueHora(bloqueHora);
         return ResponseEntity.status(HttpStatus.CREATED).body("El bloque de hora se ha registrado correctamente.");
+    }
+
+    @PostMapping("/nuevo-bloqueHora-doctor")
+    public ResponseEntity<?> guardarBloqueHora(@RequestBody Map<String, Object> requestBody) {
+        Long iddoctor = ((Number) requestBody.get("idDoctor")).longValue();
+        DoctorEntity doctor = doctorService.obtenerPorId(iddoctor);
+        if (doctor != null) {
+            BloqueHoraEntity bloqueHora = bloqueHoraService.transformarBloqueHora((Map<String, Object>) requestBody.get("bloqueHora"));
+            bloqueHora.setDoctor(doctor);
+            bloqueHoraService.guardarBloqueHora(bloqueHora);
+            return ResponseEntity.status(HttpStatus.CREATED).body("El bloque de hora se ha registrado correctamente.");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún doctor que tenga la id: " + iddoctor);
+    }
+
+    @PostMapping("/agendar-hora")
+    public ResponseEntity<?> agendarBloqueHora(@RequestBody Map<String, Object> requestBody) {
+        Long idBloqueHora = ((Number) requestBody.get("idBloqueHora")).longValue();
+        BloqueHoraEntity bloqueHora = bloqueHoraService.obtenerPorId(idBloqueHora);
+        if (bloqueHora != null) {
+            if (!bloqueHora.getAgendadoPorUsuario()) {//Pregunta si no ha sido agendado por un usuario
+                Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
+                UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
+                if (usuario != null) {
+                    Long idMascota = ((Number) requestBody.get("idMascota")).longValue();
+                    MascotaEntity mascota = mascotaService.obtenerPorId(idMascota);
+                    if (mascota != null) {
+                        if (usuario.equals(mascota.getUsuario())) {
+                            bloqueHora.setAgendadoPorUsuario(Boolean.TRUE);
+                            bloqueHora.setUsuario(usuario);
+                            bloqueHora.setMascota(mascota);
+                            bloqueHoraService.actualizarBloqueHora(idBloqueHora, bloqueHora);
+                            ResponseEntity.status(HttpStatus.ACCEPTED).body("Se ha agendado la hora con id: " + idBloqueHora + ", con el usuario con id: " + idUsuario + ", con la mascota con id: " + idMascota + ", de forma exitosa.");
+                        }
+                        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("El usuario con id: " + idUsuario + " no puede agendar hora con la mascota con id: " + idMascota + ", ya que el usuario no creó dicha mascota. No tiene dicha autorización.");
+                    }
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna mascota que tenga la id: " + idMascota);
+                }
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("El bloque de hora que se intenta agendar ya ha sido agendado por un usuario.");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún bloque de hora que tenga la id: " + idBloqueHora);
     }
 
     @PutMapping("/actualizar-bloqueHora")

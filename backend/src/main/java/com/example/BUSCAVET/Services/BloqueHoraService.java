@@ -1,17 +1,17 @@
 package com.example.BUSCAVET.Services;
 
 import com.example.BUSCAVET.Entities.*;
-import com.example.BUSCAVET.Repositories.BloqueHoraRepository;
-import com.example.BUSCAVET.Repositories.DoctorRepository;
-import com.example.BUSCAVET.Repositories.MascotaRepository;
-import com.example.BUSCAVET.Repositories.UsuarioRepository;
+import com.example.BUSCAVET.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -20,6 +20,9 @@ public class BloqueHoraService {
 
     @Autowired
     BloqueHoraRepository bloqueHoraRepository;
+
+    @Autowired
+    BloqueHorarioRepository bloqueHorarioRepository;
 
     @Autowired
     UsuarioRepository usuarioRepository;
@@ -72,9 +75,15 @@ public class BloqueHoraService {
             bloqueHoraExistente.setIdCentro(bloqueHoraActualizado.getIdCentro());
             bloqueHoraExistente.setMotivo(bloqueHoraActualizado.getMotivo());
             bloqueHoraExistente.setActivo(bloqueHoraActualizado.getActivo());
+            bloqueHoraExistente.setTomadoTemporal(bloqueHoraActualizado.getTomadoTemporal());
+            bloqueHoraExistente.setAgendadoPorUsuario(bloqueHoraActualizado.getAgendadoPorUsuario());
             bloqueHoraExistente.setTiempoAtencion(bloqueHoraActualizado.getTiempoAtencion());
             bloqueHoraExistente.setHoraInicio(bloqueHoraActualizado.getHoraInicio());
             bloqueHoraExistente.setBloqueoTemporal(bloqueHoraActualizado.getBloqueoTemporal());
+            bloqueHoraExistente.setFecha(bloqueHoraActualizado.getFecha());
+            bloqueHoraExistente.setUsuario(bloqueHoraActualizado.getUsuario());
+            bloqueHoraExistente.setMascota(bloqueHoraActualizado.getMascota());
+            bloqueHoraExistente.setDoctor(bloqueHoraActualizado.getDoctor());
             return bloqueHoraRepository.save(bloqueHoraExistente);
         }
         return null;
@@ -85,9 +94,12 @@ public class BloqueHoraService {
         bloqueHora.setIdCentro((Integer) bloqueHoraData.get("idCentro"));
         bloqueHora.setMotivo((String) bloqueHoraData.get("motivo"));
         bloqueHora.setActivo((Boolean) bloqueHoraData.get("activo"));
+        bloqueHora.setTomadoTemporal((Boolean) bloqueHoraData.get("tomadoTemporal"));
+        bloqueHora.setAgendadoPorUsuario((Boolean) bloqueHoraData.get("agendadoPorUsuario"));
         bloqueHora.setTiempoAtencion(LocalTime.parse((String) bloqueHoraData.get("tiempoAtencion")));
         bloqueHora.setHoraInicio(LocalTime.parse((String) bloqueHoraData.get("horaInicio")));
         bloqueHora.setBloqueoTemporal(LocalTime.parse((String) bloqueHoraData.get("bloqueoTemporal")));
+        bloqueHora.setFecha(LocalDate.parse((String) bloqueHoraData.get("fecha")));
         return bloqueHora;
     }
 
@@ -96,18 +108,52 @@ public class BloqueHoraService {
         LocalTime horaInicio = bloqueHorario.getHoraInicio();
         LocalTime tiempoAtencion = bloqueHorario.getTiempoBloques();
         LocalTime tiempoPausas = bloqueHorario.getTiempoPausas();
+        LocalDate fechaActual = LocalDate.now().plusDays(1);//Calculamos un dia posterior de la inicializacion de los bloques hora.
 
-        IntStream.range(0, 4).parallel().forEach(i -> {//Calcula por un mes los bloques.
-            LocalDate fechaSemana = LocalDate.now().plusWeeks(i);
-            IntStream.range(0, 7).parallel().forEach(j -> {//Calcula por dia los bloques.
-                LocalDate fechaDia = fechaSemana.plusDays(j);
-                LocalTime tiempoIterado = horaInicio;
-                for (int x = 0; x < cantBloques; x++) {//Crea los bloques del dia
-                    crearBloqueHora(veterinario,fechaDia, tiempoAtencion, tiempoIterado);
-                    tiempoIterado = tiempoIterado.plusHours(tiempoAtencion.getHour()).plusMinutes(tiempoAtencion.getMinute());//Suma el tiempo de atencion del bloque creado.
-                    tiempoIterado = tiempoIterado.plusHours(tiempoPausas.getHour()).plusMinutes(tiempoPausas.getMinute());//Suma el tiempo de desncaso entre los bloques.
+
+        IntStream.range(0, 28).parallel().forEach(d -> {//Calcula por un mes aprox (28 dias)
+            LocalDate fechaDia = fechaActual.plusDays(d);
+            LocalTime tiempoIterado = horaInicio;
+            for (int x = 0; x < cantBloques; x++) {//Crea los bloques del dia
+                crearBloqueHora(veterinario,fechaDia, tiempoAtencion, tiempoIterado);
+                tiempoIterado = tiempoIterado.plusHours(tiempoAtencion.getHour()).plusMinutes(tiempoAtencion.getMinute());//Suma el tiempo de atencion del bloque creado.
+                tiempoIterado = tiempoIterado.plusHours(tiempoPausas.getHour()).plusMinutes(tiempoPausas.getMinute());//Suma el tiempo de desncaso entre los bloques.
+            }
+        });
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?", zone = "America/Santiago")
+    public void crearBloquesHoraParaDoctores() {
+        System.out.println("El método crearBloquesHoraParaDoctores se está ejecutando...");
+        List<DoctorEntity> doctores = doctorRepository.findAll();
+        doctores.parallelStream().forEach(doctor -> {
+            BloqueHorarioEntity bloqueHorario = bloqueHorarioRepository.findByDoctor(doctor);
+            //Pregunta si estan propiedades de los bloques de hora lo que significa que ya ha inicializado anteriormente.
+            if (bloqueHorario != null) {
+                LocalDate ultimaFecha = obtenerUltimaFechaBloqueHoraDoctor(doctor);
+                LocalDate fechaHoy = LocalDate.now();
+                Long diasDiferencia = Math.abs(ChronoUnit.DAYS.between(ultimaFecha, fechaHoy));
+
+                if (diasDiferencia < 15) {
+                    Integer cantBloques = bloqueHorario.getCantidadBloquesPorDia();
+                    LocalTime horaInicio = bloqueHorario.getHoraInicio();
+                    LocalTime tiempoAtencion = bloqueHorario.getTiempoBloques();
+                    LocalTime tiempoPausas = bloqueHorario.getTiempoPausas();
+
+                    LocalDate nuevaFecha = ultimaFecha.plusDays(1);//Toma la última fecha de los bloques hora existentes y suma un dia para no asginar la fecha que ya tienen los bloques de la ultima fecha.
+
+                    IntStream.range(0, 28).parallel().forEach(d -> {//Calcula por un mes aprox (28 dias)
+                        LocalDate fechaDia = nuevaFecha.plusDays(d);
+                        LocalTime tiempoIterado = horaInicio;
+
+                        for (int x = 0; x < cantBloques; x++) {//Crea los bloques del dia
+                            crearBloqueHora(doctor, fechaDia, tiempoAtencion, tiempoIterado);
+                            tiempoIterado = tiempoIterado.plusHours(tiempoAtencion.getHour()).plusMinutes(tiempoAtencion.getMinute());//Suma el tiempo de atencion del bloque creado.
+                            tiempoIterado = tiempoIterado.plusHours(tiempoPausas.getHour()).plusMinutes(tiempoPausas.getMinute());//Suma el tiempo de desncaso entre los bloques.
+                        }
+                    });
                 }
-            });
+            }
         });
     }
 
@@ -125,6 +171,19 @@ public class BloqueHoraService {
         bloqueHora.setIdCentro(0);
         bloqueHora.setMotivo("");
         bloqueHoraRepository.save(bloqueHora);
+    }
+
+    public LocalDate obtenerUltimaFechaBloqueHoraDoctor(DoctorEntity doctor) {
+        ArrayList<BloqueHoraEntity> bloquesHora = bloqueHoraRepository.findAllByDoctor(doctor);
+        LocalDate ultimaFecha = null;
+
+        for (BloqueHoraEntity bloqueHora: bloquesHora) {
+            if (ultimaFecha == null || bloqueHora.getFecha().isAfter(ultimaFecha)) {
+                ultimaFecha = bloqueHora.getFecha();
+            }
+        }
+
+        return ultimaFecha;
     }
 
     public void eliminarBloquehora(Long id) {

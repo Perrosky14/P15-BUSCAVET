@@ -1,5 +1,6 @@
 package com.example.BUSCAVET.Controllers;
 
+import com.example.BUSCAVET.Entities.BloqueHoraEntity;
 import com.example.BUSCAVET.Entities.BloqueHorarioEntity;
 import com.example.BUSCAVET.Entities.DoctorEntity;
 import com.example.BUSCAVET.Services.BloqueHoraService;
@@ -54,6 +55,20 @@ public class BloqueHorarioController {
         bloqueHorarioService.guardarBloqueHorario(bloqueHorario);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("El bloque de horarios se ha registrado correctamente.");
     }
+
+    @PostMapping("/nuevo-bloqueHorario-doctor")
+    public ResponseEntity<?> guardarBloqueHorario(@RequestBody Map<String, Object> requestBody) {
+        Long idDoctor = ((Number) requestBody.get("idDoctor")).longValue();
+        DoctorEntity doctor = doctorService.obtenerPorId(idDoctor);
+        if (doctor != null) {
+            BloqueHorarioEntity bloqueHorario = bloqueHorarioService.transformarBloqueHorario((Map<String, Object>) requestBody.get("bloqueHorario"));
+            bloqueHorario.setDoctor(doctor);
+            bloqueHorarioService.guardarBloqueHorario(bloqueHorario);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("El bloque de horarios se ha registrado correctamente.");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún doctor que tenga la id: " + idDoctor);
+    }
+
 
     @PutMapping("/actualizar-bloqueHorario")
     public ResponseEntity<?> actualizarBloqueHorario(@RequestBody Map<String, Object> requestBody) {

@@ -54,6 +54,7 @@ public class BloqueHorarioService {
             bloqueHorarioExistente.setTiempoTrabajoTurno(bloqueHorarioActualizado.getTiempoTrabajoTurno());
             bloqueHorarioExistente.setHoraInicio(bloqueHorarioActualizado.getHoraInicio());
             bloqueHorarioExistente.setHoraFinal(bloqueHorarioActualizado.getHoraFinal());
+            bloqueHorarioExistente.setDoctor(bloqueHorarioActualizado.getDoctor());
             return bloqueHorarioRepository.save(bloqueHorarioExistente);
         }
         return null;
