@@ -1,11 +1,15 @@
 package com.example.BUSCAVET.Entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -38,5 +42,9 @@ public class MascotaEntity {
     @JoinColumn(name = "id_usuario_asociado")
     @JsonBackReference
     private UsuarioEntity usuario;
+
+    @OneToMany(mappedBy = "mascota", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "mascota_bloqueHora")
+    private List<BloqueHoraEntity> horaAgendada = new ArrayList<>();
 
 }

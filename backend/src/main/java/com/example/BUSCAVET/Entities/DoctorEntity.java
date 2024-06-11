@@ -2,6 +2,7 @@ package com.example.BUSCAVET.Entities;
 
 import com.example.BUSCAVET.Security.CustomUserDetails;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -70,6 +72,15 @@ public class DoctorEntity implements CustomUserDetails {
     @JoinColumn(name = "id_veterinaria_asociada")
     @JsonBackReference
     private VeterinariaEntity veterinaria;
+
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "doctor_bloqueHora")
+    private List<BloqueHoraEntity> bloqueHoras = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "id_bloque_horario_asociado")
+    @JsonBackReference(value = "doctor_bloqueHorario")
+    private BloqueHorarioEntity bloqueHorario;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(rol.name()));
