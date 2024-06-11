@@ -61,17 +61,17 @@ const NavStyle = styled.nav`
 .header .btn button{
     margin-left: 20px;
     font-weight: 700;
-    color: #00000;
+    color: #FF4081;
     padding: 9px 25px;
-    background: #eceff1;
+    background: :f0f0f0;
     border: none;
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease 0s;
   }
 .header .btn button:hover{
-    background-color: #e2f1f8;
-    color: #000000;
+    background: #FF4081;
+    color: #fff;
     transform: scale(1.1);
   }
 .header .btn-2 button {
