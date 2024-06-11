@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuario")
@@ -34,10 +35,19 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(usuario);
     }
 
+    @GetMapping("/obtener-usuario-email")
+    public ResponseEntity<?> obtenerUsuarioPorEmail(@RequestBody Map<String, Object> requestBody) {
+        String email = ((String) requestBody.get("email"));
+        Optional<UsuarioEntity> usuario = usuarioService.obtenerPorEmail(email);
+        if (!usuario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga el email: " + email);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(usuario.get());
+    }
+
     @PostMapping("/nuevo-usuario")
     public ResponseEntity<?> guardarUsuario(@RequestBody UsuarioEntity usuario){
-        usuarioService.guardarUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body("El usuario ha sido registrado correctamente.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.guardarUsuario(usuario));
     }
 
     @PutMapping("/actualizar-usuario")
