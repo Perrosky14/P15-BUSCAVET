@@ -71,18 +71,34 @@ public class UsuarioController {
     }
 
     @PostMapping("/crear-mascota")
-    public ResponseEntity<?> registrarMascota(@RequestBody Map<String, Object> requestBody){
-        Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
-        UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
-        if (usuario != null) {
-            MascotaEntity mascota = mascotaService.transformarMascota((Map<String, Object>) requestBody.get("mascota"));
-            mascota.setUsuario(usuario);
-            mascotaService.guardarMascota(mascota);
-            return ResponseEntity.status(HttpStatus.CREATED).body("La mascota " + mascota.getNombre() + " ha sido registrada correctamente por " + "el usuario con la id: " + idUsuario);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningun usuario que tenga la id: " + idUsuario);
+    public ResponseEntity<?> registrarMascota(@RequestBody Map<String, Object> requestBody) {
+        System.out.println("Request body: " + requestBody);
+
+        try {
+            Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
+            System.out.println("idUsuario: " + idUsuario);
+
+            UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
+            if (usuario != null) {
+                Map<String, Object> mascotaMap = (Map<String, Object>) requestBody.get("mascota");
+                System.out.println("Mascota map: " + mascotaMap);
+
+                MascotaEntity mascota = mascotaService.transformarMascota(mascotaMap);
+                System.out.println("Mascota entity: " + mascota);
+
+                mascota.setUsuario(usuario);
+                mascotaService.guardarMascota(mascota);
+
+                return ResponseEntity.status(HttpStatus.CREATED).body("La mascota " + mascota.getNombre() + " ha sido registrada correctamente por el usuario con la id: " + idUsuario);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningun usuario que tenga la id: " + idUsuario);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error procesando la solicitud: " + e.getMessage());
         }
     }
+
+
 
     @PutMapping("/modificar-mascota")
     public ResponseEntity<?> actualizarMascota(@RequestBody Map<String, Object> requestBody){
@@ -127,6 +143,16 @@ public class UsuarioController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario + ", para eliminar la mascota.");
         }
+    }
+
+    @PostMapping("/obtener-mascotas")
+    public ResponseEntity<?> obtenerMascotasPorUsuario(@RequestBody Map<String, Object> requestBody){
+        Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
+        UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
+        if (usuario != null) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(mascotaService.buscarTodosPorUsuario(usuario));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario);
     }
 
 }

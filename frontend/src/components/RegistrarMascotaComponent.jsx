@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
     Button, Card, CardActions, CardContent, CardHeader, FormControlLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup,
     Select, TextField, Tooltip, Typography, CardMedia,
@@ -10,8 +10,10 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import CloseIcon from '@mui/icons-material/Close';
 import { es } from 'date-fns/locale';
-import NavbarComponent from "./NavbarComponent";
+import Navbar2Component from "./Navbar2Component";
 import theme from "./styles/themeComponent";
+import UsuarioService from "../services/UsuarioService";
+import { jwtDecode } from "jwt-decode";
 
 const styles = {
     container: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '85vh', backgroundColor: '#FBFBFB' },
@@ -26,22 +28,60 @@ const styles = {
 export default function RegistarMascotaComponent() {
     const navigate = useNavigate();
     const [currentCard, setCurrentCard] = useState(1);
+    const [errors, setErrors] = useState({});
     const [mascotaData, setMascotaData] = useState({
-        especie: '', raza: '', sexo: '', nombre: '', fechaNacimiento: null, historialMedico: null,
-        estatura: '', color: '', peso: '', foto: null, tipoExotico: ''
+        id_categoria_animal: '',
+        especie: '',
+        raza: '',
+        sexo: '',
+        nombre: '',
+        dia: 0,
+        mes: 0,
+        anio: 0,
+        otro: '',
+        historial_consulta: '',
+        estatura: 0,
+        color: '',
+        peso: 0,
+        otro2: '',
     });
 
-    const [errors, setErrors] = useState({});
+
+    const location = useLocation();
+    const { user } = location.state || {};
+    if (!user) {
+        return <div>Error: Usuario no autenticado</div>;
+    }
+
+
+    const handleDateChange = (date) => {
+        if (date) {
+            setMascotaData((prevState) => ({
+                ...prevState,
+                fechaNacimiento: date,
+                dia: date.getDate(), // Obtiene el día (1-31)
+                mes: date.getMonth() + 1, // Obtiene el mes (0-11), por eso se suma 1
+                anio: date.getFullYear(), // Obtiene el año (YYYY)
+            }));
+        } else {
+            setMascotaData((prevState) => ({
+                ...prevState,
+                fechaNacimiento: null,
+                dia: 0,
+                mes: 0,
+                anio: 0,
+            }));
+        }
+    };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setMascotaData({ ...mascotaData, [name]: value });
         setErrors({ ...errors, [name]: '' });
-    };
-
-    const handleDateChange = (date) => {
-        setMascotaData({ ...mascotaData, fechaNacimiento: date });
-        setErrors({ ...errors, fechaNacimiento: '' });
+        setMascotaData((prevData) => ({
+        ...prevData,
+        [name]: name === 'estatura' || name === 'peso' ? Number(value) : value
+    }));
     };
 
     const handleFileChange = (event) => {
@@ -76,12 +116,59 @@ export default function RegistarMascotaComponent() {
         }
     };
 
+
+
     const handleBack = () => setCurrentCard(prevCard => prevCard - 1);
     const handleClose = () => navigate('/');
+
+    /**
+    const [user, setUser] = useState(null);
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                setUser(decoded);
+                console.log("datos del usuario:", user);
+            } catch (e) {
+                console.error('Token inválido', e);
+                localStorage.removeItem('token');
+                navigate('/login');
+            }
+        } else {
+            navigate('/login');
+        }
+    }, [navigate]); //Si pongo: [user, navigate] el localstorage se vuelve recursivo
+
+     */
+
+
     const handleSave = () => {
         if (validateStep1() && validateStep2()) {
             console.log('Datos de la mascota:', mascotaData);
-            setCurrentCard(4);  // Cambia a la tarjeta 4 después de guardar los datos
+            // Elimina cualquier propiedad que no se necesita o que puede ser nula
+            const sanitizedMascotaData = {
+                id_categoria_animal: mascotaData.id_categoria_animal || "",
+                especie: mascotaData.especie,
+                raza: mascotaData.raza,
+                sexo: mascotaData.sexo,
+                nombre: mascotaData.nombre,
+                dia: mascotaData.dia,
+                mes: mascotaData.mes,
+                anio: mascotaData.anio,
+                color: mascotaData.color,
+                estatura: mascotaData.estatura || 0,
+                peso: mascotaData.peso || 0,
+            };
+
+            UsuarioService.createMascota(user.id, sanitizedMascotaData)
+                .then(response => {
+                    console.log('Mascota registrada:', response.data);
+                    setCurrentCard(4);  // Cambia a la tarjeta 4 después de guardar los datos
+                })
+                .catch(error => {
+                    console.error('Error al registrar mascota:', error.response ? error.response.data : error.message);
+                });
         }
     };
 
@@ -118,7 +205,7 @@ export default function RegistarMascotaComponent() {
                             {mascotaData.especie === "exotico" && (
 
 
-                                <Grid container spacing={2} sx={{ mt:-2 }}>
+                                <Grid container spacing={2} sx={{ mt: -2 }}>
                                     <Grid item xs={12}>
                                         <TextField
                                             label="Tipo de mascota exótica" fullWidth margin="normal" size="small"
@@ -186,9 +273,11 @@ export default function RegistarMascotaComponent() {
                             </FormControl>
                             {errors.sexo && <Typography color="error">{errors.sexo}</Typography>}
                             <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
-                                <DatePicker label="Fecha de nacimiento" value={mascotaData.fechaNacimiento} onChange={handleDateChange}
+                                <DatePicker
+                                    label="Fecha de nacimiento"
+                                    value={mascotaData.fechaNacimiento}
+                                    onChange={handleDateChange}
                                     renderInput={(params) => <TextField {...params} fullWidth size="small" required />}
-                                    style={styles.formElement}
                                     inputFormat="dd/MM/yyyy"
                                     disableFuture
                                 />
@@ -230,13 +319,13 @@ export default function RegistarMascotaComponent() {
                                 label="Estatura (cm)" size="small" fullWidth margin="normal"
                                 name="estatura" value={mascotaData.estatura} onChange={handleInputChange}
                                 style={styles.formElement} placeholder="Opcional"
-                                inputProps={{ inputMode: 'numeric', pattern: "^[0-9]*\\.?[0-9]+$", title: "Ingrese solo números positivos y decimales." }}
+                                inputProps={{ inputMode: 'numeric', pattern: "^[0-9]*\\.?[0-9]+$", title: "Ingrese solo números positivos y decimales.", type: "number" }}
                             />
                             <TextField
                                 label="Peso (kg)" size="small" fullWidth margin="normal"
                                 name="peso" value={mascotaData.peso} onChange={handleInputChange}
                                 style={styles.formElement} placeholder="Opcional"
-                                inputProps={{ inputMode: 'numeric', pattern: "^[0-9]*\\.?[0-9]+$", title: "Ingrese solo números positivos y decimales." }}
+                                inputProps={{ inputMode: 'numeric', pattern: "^[0-9]*\\.?[0-9]+$", title: "Ingrese solo números positivos y decimales.", type: "number" }}
                             />
                             <InputLabel style={styles.formElement}>Foto de la mascota (opcional)</InputLabel>
                             <input
@@ -309,7 +398,7 @@ export default function RegistarMascotaComponent() {
 
     return (
         <>
-            <NavbarComponent />
+            <Navbar2Component />
             <ThemeProvider theme={theme}>
                 <div style={styles.container}>
                     {renderCardContent()}

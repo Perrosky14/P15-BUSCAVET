@@ -23,19 +23,19 @@ public class MascotaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id;
-    private int id_categoria_animal;
-    private int id_especie;
-    private int id_raza;
-    private int id_sexo;
+    private String id_categoria_animal;
+    private String id_especie;
+    private String id_raza;
+    private String id_sexo;
     private String nombre;
     private int dia_nac;
     private int mes_nac;
     private int anio_nac;
     private String otro;
     private String historial_consulta;
-    private Double estatura;
+    private Integer estatura;
     private String color;
-    private Double peso;
+    private Integer peso;
     private String otro2;
 
     @ManyToOne
