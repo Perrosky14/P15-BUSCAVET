@@ -18,12 +18,11 @@ const styles = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '75vh', // Ocupa toda la altura de la pantalla
+        height: '75vh',
     },
-
     card: {
-        width: '90%', // El Box ocupa el 80% del ancho de la pantalla
-        maxWidth: 502, // Máximo ancho del Box
+        width: '90%',
+        maxWidth: 502,
         padding: 5,
         textAlign: 'center',
         height: 'auto',
@@ -32,13 +31,11 @@ const styles = {
         marginTop: 'auto',
         marginBottom: 'auto'
     },
-
     header: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-
     stepText: {
         position: 'absolute',
         left: '50%',
@@ -46,14 +43,12 @@ const styles = {
         color: '#6bc62d',
         fontWeight: 'bold'
     },
-
     formControl: {
         marginTop: 3,
         width: '100%',
     },
-
     button: {
-        with: '100%',
+        width: '100%',
         height: '50px',
         borderRadius: '16px',
     },
@@ -64,7 +59,7 @@ export default function RegisterComponent() {
     const [tipoUsuario, setTipoUsuario] = useState("");
 
     const location = useLocation();
-    const { usuario } = location.state;
+    const { usuario } = location.state || {}; // Verificación adicional
 
     const handleTipoUsuarioChange = (event) => {
         setTipoUsuario(event.target.value);
@@ -76,11 +71,11 @@ export default function RegisterComponent() {
 
     const handleContinue = () => {
         if (tipoUsuario === "Tutor de mascota") {
-            navigate('/registroTutor', {state: {usuario}});
+            navigate('/registroTutor', { state: { usuario } });
         } else if (tipoUsuario === "Veterinario") {
-            navigate('/registroVeterinario', {state: {usuario}});
+            navigate('/registroVeterinario', { state: { usuario } });
         } else if (tipoUsuario === "Centro veterinario") {
-            navigate('/registroCentro', {state: {usuario}});
+            navigate('/registroCentro', { state: { usuario } });
         }
     };
 
@@ -107,16 +102,16 @@ export default function RegisterComponent() {
                     </IconButton>
                 </div>
                 <Typography variant="subtitle2" textAlign="left" sx={{ marginTop: 3 }}>¿Qué tipo de usuario eres?</Typography>
-                <FormControl component="fieldset" sx={{...styles.formControl, textAlign: 'left'}}>
+                <FormControl component="fieldset" sx={{ ...styles.formControl, textAlign: 'left' }}>
                     <RadioGroup
                         aria-labelledby="radio-buttons-group-label"
                         name="radio-buttons-users"
                         value={tipoUsuario}
                         onChange={handleTipoUsuarioChange}
                     >
-                        <FormControlLabel value="Tutor de mascota" control={<Radio />} label="Tutor de mascota"/>
-                        <FormControlLabel value="Veterinario" control={<Radio />} label="Veterinario"/>
-                        <FormControlLabel value="Centro veterinario" control={<Radio />} label="Centro veterinario"/>
+                        <FormControlLabel value="Tutor de mascota" control={<Radio />} label="Tutor de mascota" />
+                        <FormControlLabel value="Veterinario" control={<Radio />} label="Veterinario" />
+                        <FormControlLabel value="Centro veterinario" control={<Radio />} label="Centro veterinario" />
                     </RadioGroup>
                 </FormControl>
             </CardContent>
@@ -127,15 +122,15 @@ export default function RegisterComponent() {
     );
 
     return (
-    <>
-        <NavbarComponent/>
-        <ThemeProvider theme={theme}>
-            <div style={styles.container}>
-                <Card sx = {styles.card}>
-                    {card}
-                </Card>  
-            </div>
-        </ThemeProvider>
-    </>
+        <>
+            <NavbarComponent />
+            <ThemeProvider theme={theme}>
+                <div style={styles.container}>
+                    <Card sx={styles.card}>
+                        {card}
+                    </Card>
+                </div>
+            </ThemeProvider>
+        </>
     )
 };
