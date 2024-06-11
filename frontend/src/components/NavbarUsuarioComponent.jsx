@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Drawer, List, ListItem, ListItemText, ListItemIcon, Avatar } from "@mui/material";
 import { Settings, MonitorHeart, CalendarMonth, MarkEmailRead, BarChart, ExitToApp } from "@mui/icons-material";
 import ImageIcon from '@mui/icons-material/Image';
 import { styled } from '@mui/system';
+import { jwtDecode } from 'jwt-decode';
+
 
 const drawerWidth = 250;
+
+const token = localStorage.getItem('token');
 
 const DrawerStyled = styled(Drawer)({
   width: drawerWidth,
@@ -89,7 +93,19 @@ const Logout = styled(ListItemStyled)({
   },
 });
 
-function VerticalNavbarComponent({ userName }) {
+function VerticalNavbarComponent() {
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    if (token) {
+      // Si necesitas decodificar el token
+      const tokenDecodificado = jwtDecode(token);
+      setUserName(tokenDecodificado.nombre);
+    } else {
+      console.error('No se encontró un token en el localStorage');
+    }
+  }, []);
+
   return (
     <DrawerStyled
       variant="permanent"

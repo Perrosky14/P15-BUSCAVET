@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/mascotas/';
+const API_URL = 'http://localhost:8080/mascota';
 
 class MascotaService {
   getMascotas() {
-    return axios.get(API_URL);
+    return axios.get(API_URL +'/obtener-mascotas');
   }
 
   getMascotaById(mascotaId) {

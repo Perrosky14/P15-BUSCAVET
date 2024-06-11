@@ -8,16 +8,16 @@ class UsuarioService {
         return axios.post(USUARIO_API_URL + '/nuevo-usuario', usuario);
     }
 
-    getMascotas() {
-        return axios.get(USUARIO_API_URL + '/obtener-mascotas');
+    getMascotas(idUsuario) {
+        return axios.post(USUARIO_API_URL + '/obtener-mascotas',  {idUsuario});
     }
 
     getMascotaById(idMascota) {
         return axios.post(USUARIO_API_URL + '/obtener-mascota', { idMascota });
     }
 
-    createMascota(mascota) {
-        return axios.post(USUARIO_API_URL + '/nueva-mascota', mascota);
+    createMascota(idUsuario, mascota) {
+        return axios.post(USUARIO_API_URL + '/crear-mascota', {idUsuario, mascota});
     }
 
     updateMascota(idMascota, mascotaActualizada) {

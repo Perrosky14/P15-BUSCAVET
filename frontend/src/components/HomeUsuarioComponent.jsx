@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import {jwtDecode} from 'jwt-decode'; // Asegúrate de tener instalado jwt-decode
 import NavbarUsuarioComponent from "./NavbarUsuarioComponent";
 import { styled } from '@mui/system';
-import { useNavigate } from "react-router-dom";
-import { TextField, Typography, Card, CardContent, List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Box, IconButton, Menu, MenuItem, Button, Grid } from "@mui/material";
+import { TextField, Typography, Card, CardContent, List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Box, IconButton, Menu, MenuItem, Button, Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { MoreVert, StarBorder as StarBorderIcon, ColorLens, FitnessCenter } from '@mui/icons-material';
 import GridViewIcon from '@mui/icons-material/GridView';
@@ -11,6 +12,7 @@ import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import HomeIcon from '@mui/icons-material/Home';
+import UsuarioService from '../services/UsuarioService';
 
 const styles = {
   container: { display: 'flex', height: '100vh' },
@@ -19,7 +21,7 @@ const styles = {
   welcomeMessage: { fontSize: '24px', fontWeight: 'bold', padding: '8px 10px' },
   searchBar: { display: 'flex', alignItems: 'center', border: '2px solid #FF4081', borderRadius: '40px', padding: '8px 16px', maxWidth: '600px', width: '100%' },
   searchInput: { marginLeft: '8px', width: '100%', border: 'none', outline: 'none' },
-  mascotaListContainer: { display: 'flex-left', flexDirection: 'column', alignItems: 'center', marginTop: 4 },
+  mascotaListContainer: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 4 },
   mascotaCard: { width: '409px', maxWidth: 600, margin: '10px', height: '350px', borderRadius: '15px' },
   doctorListContainer: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 4 },
   doctorCard: { width: '750px', maxWidth: 750, borderRadius: '15px' },
@@ -31,37 +33,6 @@ const styles = {
   especialidadesContainer: { marginBottom: '20px', textAlign: 'center' },
   telemedicinaCard: { backgroundColor: '#fff', padding: '25px', borderRadius: '10px', textAlign: 'center' },
 };
-
-const mascotaData = [
-  {
-    id: 1,
-    nombre: 'Gaucho',
-    especie: 'Gato',
-    edad: '10 años',
-    color: 'Color negro',
-    peso: '5 kg',
-    avatar: '/static/images/avatar/1.jpg',
-  },
-  {
-    id: 2,
-    nombre: 'Gaucho',
-    especie: 'Gato',
-    edad: '10 años',
-    color: 'Color negro',
-    peso: '5 kg',
-    avatar: '/static/images/avatar/2.jpg',
-  },
-  {
-    id: 3,
-    nombre: 'Gaucho',
-    especie: 'Gato',
-    edad: '10 años',
-    color: 'Color negro',
-    peso: '5 kg',
-    avatar: '/static/images/avatar/3.jpg',
-  },
-];
-
 const doctorData = [
   {
     id: 1,
@@ -92,28 +63,88 @@ const doctorData = [
   },
 ];
 
-function HomeUsuarioComponent({ userName }) {
+
+const HomeUsuarioComponent = () => {
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [mascotas, setMascotas] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedMascota, setSelectedMascota] = useState(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+      } catch (e) {
+        console.error('Token inválido', e);
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    } else {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (user) {
+      const fetchMascotas = async () => {
+        try {
+          const response = await UsuarioService.getMascotas(user.id);
+          setMascotas(response.data);
+        } catch (error) {
+          console.error('Error al obtener las mascotas:', error);
+        }
+      };
+
+      fetchMascotas();
+    }
+  }, [user]);
 
   const handleClick = (event, index) => {
     setAnchorEl(event.currentTarget);
     setSelectedIndex(index);
   };
 
+  const handleDelete = (mascota) => {
+    setSelectedMascota(mascota);
+    setOpenDialog(true);
+    handleClose();
+};
+
+const confirmDelete = async () => {
+  try {
+      await UsuarioService.deleteMascota(selectedMascota.id);
+      setMascotas(mascotas.filter(m => m.id !== selectedMascota.id));
+  } catch (error) {
+      console.error('Error al eliminar la mascota:', error);
+  } finally {
+      setOpenDialog(false);
+  }
+};
+
   const handleClose = () => {
     setAnchorEl(null);
     setSelectedIndex(null);
   };
 
+  const navigateToRegistrarMascota = () => {
+    navigate('/registrar_mascota', { state: { user } });
+  };
+
+  if (!user) {
+    return <div>Cargando...</div>;
+  }
   return (
     <div style={styles.container}>
       <NavbarUsuarioComponent />
       <div style={styles.content}>
         <div style={styles.header}>
           <div>
-            <Typography style={styles.welcomeMessage}>Buenos días</Typography>
+            <Typography style={styles.welcomeMessage}>Bienvenido, {user.nombre}</Typography>
             <Typography style={styles.subtitle2}>Hay 3 nuevas citas programadas para hoy</Typography>
           </div>
           <div style={styles.searchBar}>
@@ -223,14 +254,14 @@ function HomeUsuarioComponent({ userName }) {
               <Typography style={styles.title2}>Tus mascotas</Typography>
               <Typography style={styles.subtitle2}>Lista de mascotas registradas</Typography>
               <Box sx={{ display: 'flex', gap: 1, marginBottom: '16px' }}>
-                <Button variant="contained" sx={{ backgroundColor: '#FF4081', borderRadius: '10px', '&:hover': { backgroundColor: '#FF80AB' } }} onClick={() => navigate('/registrar_mascota')}>Añadir Mascota</Button>
+                <Button variant="contained" sx={{ backgroundColor: '#FF4081', borderRadius: '10px', '&:hover': { backgroundColor: '#FF80AB' } }} onClick={() => navigateToRegistrarMascota('/registrar_mascota')}>Añadir Mascota</Button>
                 <Button variant="contained" sx={{ backgroundColor: '#FF4081', borderRadius: '10px', '&:hover': { backgroundColor: '#FF80AB' } }} onClick={() => navigate('/lista_mascota')}>Lista de Mascotas</Button>
               </Box>
               <Grid item xs={10}>
                 <Card style={styles.mascotaCard}>
                   <CardContent>
                     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                      {mascotaData.map((mascota, index) => (
+                      {mascotas.map((mascota, index) => (
                         <React.Fragment key={mascota.id}>
                           <ListItem alignItems="flex-start">
                             <ListItemAvatar>
@@ -250,11 +281,11 @@ function HomeUsuarioComponent({ userName }) {
                                   </Typography>
                                   <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                                     <StarBorderIcon fontSize="small" sx={{ mr: 0.5, color: '#FF4081' }} />
-                                    <Typography variant="body2">{mascota.edad}</Typography>
+                                    <Typography variant="body2">{mascota.estatura} cm</Typography>
                                     <ColorLens fontSize="small" sx={{ mx: 1, color: '#FF4081' }} />
                                     <Typography variant="body2">{mascota.color}</Typography>
                                     <FitnessCenter fontSize="small" sx={{ mx: 1, color: '#FF4081' }} />
-                                    <Typography variant="body2">{mascota.peso}</Typography>
+                                    <Typography variant="body2">{mascota.peso} kg</Typography>
                                   </Box>
                                 </React.Fragment>
                               }
@@ -275,15 +306,27 @@ function HomeUsuarioComponent({ userName }) {
                             >
                               <MenuItem onClick={() => navigate('/lista_mascota')}>Ver</MenuItem>
                               <MenuItem onClick={() => navigate('/registrar_mascota')}>Editar</MenuItem>
-                              <MenuItem onClick={handleClose}>Eliminar</MenuItem>
+                              <MenuItem onClick={() => handleDelete(mascota)}>Eliminar</MenuItem>
                             </Menu>
                           </ListItem>
-                          {index < mascotaData.length - 1 && <Divider component="li" />}
+                          {index < mascotas.length - 1 && <Divider component="li" />}
                         </React.Fragment>
                       ))}
                     </List>
                   </CardContent>
-                </Card>
+                </Card> 
+                <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+                <DialogTitle>Confirmar Eliminación</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        ¿Estás seguro que deseas eliminar la mascota {selectedMascota?.nombre}?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)} color="primary">No</Button>
+                    <Button onClick={confirmDelete} color="primary">Sí</Button>
+                </DialogActions>
+            </Dialog>
               </Grid>
             </Box>
             <Card style={styles.telemedicinaCard}>
