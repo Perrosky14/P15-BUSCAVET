@@ -71,6 +71,15 @@ public class VeterinariaController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("La veterinaria con la id: " + idVeterinaria + " se ha eliminado correctamente");
     }
 
+    @PostMapping("/obtener-doctores-veterinaria")
+    public ResponseEntity<?> obtenerDoctores(@RequestBody Map<String, Object> requestBody) {
+        Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
+        if (veterinariaService.obtenerPorId(idVeterinaria) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria con la id: " + idVeterinaria);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(doctorService.obtenerPorVeterinaria(idVeterinaria));
+    }
+
     @PostMapping("/crear-doctor")
     public ResponseEntity<?> registrarDoctor(@RequestBody Map<String, Object> requestBody){
         Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();

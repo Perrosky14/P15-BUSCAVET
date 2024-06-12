@@ -46,7 +46,7 @@ public class UsuarioService {
     public UsuarioEntity actualizarUsuario(Long id, UsuarioEntity usuarioActualizado){
         UsuarioEntity usuarioExistente = usuarioRepository.findById(id).orElse(null);
         if (usuarioExistente != null){
-            usuarioExistente.setContrasenia(usuarioActualizado.getContrasenia());
+            usuarioExistente.setContrasenia(passwordEncoder.encode(usuarioActualizado.getContrasenia()));
             usuarioExistente.setId_pais(usuarioActualizado.getId_pais());
             usuarioExistente.setRut(usuarioActualizado.getRut());
             usuarioExistente.setNombre1(usuarioActualizado.getNombre1());
