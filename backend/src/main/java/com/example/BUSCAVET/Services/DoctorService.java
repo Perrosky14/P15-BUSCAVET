@@ -58,7 +58,7 @@ public class DoctorService {
     public DoctorEntity actualizarDoctor(Long id, DoctorEntity doctorActualizado){
         DoctorEntity doctorExistente = doctorRepository.findById(id).orElse(null);
         if (doctorExistente != null){
-            doctorExistente.setContrasenia(doctorActualizado.getContrasenia());
+            doctorExistente.setContrasenia(passwordEncoder.encode(doctorActualizado.getContrasenia()));
             doctorExistente.setId_institucion_vet_1(doctorActualizado.getId_institucion_vet_1());
             doctorExistente.setId_institucion_vet_2(doctorActualizado.getId_institucion_vet_2());
             doctorExistente.setId_institucion_vet_3(doctorActualizado.getId_institucion_vet_3());
