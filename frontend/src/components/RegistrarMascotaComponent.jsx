@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
     Button, Card, CardActions, CardContent, CardHeader, FormControlLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup,
@@ -13,7 +13,6 @@ import { es } from 'date-fns/locale';
 import Navbar2Component from "./Navbar2Component";
 import theme from "./styles/themeComponent";
 import UsuarioService from "../services/UsuarioService";
-import { jwtDecode } from "jwt-decode";
 
 const styles = {
     container: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '85vh', backgroundColor: '#FBFBFB' },
@@ -120,29 +119,6 @@ export default function RegistarMascotaComponent() {
 
     const handleBack = () => setCurrentCard(prevCard => prevCard - 1);
     const handleClose = () => navigate('/');
-
-    /**
-    const [user, setUser] = useState(null);
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const decoded = jwtDecode(token);
-                setUser(decoded);
-                console.log("datos del usuario:", user);
-            } catch (e) {
-                console.error('Token inválido', e);
-                localStorage.removeItem('token');
-                navigate('/login');
-            }
-        } else {
-            navigate('/login');
-        }
-    }, [navigate]); //Si pongo: [user, navigate] el localstorage se vuelve recursivo
-
-     */
-
-
     const handleSave = () => {
         if (validateStep1() && validateStep2()) {
             console.log('Datos de la mascota:', mascotaData);
