@@ -135,6 +135,10 @@ const confirmDelete = async () => {
     navigate('/registrar_mascota', { state: { user } });
   };
 
+  const navigateToAgendarHora = () => {
+    navigate('/agendar_hora', {state:{user}});
+  }
+
   if (!user) {
     return <div>Cargando...</div>;
   }
@@ -335,7 +339,7 @@ const confirmDelete = async () => {
                 Telemedicina
               </Typography>
               <Typography style={styles.subtitle}>hola</Typography>
-              <Button variant="contained" sx={{ width: '100%', height: '50px', borderRadius: '30px', backgroundColor: '#FF4081', '&:hover': { backgroundColor: '#FF80AB' } }}>Consulta ahora</Button>
+              <Button variant="contained" sx={{ width: '100%', height: '50px', borderRadius: '30px', backgroundColor: '#FF4081', '&:hover': { backgroundColor: '#FF80AB' }}} onClick={() => navigateToAgendarHora('/agendar_hora')}>Consulta ahora</Button>
               <Typography style={styles.title2}>
                 <AccessAlarmsIcon />
                 Horarios
