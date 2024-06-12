@@ -2,7 +2,9 @@ package com.example.BUSCAVET.Services;
 
 import com.example.BUSCAVET.Entities.DoctorEntity;
 import com.example.BUSCAVET.Entities.Rol;
+import com.example.BUSCAVET.Entities.VeterinariaEntity;
 import com.example.BUSCAVET.Repositories.DoctorRepository;
+import com.example.BUSCAVET.Repositories.VeterinariaRepository;
 import com.example.BUSCAVET.Security.AuthResponse;
 import com.example.BUSCAVET.Security.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class DoctorService {
 
     @Autowired
     DoctorRepository doctorRepository;
+
+    @Autowired
+    VeterinariaRepository veterinariaRepository;
 
     @Autowired
     JWTService jwtService;
@@ -40,6 +45,14 @@ public class DoctorService {
 
     public Optional<DoctorEntity> obtenerPorEmail(String email) {
         return doctorRepository.findByEmail(email);
+    }
+
+    public ArrayList<DoctorEntity> obtenerPorVeterinaria(Long idVeterinaria) {
+        VeterinariaEntity veterinaria = veterinariaRepository.findById(idVeterinaria).orElse(null);
+        if (veterinaria != null) {
+            return doctorRepository.findAllByVeterinaria(veterinaria);
+        }
+        return null;
     }
 
     public DoctorEntity actualizarDoctor(Long id, DoctorEntity doctorActualizado){
