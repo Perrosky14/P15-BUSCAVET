@@ -2,17 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import {jwtDecode} from 'jwt-decode'; // Asegúrate de tener instalado jwt-decode
 import NavbarUsuarioComponent from "./NavbarUsuarioComponent";
-import { styled } from '@mui/system';
-import { TextField, Typography, Card, CardContent, List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Box, IconButton, Menu, MenuItem, Button, Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import { TextField, Typography, Card, CardContent, List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Box, IconButton, Menu, MenuItem, Button, Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Paper } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { MoreVert, StarBorder as StarBorderIcon, ColorLens, FitnessCenter } from '@mui/icons-material';
-import GridViewIcon from '@mui/icons-material/GridView';
 import LocalHospitalRoundedIcon from '@mui/icons-material/LocalHospitalRounded';
 import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import HomeIcon from '@mui/icons-material/Home';
 import UsuarioService from '../services/UsuarioService';
+import HealingIcon from '@mui/icons-material/Healing';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
+import VaccinesIcon from '@mui/icons-material/Vaccines';
+import GridViewIcon from '@mui/icons-material/GridView';
+
+import theme from './styles/themeComponent';
+
 
 const styles = {
   container: { display: 'flex', height: '100vh' },
@@ -32,7 +38,16 @@ const styles = {
   subtitle2: { fontSize: '14px', color: '#C5C5C5', textAlign: 'center' },
   especialidadesContainer: { marginBottom: '20px', textAlign: 'center' },
   telemedicinaCard: { backgroundColor: '#fff', padding: '25px', borderRadius: '10px', textAlign: 'center' },
+  paper: { padding: '15px', textAlign: 'center', color: theme.palette.text.secondary, borderRadius: '16px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)'},
+  icon: {fontSize: '30px', color: theme.palette.primary.main},
+  button2: {marginTop: '20px',textAlign: 'center'},
+  header2: {fontWeight: 'bold', marginBottom: '0.5px'},
+  subtitle3: {color: '#B9B9B9',marginTop: '-2px',marginBottom: '15px'},
+  statText: {fontSize: '14px'},
+  statValue: {fontSize: '15px', fontWeight: 'bold'},
+  headerContainer: {display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2},
 };
+
 const doctorData = [
   {
     id: 1,
@@ -62,7 +77,6 @@ const doctorData = [
     avatar: '/static/images/avatar/3.jpg',
   },
 ];
-
 
 const HomeUsuarioComponent = () => {
   const navigate = useNavigate();
@@ -169,26 +183,43 @@ const confirmDelete = async () => {
               <Typography style={styles.subtitle}>Lorem ipsum dolor sit amet, consectetur adipiscing elit</Typography>
             </Card>
             <Grid container spacing={2} style={styles.especialidadesContainer}>
-              <Grid item xs={10}>
+              <Grid item xs={12}>
                 <Typography style={styles.title2}>Encuentra un veterinario especialista</Typography>
                 <Typography style={styles.subtitle2}>Elige una de las categorías según tus necesidades</Typography>
               </Grid>
-              <Grid item xs={3}>
-                <Button variant="outlined" startIcon={<GridViewIcon />} fullWidth sx={{ borderColor: '#FF4081', color: '#FF4081', '&:hover': { borderColor: '#FF4081', backgroundColor: 'rgba(255, 64, 129, 0.1)' } }}>Traumatología</Button>
-              </Grid>
-              <Grid item xs={3}>
-                <Button variant="outlined" fullWidth sx={{ borderColor: '#FF4081', color: '#FF4081', '&:hover': { borderColor: '#FF4081', backgroundColor: 'rgba(255, 64, 129, 0.1)' } }}>Cirugía</Button>
-              </Grid>
-              <Grid item xs={3}>
-                <Button variant="outlined" fullWidth sx={{ borderColor: '#FF4081', color: '#FF4081', '&:hover': { borderColor: '#FF4081', backgroundColor: 'rgba(255, 64, 129, 0.1)' } }}>Ecografía</Button>
-              </Grid>
-              <Grid item xs={3}>
-                <Button variant="outlined" fullWidth sx={{ borderColor: '#FF4081', color: '#FF4081', '&:hover': { borderColor: '#FF4081', backgroundColor: 'rgba(255, 64, 129, 0.1)' } }}>General</Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Button variant="outlined" fullWidth sx={{ borderColor: '#FF4081', color: '#FF4081', '&:hover': { borderColor: '#FF4081', backgroundColor: 'rgba(255, 64, 129, 0.1)' } }}>All</Button>
-              </Grid>
-            </Grid>
+              <Grid container spacing={3}>
+                    <Grid item xs={10} sm={3} md={2.3}>
+                        <Paper sx={styles.paper}>
+                            <HealingIcon sx={styles.icon} />
+                            <Typography variant="h6" sx={styles.statText}>Traumatología</Typography>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={10} sm={3} md={2.3}>
+                        <Paper sx={styles.paper}>
+                            <MonitorHeartIcon sx={styles.icon} />
+                            <Typography variant="h6" sx={styles.statText}>Cirugía</Typography>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={10} sm={3} md={2.3}>
+                        <Paper sx={styles.paper}>
+                            <MedicalInformationIcon sx={styles.icon} />
+                            <Typography variant="h6" sx={styles.statText}>Ecografía</Typography>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={10} sm={3} md={2.3}>
+                        <Paper sx={styles.paper}>
+                            <VaccinesIcon sx={styles.icon} />
+                            <Typography variant="h6" sx={styles.statText}>General</Typography>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={10} sm={3} md={2.3}>
+                        <Paper sx={styles.paper}>
+                            <GridViewIcon sx={styles.icon} />
+                            <Typography variant="h6" sx={styles.statText}>Todo</Typography>
+                        </Paper>
+                    </Grid>
+                </Grid>
+                </Grid>
             <Box style={styles.doctorListContainer}>
               <Typography style={styles.title2}>Próximas horas agendadas</Typography>
               <Typography style={styles.subtitle2}>Asegúrate que tu mascota esté saludable</Typography>

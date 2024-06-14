@@ -20,7 +20,7 @@ const ListaMascotaComponent = () => {
         const fetchMascotas = async () => {
             try {
                 const response = await MascotaService.getMascotas();
-                console.log(response.data);  // Verifica la estructura de los datos
+                console.log(response.data);  
                 setMascotas(response.data);
             } catch (error) {
                 console.error('Error al obtener las mascotas:', error);
