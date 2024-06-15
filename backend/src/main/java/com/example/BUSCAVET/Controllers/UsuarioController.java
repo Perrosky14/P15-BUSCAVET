@@ -72,30 +72,15 @@ public class UsuarioController {
 
     @PostMapping("/crear-mascota")
     public ResponseEntity<?> registrarMascota(@RequestBody Map<String, Object> requestBody) {
-        System.out.println("Request body: " + requestBody);
-
-        try {
-            Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
-            System.out.println("idUsuario: " + idUsuario);
-
-            UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
-            if (usuario != null) {
-                Map<String, Object> mascotaMap = (Map<String, Object>) requestBody.get("mascota");
-                System.out.println("Mascota map: " + mascotaMap);
-
-                MascotaEntity mascota = mascotaService.transformarMascota(mascotaMap);
-                System.out.println("Mascota entity: " + mascota);
-
-                mascota.setUsuario(usuario);
-                mascotaService.guardarMascota(mascota);
-
-                return ResponseEntity.status(HttpStatus.CREATED).body("La mascota " + mascota.getNombre() + " ha sido registrada correctamente por el usuario con la id: " + idUsuario);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningun usuario que tenga la id: " + idUsuario);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error procesando la solicitud: " + e.getMessage());
+        Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
+        UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
+        if (usuario != null) {
+            MascotaEntity mascota = mascotaService.transformarMascota((Map<String, Object>) requestBody.get("mascota"));
+            mascota.setUsuario(usuario);
+            mascotaService.guardarMascota(mascota);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("La mascota se ha registrado correctamente.");
         }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario);
     }
 
 
