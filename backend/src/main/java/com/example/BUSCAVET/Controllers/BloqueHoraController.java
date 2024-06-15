@@ -109,11 +109,13 @@ public class BloqueHoraController {
                     MascotaEntity mascota = mascotaService.obtenerPorId(idMascota);
                     if (mascota != null) {
                         if (usuario.equals(mascota.getUsuario())) {
+                            String motivo = ((String) requestBody.get("motivo"));
+                            bloqueHora.setMotivo(motivo);
                             bloqueHora.setAgendadoPorUsuario(Boolean.TRUE);
                             bloqueHora.setUsuario(usuario);
                             bloqueHora.setMascota(mascota);
                             bloqueHoraService.actualizarBloqueHora(idBloqueHora, bloqueHora);
-                            ResponseEntity.status(HttpStatus.ACCEPTED).body("Se ha agendado la hora con id: " + idBloqueHora + ", con el usuario con id: " + idUsuario + ", con la mascota con id: " + idMascota + ", de forma exitosa.");
+                            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Se ha agendado la hora con id: " + idBloqueHora + ", con el usuario con id: " + idUsuario + ", con la mascota con id: " + idMascota + ", de forma exitosa.");
                         }
                         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("El usuario con id: " + idUsuario + " no puede agendar hora con la mascota con id: " + idMascota + ", ya que el usuario no creó dicha mascota. No tiene dicha autorización.");
                     }
