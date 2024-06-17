@@ -1,9 +1,8 @@
-import axios from 'axios';
+import axios from "./axiosConfig";
 
 const API_URL = 'http://localhost:8080/veterinaria/';
 
 class VeterinariaService {
-
     getVeterinarias() {
         return axios.get(API_URL + 'obtener-veterinarias');
     }
@@ -34,6 +33,10 @@ class VeterinariaService {
 
     deleteDoctor(idVeterinaria, idDoctor) {
         return axios.delete(API_URL + 'eliminar-doctor', { data: { idVeterinaria, idDoctor } });
+    }
+
+    getDoctors(idVeterinaria) {
+        return axios.post(API_URL + 'obtener-doctores-veterinaria', { idVeterinaria });
     }
 }
 

@@ -5,17 +5,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="67ca1142-bc38-403e-8e8d-b450f5f1cf66" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SuperAdminComponents/AddUserModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SuperAdminComponents/AddUserModal.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SuperAdminComponents/ConfirmModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SuperAdminComponents/ConfirmModal.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SuperAdminComponents/DeleteUserModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SuperAdminComponents/DeleteUserModal.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SuperAdminComponents/FilterByType.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SuperAdminComponents/FilterByType.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SuperAdminComponents/SortButton.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SuperAdminComponents/SortButton.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SuperAdminComponents/UserDetailsModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SuperAdminComponents/UserDetailsModal.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SuperAdminComponents/UserList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SuperAdminComponents/UserList.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SuperAdminComponents/UserModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SuperAdminComponents/UserModal.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/Calendario.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/Casa.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/Color.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/Elipse.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/Estrella.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/Hora.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/Peso.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/DoctoresVeterinariaView/DeleteConfirmationComponent.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/DoctoresVeterinariaView/DoctorComponent.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/DoctoresVeterinariaView/DoctorDetailsComponent.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/DoctoresVeterinariaView/DoctorStats.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/DoctoresVeterinariaView/DoctoresListVeterinaria.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/DoctoresVeterinariaView/MainViewDoctoresVeterinaria.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/MainViewHomeVeterinariaComponent.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/NavBarVeterinariaComponent.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/VeterinariaAvailableHours.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/VeterinariaChat.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/VeterinariaChats.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/VeterinariaRequestComponent.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/VeterinariaRequestsComponent.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/VeterinariaScheduleHour.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/VeterinariaScheduleHours.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/VeterinariaStats.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/HomeVeterinariaView/VeterinariaWelcome.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/services/VeterinariaService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/example/BUSCAVET/Controllers/VeterinariaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/BUSCAVET/Controllers/VeterinariaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/HomeVeterinariaComponent.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DoctoresVeterinariaView/AddDoctor.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,24 +52,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/BUS-32-Vista-Principal-SuperAdmin",
-    "last_opened_file_path": "C:/Users/james/Downloads/P15-BUSCAVET-feature-BUS-32-Vista-Principal-SuperAdmin/P15-BUSCAVET-feature-BUS-32-Vista-Principal-SuperAdmin/frontend",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.1.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/BUS-29-Vista-Principal-Veterinaria&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/james/OneDrive/Documents/1- 2024/PINGESO/P15-BUSCAVET/frontend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2024.1.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\james\OneDrive\Documents\1- 2024\PINGESO\P15-BUSCAVET\frontend\src\assets" />
+      <recent name="C:\Users\james\OneDrive\Documents\1- 2024\PINGESO\P15-BUSCAVET\frontend\public\Iconos" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\james\OneDrive\Documents\1- 2024\PINGESO\P15-BUSCAVET\frontend\src\assets" />
+      <recent name="C:\Users\james\OneDrive\Documents\1- 2024\PINGESO\P15-BUSCAVET\frontend\src\components\HomeVeterinariaView" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.17011.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-19b454f630c8-JavaScript-WS-242.15523.6" />
       </set>
     </attachedChunks>
   </component>
@@ -65,6 +94,13 @@
       <updated>1717624197606</updated>
       <workItem from="1717624199182" duration="6919000" />
       <workItem from="1717642518834" duration="11041000" />
+      <workItem from="1717729169689" duration="35593000" />
+      <workItem from="1717803113155" duration="9975000" />
+      <workItem from="1717972275205" duration="34241000" />
+      <workItem from="1718203787660" duration="892000" />
+      <workItem from="1718204712037" duration="43000" />
+      <workItem from="1718204756028" duration="220000" />
+      <workItem from="1718516845031" duration="476000" />
     </task>
     <servers />
   </component>
