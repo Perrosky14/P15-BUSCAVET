@@ -10,6 +10,7 @@ import RegistarMascotaComponent from './components/RegistrarMascotaComponent';
 import ListaMascotaComponent from './components/ListaMascotaComponent';
 import HomeUsuarioComponent from './components/HomeUsuarioComponent';
 import AgendamientoUsuarioComponent from './components/AgendamientoUsuarioComponent';
+import RegisterVeterinariaComponent from './components/RegisterVeterinariaComponent';
 function App() {
   return (
     <div>
@@ -25,7 +26,7 @@ function App() {
         <Route path="/registro" element={<RegisterComponent/>}/>
         <Route path="/registroTutor" element = {<RegisterTutorComponent/>}/>
         <Route path="/registroVeterinario"/>
-        <Route path="/registroCentro"/>
+        <Route path="/registroVeterinaria" element = {<RegisterVeterinariaComponent/>}/>
       </Routes>
     </BrowserRouter>
       
