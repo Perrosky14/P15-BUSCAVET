@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from 'jwt-decode'; // Asegúrate de tener instalado jwt-decode
+import {jwtDecode} from 'jwt-decode'; 
 import NavbarUsuarioComponent from "./NavbarUsuarioComponent";
 import { TextField, Typography, Card, CardContent, List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Box, IconButton, Menu, MenuItem, Button, Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Paper } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
@@ -16,7 +16,6 @@ import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import GridViewIcon from '@mui/icons-material/GridView';
-
 import theme from './styles/themeComponent';
 
 
@@ -151,6 +150,10 @@ const confirmDelete = async () => {
 
   const navigateToAgendarHora = () => {
     navigate('/agendar_hora', {state:{user}});
+  }
+
+  const navigateToFichaMascota = () => {
+    navigate('/ficha_mascota', {state:{user}});
   }
 
   if (!user) {
@@ -339,7 +342,7 @@ const confirmDelete = async () => {
                               open={Boolean(anchorEl) && selectedIndex === index}
                               onClose={handleClose}
                             >
-                              <MenuItem onClick={() => navigate('/lista_mascota')}>Ver</MenuItem>
+                              <MenuItem onClick={() => navigateToFichaMascota('/ficha_mascota')}>Ver</MenuItem>
                               <MenuItem onClick={() => navigate('/registrar_mascota')}>Editar</MenuItem>
                               <MenuItem onClick={() => handleDelete(mascota)}>Eliminar</MenuItem>
                             </Menu>

@@ -3,6 +3,7 @@ import { Drawer, List, ListItem, ListItemText, ListItemIcon, Avatar } from "@mui
 import { Settings, MonitorHeart, CalendarMonth, MarkEmailRead, BarChart, ExitToApp } from "@mui/icons-material";
 import ImageIcon from '@mui/icons-material/Image';
 import { styled } from '@mui/system';
+import PetsIcon from '@mui/icons-material/Pets';
 import { jwtDecode } from 'jwt-decode';
 
 
@@ -130,6 +131,10 @@ function VerticalNavbarComponent() {
         <ListItemStyled button component="a" href="/mis_horas">
           <ListItemIconStyled><CalendarMonth /></ListItemIconStyled>
           <ListItemTextStyled primary="Mis horas" />
+        </ListItemStyled>
+        <ListItemStyled button component="a" href="/ficha_mascota">
+          <ListItemIconStyled><PetsIcon /></ListItemIconStyled>
+          <ListItemTextStyled primary="Mis mascotas" />
         </ListItemStyled>
         <ListItemStyled button component="a" href="/perfil_usuario">
           <ListItemIconStyled><MarkEmailRead /></ListItemIconStyled>
