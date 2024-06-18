@@ -47,7 +47,7 @@ public class VeterinariaService {
     public VeterinariaEntity actualizarVeterinaria(Long id, VeterinariaEntity veterinariaActualizada){
         VeterinariaEntity veterinariaExistente = veterinariaRepository.findById(id).orElse(null);
         if(veterinariaExistente != null){
-            veterinariaExistente.setContrasenia(veterinariaActualizada.getContrasenia());
+            veterinariaExistente.setContrasenia(passwordEncoder.encode(veterinariaActualizada.getContrasenia()));
             veterinariaExistente.setId_pais(veterinariaActualizada.getId_pais());
             veterinariaExistente.setId_segmento(veterinariaActualizada.getId_segmento());
             veterinariaExistente.setId_tipo_institucion_vet(veterinariaActualizada.getId_tipo_institucion_vet());
