@@ -8,8 +8,11 @@ import HomeComponent from './components/HomeComponent';
 import FichaMascotaComponent from './components/FichaMascotaComponent';
 import RegistarMascotaComponent from './components/RegistrarMascotaComponent';
 import ListaMascotaComponent from './components/ListaMascotaComponent';
+import HomeVeterinariaComponent from "./components/HomeVeterinariaView/MainViewHomeVeterinariaComponent";
+import MainViewDoctoresVeterinaria from "./components/DoctoresVeterinariaView/MainViewDoctoresVeterinaria";
 import HomeUsuarioComponent from './components/HomeUsuarioComponent';
 import AgendamientoUsuarioComponent from './components/AgendamientoUsuarioComponent';
+import RegisterVeterinariaComponent from './components/RegisterVeterinariaComponent';
 function App() {
   return (
     <div>
@@ -25,7 +28,9 @@ function App() {
         <Route path="/registro" element={<RegisterComponent/>}/>
         <Route path="/registroTutor" element = {<RegisterTutorComponent/>}/>
         <Route path="/registroVeterinario"/>
-        <Route path="/registroCentro"/>
+        <Route path="/veterinaria" element={<HomeVeterinariaComponent/>}/>
+        <Route path="/veterinaria/doctores" element={<MainViewDoctoresVeterinaria/>}/>
+        <Route path="/registroVeterinaria" element = {<RegisterVeterinariaComponent/>}/>
       </Routes>
     </BrowserRouter>
       
