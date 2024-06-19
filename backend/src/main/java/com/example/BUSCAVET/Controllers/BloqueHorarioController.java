@@ -62,8 +62,7 @@ public class BloqueHorarioController {
         DoctorEntity doctor = doctorService.obtenerPorId(idDoctor);
         if (doctor != null) {
             BloqueHorarioEntity bloqueHorario = bloqueHorarioService.transformarBloqueHorario((Map<String, Object>) requestBody.get("bloqueHorario"));
-            bloqueHorario.setDoctor(doctor);
-            bloqueHorarioService.guardarBloqueHorario(bloqueHorario);
+            bloqueHorarioService.crearBloquesHoras(doctor, bloqueHorario);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("El bloque de horarios se ha registrado correctamente.");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún doctor que tenga la id: " + idDoctor);
