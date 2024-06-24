@@ -80,14 +80,14 @@ export default function RegisterComponent() {
         } else if (tipoUsuario === "Veterinario") {
             navigate('/registroVeterinario', {state: {usuario}});
         } else if (tipoUsuario === "Centro veterinario") {
-            navigate('/registroCentro', {state: {usuario}});
+            navigate('/registroVeterinaria', {state: {usuario}});
         }
     };
 
     const getPasosTexto = () => {
-        if (tipoUsuario === "Tutor de mascota") {
+        if (tipoUsuario === "Tutor de mascota" || tipoUsuario === "Centro veterinario") {
             return "1 de 3";
-        } else if (tipoUsuario === "Veterinario" || tipoUsuario === "Centro veterinario") {
+        } else if (tipoUsuario === "Veterinario") {
             return "1 de 4";
         } else {
             return "";

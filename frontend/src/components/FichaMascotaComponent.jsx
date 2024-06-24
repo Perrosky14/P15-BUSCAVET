@@ -1,4 +1,3 @@
-
 import styled from "styled-components";
 import { createGlobalStyle } from 'styled-components';
 import NavbarComponent from "./NavbarComponent";
@@ -9,7 +8,7 @@ return (
     <div>
         <NavbarComponent></NavbarComponent>
         <GlobalStyle />    
-        <h1>hola3</h1>
+        
         <HomeStyle>
         </HomeStyle>
     </div>
@@ -54,6 +53,4 @@ margin: 20px;
 padding: 20px;
 transition: .3s
 }
-
-
 `

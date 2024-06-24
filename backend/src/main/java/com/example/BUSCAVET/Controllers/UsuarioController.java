@@ -71,18 +71,19 @@ public class UsuarioController {
     }
 
     @PostMapping("/crear-mascota")
-    public ResponseEntity<?> registrarMascota(@RequestBody Map<String, Object> requestBody){
+    public ResponseEntity<?> registrarMascota(@RequestBody Map<String, Object> requestBody) {
         Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
         UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
         if (usuario != null) {
             MascotaEntity mascota = mascotaService.transformarMascota((Map<String, Object>) requestBody.get("mascota"));
             mascota.setUsuario(usuario);
             mascotaService.guardarMascota(mascota);
-            return ResponseEntity.status(HttpStatus.CREATED).body("La mascota " + mascota.getNombre() + " ha sido registrada correctamente por " + "el usuario con la id: " + idUsuario);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningun usuario que tenga la id: " + idUsuario);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("La mascota se ha registrado correctamente.");
         }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario);
     }
+
+
 
     @PutMapping("/modificar-mascota")
     public ResponseEntity<?> actualizarMascota(@RequestBody Map<String, Object> requestBody){
@@ -127,6 +128,16 @@ public class UsuarioController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario + ", para eliminar la mascota.");
         }
+    }
+
+    @PostMapping("/obtener-mascotas")
+    public ResponseEntity<?> obtenerMascotasPorUsuario(@RequestBody Map<String, Object> requestBody){
+        Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
+        UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
+        if (usuario != null) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(mascotaService.buscarTodosPorUsuario(usuario));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario);
     }
 
 }
