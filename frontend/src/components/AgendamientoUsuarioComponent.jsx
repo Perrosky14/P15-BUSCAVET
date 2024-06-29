@@ -5,7 +5,7 @@ import {
     Select, TextField, Tooltip, Typography, CardMedia, CircularProgress, Grid, FormControl, Box, CardActionArea,
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-import { LocalizationProvider, DatePicker, StaticDatePicker } from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import CloseIcon from '@mui/icons-material/Close';
 import { es } from 'date-fns/locale';
@@ -43,10 +43,6 @@ const CardStyled = styled(Card)({
     },
 });
 
-const availableTimes = [
-    '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'
-];
-
 const items = [
     {
         title: 'Atención veterinaria general',
@@ -75,28 +71,34 @@ const AgendamientoUsuarioComponent = () => {
     const [doctores, setDoctores] = useState([]);
     const [mascotas, setMascotas] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState('');
-    const [selectedMascota, setSelectedMascota] = useState('');
+    const [bloquesHora, setBloquesHora] = useState([]);
+    const [selectedTime, setSelectedTime] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const [errors, setErrors] = useState({});
     const [currentCard, setCurrentCard] = useState(1);
     const [selectedDate, setSelectedDate] = useState(null);
-    const [selectedTime, setSelectedTime] = useState('');
     const [selectedOption, setSelectedOption] = useState(null);
     const [date, setDate] = useState(selectedDate || new Date());
     const [filteredTimes, setFilteredTimes] = useState([]);
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
+    const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
 
-    const [horaData, setHoraData] = useState({
-        idBloqueHora: null,
-        idUsuario: null,
-        idMascota: null,
-        motivo: '',
-        doctor: "",
-    });
+    const handleSeleccionFecha = (fecha) => {
+        setFechaSeleccionada(fecha);
+    };
 
-    
+    const obtenerBloquesHoraPorFecha = (fecha) => {
+        if (Array.isArray(bloquesHora)) {
+            return bloquesHora.filter(bloque => bloque.fecha === fecha);
+        } else {
+            console.error("bloquesHora no es un arreglo");
+            return [];
+        }
+    };
+
     const handleSave = () => {
+        console.log('HoraData antes de guardar:', horaData);
         if (validateStep1()) {
             console.log('Datos de la hora:', horaData);
 
@@ -117,24 +119,25 @@ const AgendamientoUsuarioComponent = () => {
                 });
         }
         if (validateStep2()) {
-            console.log('Datos de la hora:', horaData);
-            // Elimina cualquier propiedad que no se necesita o que puede ser nula
-            const sanitizedHoraData = {
-                idBloqueHora: horaData.idBloqueHora || 0,
-                idUsuario: horaData.idUsuario || 0,
-                idMascota: horaData.idMascota || 0,
-                motivo: horaData.motivo
-            };
+            if (validateStep1() || validateStep2()) {
+                console.log('Datos de la hora:', horaData);
 
-            BloqueHoraService.agendarBloqueHora(sanitizedHoraData.idBloqueHora, sanitizedHoraData.idUsuario, sanitizedHoraData.idMascota, sanitizedHoraData.motivo)
-                .then(response => {
-                    console.log('Hora con especialista registrada:', response.data);
-                    setCurrentCard(7);  // Cambia a la tarjeta 7 de guardar los datos
-                })
-                .catch(error => {
-                    console.error('Error al registrar la hora con el especialista:', error.response ? error.response.data : error.message);
-                });
+                const sanitizedHoraData = {
+                    idBloqueHora: horaData.idBloqueHora || 0,
+                    idUsuario: horaData.idUsuario || 0,
+                    idMascota: horaData.idMascota || 0,
+                    motivo: horaData.motivo
+                };
 
+                BloqueHoraService.agendarBloqueHora(sanitizedHoraData.idBloqueHora, sanitizedHoraData.idUsuario, sanitizedHoraData.idMascota, sanitizedHoraData.motivo)
+                    .then(response => {
+                        console.log('Hora registrada:', response.data);
+                        setCurrentCard(selectedOption === 'general' ? 4 : 7);
+                    })
+                    .catch(error => {
+                        console.error('Error al registrar la hora:', error.response ? error.response.data : error.message);
+                    });
+            }
         }
     }
 
@@ -153,8 +156,43 @@ const AgendamientoUsuarioComponent = () => {
         doctor.id_especialidad_3 === selectedSpecialty
     );
 
+
+    const handleBLoquesHora = async () => {
+        try {
+            const idVeterinario = horaData.idVeterinario;
+            if (!idVeterinario) {
+                console.error('idVeterinario no está definido');
+                return;
+            }
+            const bloquesHoraDoctor = await BloqueHoraService.obtenerBloquesHoraPorVeterinario(idVeterinario);
+            console.log('Bloques de hora obtenidos:', bloquesHoraDoctor);
+            setBloquesHora(bloquesHoraDoctor);
+            console.log('Estado bloquesHora actualizado:', bloquesHoraDoctor);
+            console.log('Bloques de hora guardados:', bloquesHora);
+        } catch (error) {
+            console.error('Error al obtener los bloques de hora:', error);
+        }
+    };
+
+
+    // Necesito que dado un calendario, seleccionar una fecha (que no sea ya pasada, pero eso lo tengo en la card 7 para el ejemplo de los especialistas
+    // Seleccionar una fecha y que se me despliegue las horas disponibles, cuyas horas estan en el BloqueHora 
+
+    const handleTimeSelect = (bloqueHora) => {
+        setSelectedTime(bloqueHora);
+        setHoraData({ ...horaData, idBloqueHora: bloqueHora.id });
+        console.log('Bloque de hora seleccionado:', bloqueHora);
+    };
     const location = useLocation();
     const { user } = location.state || {};
+
+    const [horaData, setHoraData] = useState({
+        idBloqueHora: null,
+        idUsuario: user.id,
+        idMascota: null,
+        motivo: '',
+        idVeterinario: "",
+    });
 
     useEffect(() => {
         const fetchMascotas = async () => {
@@ -168,7 +206,7 @@ const AgendamientoUsuarioComponent = () => {
                 setLoading(false);
             }
         };
-
+    
         const fetchDoctores = async () => {
             try {
                 const response = await DoctorService.getDoctores();
@@ -178,29 +216,18 @@ const AgendamientoUsuarioComponent = () => {
                 console.error('Error al obtener los doctores:', error);
             }
         };
-
+    
         if (user) {
             fetchMascotas();
             fetchDoctores();
         } else {
             setLoading(false);
         }
-    }, [user]);
+        
+        console.log('Estado bloquesHora actualizado en useEffect:', bloquesHora);  
+    }, [user, bloquesHora]); 
+    
 
-    useEffect(() => {
-        const now = new Date();
-        const isToday = format(date, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
-
-        const times = availableTimes.filter((time) => {
-            if (!isToday) return true;
-            const [hours, minutes] = time.split(':').map(Number);
-            const timeDate = new Date(date);
-            timeDate.setHours(hours, minutes, 0, 0);
-            return timeDate > now;
-        });
-
-        setFilteredTimes(times);
-    }, [date, availableTimes]);
 
     const handleBack = () => {
         if (selectedOption === 'general' && currentCard > 2) {
@@ -217,15 +244,6 @@ const AgendamientoUsuarioComponent = () => {
 
     const handleClose = () => navigate('/usuario');
 
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-        setSelectedTime('');
-    };
-
-    const handleTimeSelect = (time) => {
-        setSelectedTime(time);
-    };
-
     const handleOptionSelect = (option, targetCard) => {
         setSelectedOption(option);
         setCurrentCard(targetCard);
@@ -234,7 +252,7 @@ const AgendamientoUsuarioComponent = () => {
 
     const validateStep1 = () => {
         let newErrors = {};
-        if (!horaData.doctor) newErrors.doctor = 'El doctor es requerido';
+        if (!horaData.idVeterinario) newErrors.idVeterinario = 'El doctor es requerido';
         if (!horaData.idMascota) newErrors.idMascota = 'La mascota es requerida';
         if (!horaData.motivo) newErrors.motivo = 'El motivo es requerido';
         setErrors(newErrors);
@@ -245,7 +263,7 @@ const AgendamientoUsuarioComponent = () => {
     const validateStep2 = () => {
         let newErrors = {};
         if (!selectedSpecialty) newErrors.selectedSpecialty = 'La especialidad del veterinario es requerida';
-        if (!horaData.doctor) newErrors.doctor = 'El doctor es requerido';
+        if (!horaData.idVeterinario) newErrors.idVeterinario = 'El doctor es requerido';
         if (!horaData.idMascota) newErrors.idMascota = 'La mascota es requerida';
         if (!horaData.motivo) newErrors.motivo = 'El motivo es requerido';
         setErrors(newErrors);
@@ -258,6 +276,10 @@ const AgendamientoUsuarioComponent = () => {
                 // Lógica para finalizar o continuar desde la card 4
             } else {
                 if (currentCard === 2 && validateStep1()) {
+                    console.log("ID Doctor:" + horaData.idVeterinario);
+                    handleBLoquesHora();
+                    console.log("Datos Bloque Hora:", bloquesHora);
+                    
                     setCurrentCard(3);
                 } else if (currentCard === 3) {
                     setCurrentCard((prevCard) => prevCard + 1);
@@ -268,6 +290,7 @@ const AgendamientoUsuarioComponent = () => {
                 // Lógica para finalizar o continuar desde la card 7
             } else {
                 if (currentCard === 5 && validateStep2()) {
+                    handleBLoquesHora();
                     setCurrentCard(6);
                 } else if (currentCard === 6) {
                     setCurrentCard((prevCard) => prevCard + 1);
@@ -351,8 +374,8 @@ const AgendamientoUsuarioComponent = () => {
                                 <Grid item xs={12}>
                                     <Typography variant="h6">Selecciona un medico</Typography>
                                     <Select
-                                        value={horaData.doctor}
-                                        onChange={(e) => setHoraData({ ...horaData, doctor: e.target.value })}
+                                        value={horaData.idVeterinario}
+                                        onChange={(e) => setHoraData({ ...horaData, idVeterinario: e.target.value })}
                                         fullWidth
                                     >
                                         {doctores.length === 0 ? (
@@ -361,15 +384,15 @@ const AgendamientoUsuarioComponent = () => {
                                             filteredDoctors.length === 0 ? (
                                                 <MenuItem disabled>No hay doctores con la especialidad requerida</MenuItem>
                                             ) : (
-                                                filteredDoctors.map(doctor => (
-                                                    <MenuItem key={doctor.id} value={doctor.id}>
-                                                        {doctor.nombre1} {doctor.apellido1} {doctor.apellido2}
+                                                filteredDoctors.map(idVeterinario => (
+                                                    <MenuItem key={idVeterinario.id} value={idVeterinario.id}>
+                                                        {idVeterinario.nombre1} {idVeterinario.apellido1} {idVeterinario.apellido2}
                                                     </MenuItem>
                                                 ))
                                             )
                                         )}
                                     </Select>
-                                    {errors.doctor && <Typography color="error">{errors.doctor}</Typography>}
+                                    {errors.idVeterinario && <Typography color="error">{errors.idVeterinario}</Typography>}
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Typography variant="h6">Selecciona una mascota</Typography>
@@ -424,70 +447,67 @@ const AgendamientoUsuarioComponent = () => {
                                     <IconButton aria-label="cerrar" onClick={handleClose}><CloseIcon /></IconButton>
                                 </Tooltip>
                             }
-                            title={
-                                <Typography variant="h6" component="div">
-                                    Fecha y Hora de atención
-                                    <span style={styles.contador}>2 de 2</span>
-                                </Typography>
-                            }
-                            subheader="Complete el formulario para continuar"
-                            style={{ textAlign: 'left' }}
+                            title="Selecciona una fecha"
                         />
-                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                            <Grid container spacing={2} sx={{ padding: 2 }}>
-                                <Grid item xs={12} sm={6}>
-                                    <StaticDatePicker
-                                        displayStaticWrapperAs="desktop"
-                                        label="Seleccione una fecha"
-                                        value={date}
-                                        onChange={(newValue) => {
-                                            setDate(newValue);
-                                            handleDateChange(newValue);
-                                        }}
-                                        renderInput={(params) => <TextField {...params} fullWidth />}
-                                        inputFormat="dd/MM/yyyy"
-                                        minDate={new Date()} 
-                                        componentsProps={{
-                                            actionBar: { actions: [] } 
-                                        }}
-                                        
-                                        sx={{
-                                            '.MuiPickersBasePicker-container': {
-                                                width: '100%',
-                                                minHeight: '300px'
-                                            }
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    {selectedDate && (
-                                        <List>
-                                            {doctores.map((bloqueHora) => (
-                                                <ListItem key={bloqueHora} button onClick={() => handleTimeSelect(bloqueHora)}>
-                                                    <ListItemText primary={bloqueHora} />
-                                                </ListItem>
-                                            ))}
-                                        </List>
-                                    )}
-                                </Grid>
-                            </Grid>
-                        </LocalizationProvider>
-                        <CardActions disableSpacing>
-                            <Grid container spacing={2} sx={{ mt: -1 }}>
-                                <Grid item xs={6}>
-                                    <Button variant="contained" onClick={handleBack} sx={styles.button}>Atrás</Button>
-                                </Grid>
-                                {selectedTime && (
-                                    <Grid item xs={6}>
-                                        <Button variant="contained" color="primary" onClick={handleSave} sx={styles.button}>
-                                            Agendar cita a las: {selectedTime}
-                                        </Button>
-                                    </Grid>
-                                )}
-                            </Grid>
+                        <CardActions center>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
+                                <StaticDatePicker
+                                    label="Selecciona una fecha"
+                                    value={fechaSeleccionada}
+                                    onChange={(date) => handleSeleccionFecha (date)}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </LocalizationProvider>
+
                         </CardActions>
+                        {fechaSeleccionada && (
+                            <div>
+                                <h3>Bloques de hora para {fechaSeleccionada.toLocaleDateString()}</h3>
+                                <ul>
+                                    {obtenerBloquesHoraPorFecha(fechaSeleccionada.toISOString().slice(0, 10)).map(bloque => (
+                                        <li key={bloque.fecha + bloque.horaInicio}>
+                                            {bloque.horaInicio}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </Card>
                 );
+            /** 
+            return (
+                <Card style={styles.card}>
+                    <CardHeader
+                        action={
+                            <Tooltip title="cerrar" placement="top-end">
+                                <IconButton aria-label="cerrar" onClick={handleClose}><CloseIcon /></IconButton>
+                            </Tooltip>
+                        }
+                        title="Selecciona una fecha"
+                    />
+                    <CardActions> 
+                        <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
+                            <StaticDatePicker
+                                displayStaticWrapperAs="desktop"
+                                value={date}
+                                onChange={handleDateChange}
+                            />
+                        </LocalizationProvider>
+                    </CardActions>
+                    <List>
+                        {handleBLoquesHora.map((time) => (
+                            <ListItem button onClick={() => handleTimeSelect(time)} key={time.id}>
+                                <ListItemText primary={`${time.start} - ${time.end}`} />
+                            </ListItem>
+                        ))}
+                    </List>
+                    <CardActions>
+                        <Button onClick={handleBack}>Back</Button>
+                        <Button onClick={() => handleSave(selectedTime)}>Save</Button>
+                    </CardActions>
+                </Card>
+            );
+            */
             case 4:
                 return (
                     <Card style={styles.card}>
@@ -551,8 +571,8 @@ const AgendamientoUsuarioComponent = () => {
                                 <Grid item xs={12}>
                                     <Typography variant="h6">Selecciona un medico</Typography>
                                     <Select
-                                        value={horaData.doctor}
-                                        onChange={(e) => setHoraData({ ...horaData, doctor: e.target.value })}
+                                        value={horaData.idVeterinario}
+                                        onChange={(e) => setHoraData({ ...horaData, idVeterinario: e.target.value })}
                                         fullWidth
                                     >
                                         {doctores.length === 0 ? (
@@ -561,15 +581,15 @@ const AgendamientoUsuarioComponent = () => {
                                             filteredDoctors2.length === 0 ? (
                                                 <MenuItem disabled>No hay doctores con la especialidad requerida</MenuItem>
                                             ) : (
-                                                filteredDoctors2.map(doctor => (
-                                                    <MenuItem key={doctor.id} value={doctor.id}>
-                                                        {doctor.nombre1} {doctor.apellido1} {doctor.apellido2}
+                                                filteredDoctors2.map(idVeterinario => (
+                                                    <MenuItem key={idVeterinario.id} value={idVeterinario.id}>
+                                                        {idVeterinario.nombre1} {idVeterinario.apellido1} {idVeterinario.apellido2}
                                                     </MenuItem>
                                                 ))
                                             )
                                         )}
                                     </Select>
-                                    {errors.doctor && <Typography color="error">{errors.doctor}</Typography>}
+                                    {errors.idVeterinario && <Typography color="error">{errors.idVeterinario}</Typography>}
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Typography variant="h6">Selecciona una mascota</Typography>
@@ -618,78 +638,81 @@ const AgendamientoUsuarioComponent = () => {
                 );
 
             case 6:
-                return (
-                    <Card style={styles.card}>
-                        <CardHeader
-                            action={
-                                <Tooltip title="cerrar" placement="top-end">
-                                    <IconButton aria-label="cerrar" onClick={handleClose}><CloseIcon /></IconButton>
-                                </Tooltip>
-                            }
-                            title={
-                                <Typography variant="h6" component="div">
-                                    Fecha y Hora de atención
-                                    <span style={styles.contador}>2 de 2</span>
-                                </Typography>
-                            }
-                            subheader="Complete el formulario para continuar"
-                            style={{ textAlign: 'left' }}
-                        />
-                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                            <Grid container spacing={2} sx={{ padding: 2 }}>
-                                <Grid item xs={12} sm={6}>
-                                    <StaticDatePicker
-                                        displayStaticWrapperAs="desktop"
-                                        label="Seleccione una fecha"
-                                        value={date}
-                                        onChange={(newValue) => {
-                                            setDate(newValue);
-                                            handleDateChange(newValue);
-                                        }}
-                                        renderInput={(params) => <TextField {...params} fullWidth />}
-                                        inputFormat="dd/MM/yyyy"
-                                        minDate={new Date()} // Disables past dates
-                                        componentsProps={{
-                                            actionBar: { actions: [] } // Hide the actions (cancel/accept buttons)
-                                        }}
-                                        // Custom style for the calendar
-                                        sx={{
-                                            '.MuiPickersBasePicker-container': {
-                                                width: '100%', // You can adjust this as needed
-                                                minHeight: '300px' // Adjust the height as needed
-                                            }
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    {selectedDate && (
-                                        <List>
-                                            {filteredTimes.map((time) => (
-                                                <ListItem key={time} button onClick={() => handleTimeSelect(time)}>
-                                                    <ListItemText primary={time} />
-                                                </ListItem>
-                                            ))}
-                                        </List>
-                                    )}
-                                </Grid>
+
+            return (
+                <Card style={styles.card}>
+                    <CardHeader
+                        action={
+                            <Tooltip title="cerrar" placement="top-end">
+                                <IconButton aria-label="cerrar" onClick={handleClose}><CloseIcon /></IconButton>
+                            </Tooltip>
+                        }
+                        title={
+                            <Typography variant="h6" component="div">
+                                Fecha y Hora de atención
+                                <span style={styles.contador}>2 de 2</span>
+                            </Typography>
+                        }
+                        subheader="Complete el formulario para continuar"
+                        style={{ textAlign: 'left' }}
+                    />
+                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+                        <Grid container spacing={2} sx={{ padding: 2 }}>
+                            <Grid item xs={12} sm={6}>
+                                <StaticDatePicker
+                                    displayStaticWrapperAs="desktop"
+                                    label="Seleccione una fecha"
+                                    value={date}
+                                    onChange={(newValue) => {
+                                        setDate(newValue);
+                                    
+                                    }}
+                                    renderInput={(params) => <TextField {...params} fullWidth />}
+                                    inputFormat="dd/MM/yyyy"
+                                    minDate={new Date()} // Disables past dates
+                                    componentsProps={{
+                                        actionBar: { actions: [] } // Hide the actions (cancel/accept buttons)
+                                    }}
+                                    // Custom style for the calendar
+                                    sx={{
+                                        '.MuiPickersBasePicker-container': {
+                                            width: '100%', // You can adjust this as needed
+                                            minHeight: '300px' // Adjust the height as needed
+                                        }
+                                    }}
+                                />
                             </Grid>
-                        </LocalizationProvider>
-                        <CardActions disableSpacing>
-                            <Grid container spacing={2} sx={{ mt: -1 }}>
-                                <Grid item xs={6}>
-                                    <Button variant="contained" onClick={handleBack} sx={styles.button}>Atrás</Button>
-                                </Grid>
-                                {selectedTime && (
-                                    <Grid item xs={6}>
-                                        <Button variant="contained" color="primary" onClick={handleSave} sx={styles.button}>
-                                            Agendar cita a las: {selectedTime}
-                                        </Button>
-                                    </Grid>
+                            <Grid item xs={12} sm={6}>
+                                {selectedDate && (
+                                    <List>
+                                        {filteredTimes.map((time) => (
+                                            <ListItem key={time} button onClick={() => handleTimeSelect(time)}>
+                                                <ListItemText primary={time} />
+                                            </ListItem>
+                                        ))}
+                                    </List>
                                 )}
                             </Grid>
-                        </CardActions>
-                    </Card>
-                );
+                        </Grid>
+                    </LocalizationProvider>
+                    <CardActions disableSpacing>
+                        <Grid container spacing={2} sx={{ mt: -1 }}>
+                            <Grid item xs={6}>
+                                <Button variant="contained" onClick={handleBack} sx={styles.button}>Atrás</Button>
+                            </Grid>
+                            {selectedTime && (
+                                <Grid item xs={6}>
+                                    <Button variant="contained" color="primary" onClick={handleSave} sx={styles.button}>
+                                        Agendar cita a las: {selectedTime}
+                                    </Button>
+                                </Grid>
+                            )}
+                        </Grid>
+                    </CardActions>
+                </Card>
+            
+            );
+
             case 7:
                 return (
                     <Card style={styles.card}>
