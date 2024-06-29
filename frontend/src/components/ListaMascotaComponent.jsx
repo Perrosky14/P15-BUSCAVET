@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, Typography, Grid, Button, CircularProgress } from "@mui/material";
-import MascotaService from '../services/MascotaService';
+import UsuarioService from '../services/UsuarioService';
 import Navbar2Component from "./Navbar2Component";
+import {jwtDecode} from 'jwt-decode';
 
 const styles = {
     container: { padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
@@ -14,26 +15,44 @@ const styles = {
 const ListaMascotaComponent = () => {
     const [mascotas, setMascotas] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
+        const fetchUserFromToken = () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const decodedUser = jwtDecode(token);
+                setUser(decodedUser);
+            }
+        };
+
+        fetchUserFromToken();
+    }, []);
+
+    useEffect(() => {
         const fetchMascotas = async () => {
-            try {
-                const response = await MascotaService.getMascotas();
-                console.log(response.data);  
-                setMascotas(response.data);
-            } catch (error) {
-                console.error('Error al obtener las mascotas:', error);
-            } finally {
+            if (user && user.id) {
+                setLoading(true);
+                try {
+                    const response = await UsuarioService.getMascotas(user.id);
+                    console.log(response.data);
+                    setMascotas(response.data);
+                } catch (error) {
+                    console.error('Error al obtener las mascotas:', error);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
                 setLoading(false);
             }
         };
 
         fetchMascotas();
-    }, []);
+    }, [user]);
 
     const handleAddMascota = () => {
-        navigate('/registrar_mascota');
+        navigate('/registrar_mascota', { state: { user } });
     };
 
     return (
