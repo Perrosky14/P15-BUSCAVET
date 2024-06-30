@@ -163,7 +163,7 @@ public class BloqueHoraService {
         bloqueHora.setFecha(fecha);
         bloqueHora.setTiempoAtencion(tiempoAtencion);
         bloqueHora.setHoraInicio(horaInicio);
-        bloqueHora.setActivo(true);
+        bloqueHora.setActivo(false);
         bloqueHora.setAgendadoPorUsuario(false);
         bloqueHora.setTomadoTemporal(false);
         bloqueHora.setBloqueoTemporal(LocalTime.of(0,5,0));
