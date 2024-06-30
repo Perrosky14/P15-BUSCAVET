@@ -6,6 +6,14 @@ const theme = createTheme({
     },
 
     components : {
+        MuiCssBaseline: {
+            styleOverrides: {
+              body: {
+                backgroundColor: '#FBFBFB',
+              },
+            },
+          },
+        
         MuiTypography: {
             styleOverrides: {
                 subtitle1: {
