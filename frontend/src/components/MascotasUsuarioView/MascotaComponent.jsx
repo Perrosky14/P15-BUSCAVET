@@ -1,4 +1,4 @@
-import { Box, CardMedia, Grid, IconButton, Menu, MenuItem, Paper, ThemeProvider, Typography } from "@mui/material";
+import { Box, Button, CardMedia, Grid, IconButton, Menu, MenuItem, Paper, ThemeProvider, Typography } from "@mui/material";
 import { useState } from "react";
 import { ColorLens, FitnessCenter, StarBorder as StarBorderIcon } from "@mui/icons-material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -15,10 +15,12 @@ const styles = {
         border: '0.125rem solid #FFFFFF', // 2px / 16 = 0.125rem
         backgroundColor: '#FFFFFF',
         boxShadow: 'none',
-        width: 'auto',
+        width: '100%',
     },
     nombre: {
         fontWeight: 'bold',
+        color: '#313131',
+        textAlign: 'left',
     },
     detalleTipoAnimal: {
         display: 'flex',
@@ -62,9 +64,12 @@ const styles = {
             color: '#FFFFFF',
         },
     },
+    selectedButton: {
+        borderColor: '#ff436f', // Color de borde cuando está seleccionado
+    },
 };
 
-export default function MascotaComponent({id, nombre, especie, sexo, raza, color, estatura, peso, avatar, onDelete}) {
+export default function MascotaComponent({id, nombre, especie, sexo, raza, color, estatura, peso, avatar, onDelete, onSelect, isSelected }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -83,16 +88,21 @@ export default function MascotaComponent({id, nombre, especie, sexo, raza, color
 
     const handleCloseDeleteModal = () => {
         setDeleteModalOpen(false);
-    }
+    };
 
     const handleConfirmDelete = () => {
         onDelete(id);
         setDeleteModalOpen(false);
-    }
+    };
 
     return (
         <ThemeProvider theme={theme}>
-            <Paper sx={styles.paper}>
+            <Button 
+                sx={{ ...styles.paper, ...(isSelected && styles.selectedButton) }} 
+                variant="outlined" 
+                fullWidth 
+                onClick={() =>onSelect()}
+                >
                 <Grid container spacing={2}>
                     <Grid item xs={2.5} container alignItems="center" justifyContent="center">
                         <Box sx={{ ...styles.avatarContainer, backgroundColor: avatar ? 'transparent' : '#FBFBFB' }}>
@@ -113,11 +123,11 @@ export default function MascotaComponent({id, nombre, especie, sexo, raza, color
                         <Typography sx={styles.detalleTipoAnimal} mt={0.5}>{especie}</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
                             <StarBorderIcon fontSize="small" sx={{ mr: 0.5, color: '#FF4081' }} />
-                            <Typography variant="body2">{estatura} cm</Typography>
+                            <Typography variant="body2" sx={{ color: '#313131', fontWeight: 'bold' }}>{estatura} cm</Typography>
                             <ColorLens fontSize="small" sx={{ mx: 1, color: '#FF4081' }} />
-                            <Typography variant="body2">{color}</Typography>
+                            <Typography variant="body2" sx={{ color: '#313131', fontWeight: 'bold' }}>{color}</Typography>
                             <FitnessCenter fontSize="small" sx={{ mx: 1, color: '#FF4081' }} />
-                            <Typography variant="body2">{peso} kg</Typography>
+                            <Typography variant="body2" sx={{ color: '#313131', fontWeight: 'bold' }}>{peso} kg</Typography>
                         </Box>
                     </Grid>
                     <Grid xs={2} container justifyContent="flex-end">
@@ -136,7 +146,7 @@ export default function MascotaComponent({id, nombre, especie, sexo, raza, color
                         </Menu>
                     </Grid>
                 </Grid>
-            </Paper>
+            </Button>
             <DeleteConfirmationMascotaComponent
                 open={deleteModalOpen}
                 handleClose={handleCloseDeleteModal}

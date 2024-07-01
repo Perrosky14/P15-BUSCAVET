@@ -39,9 +39,10 @@ const styles = {
     },
 };
 
-const MascotasListComponent = () => {
+const MascotasListComponent = ({ onSelectMascota }) => {
     const [paginaActual, setPaginaActual] = useState(1);
     const [mascotas, setMascotas] = useState([]);
+    const [mascotaSeleccionada, setMascotaSeleccionada] = useState(null);
 
     useEffect(() => {
         const fetchMascotas = async () => {
@@ -88,6 +89,10 @@ const MascotasListComponent = () => {
                 setPaginaActual(paginaActual - 1);
             }
 
+            if (mascotaSeleccionada && mascotaSeleccionada.id === idMascota) {
+                setMascotaSeleccionada(null);
+            }
+
         } catch (error) {
             console.error('Error al eliminar a la mascota:', error);
         }
@@ -102,12 +107,27 @@ const MascotasListComponent = () => {
 
     const paginasTotales = Math.ceil(totalMascotas / mascotasPorPagina);
 
+    const handleSelectMascota = (mascota) => {
+        if (mascotaSeleccionada && mascotaSeleccionada.id === mascota.id) {
+            setMascotaSeleccionada(null);
+        } else {
+            setMascotaSeleccionada(mascota);
+        }
+        onSelectMascota(mascota.id); 
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <Box sx={styles.container}>
                 {mascotasActuales.length > 0 ? (
                     mascotasActuales.map((mascota, index) => (
-                        <MascotaComponent {...mascota} onDelete={eliminarMascota}/>
+                        <MascotaComponent 
+                            key={mascota.id} 
+                            {...mascota} 
+                            onDelete={eliminarMascota} 
+                            onSelect={() => handleSelectMascota(mascota)}
+                            isSelected={mascotaSeleccionada && mascotaSeleccionada.id === mascota.id}
+                        />
                     ))
                 ): (
                     <Typography variant="body1" color="textSecondary">
