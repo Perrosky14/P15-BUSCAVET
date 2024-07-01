@@ -113,7 +113,7 @@ const MascotasListComponent = ({ onSelectMascota }) => {
         } else {
             setMascotaSeleccionada(mascota);
         }
-        onSelectMascota(mascota.id); 
+        onSelectMascota(mascota); 
     };
 
     return (

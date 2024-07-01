@@ -23,6 +23,7 @@ const styles = {
         textAlign: 'left',
     },
     detalleTipoAnimal: {
+        fontWeight: 'bold',
         display: 'flex',
         alignItems: 'center',
         gap: '0.5rem', // 8px / 16 = 0.5rem
@@ -34,7 +35,7 @@ const styles = {
         overflow: 'hidden',
         width: '100%', // Ajusta según tus necesidades
         height: '100%', // Ajusta según tus necesidades
-        backgroundColor: '#FBFBFB',
+        backgroundColor: '#D9D9D9',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -47,7 +48,7 @@ const styles = {
     placeholder: {
         width: '100%',
         height: '100%',
-        backgroundColor: '#FBFBFB',
+        backgroundColor: '#D9D9D9',
         borderRadius: '1rem',
     },
     moreIcon: {
@@ -105,7 +106,7 @@ export default function MascotaComponent({id, nombre, especie, sexo, raza, color
                 >
                 <Grid container spacing={2}>
                     <Grid item xs={2.5} container alignItems="center" justifyContent="center">
-                        <Box sx={{ ...styles.avatarContainer, backgroundColor: avatar ? 'transparent' : '#FBFBFB' }}>
+                        <Box sx={{ ...styles.avatarContainer, backgroundColor: avatar ? 'transparent' : '#D9D9D9' }}>
                             {avatar ? (
                                 <CardMedia
                                     component="img"
