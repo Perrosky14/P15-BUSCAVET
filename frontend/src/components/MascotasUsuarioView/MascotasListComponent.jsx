@@ -61,6 +61,9 @@ const MascotasListComponent = ({ onSelectMascota }) => {
                     id: mascota.id,
                     nombre: mascota.nombre,
                     especie: mascota.id_especie,
+                    dia_nac: mascota.dia_nac,
+                    mes_nac: mascota.mes_nac,
+                    anio_nac: mascota.anio_nac,
                     sexo: mascota.id_sexo,
                     raza: mascota.id_raza,
                     color: mascota.color,
@@ -91,6 +94,7 @@ const MascotasListComponent = ({ onSelectMascota }) => {
 
             if (mascotaSeleccionada && mascotaSeleccionada.id === idMascota) {
                 setMascotaSeleccionada(null);
+                onSelectMascota(null);
             }
 
         } catch (error) {

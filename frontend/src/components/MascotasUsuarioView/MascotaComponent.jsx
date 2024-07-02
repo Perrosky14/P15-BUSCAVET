@@ -70,7 +70,7 @@ const styles = {
     },
 };
 
-export default function MascotaComponent({id, nombre, especie, sexo, raza, color, estatura, peso, avatar, onDelete, onSelect, isSelected }) {
+export default function MascotaComponent({id, nombre, especie, dia_nac, mes_nac, anio_nac, sexo, raza, color, estatura, peso, avatar, onDelete, onSelect, isSelected }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
