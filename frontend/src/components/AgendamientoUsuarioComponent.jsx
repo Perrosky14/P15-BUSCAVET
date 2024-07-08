@@ -27,7 +27,8 @@ const styles = {
     button: { width: '100%', height: '50px', borderRadius: '16px' },
     contador: { color: '#6BC62D', marginLeft: '10px', fontSize: '0.8em', fontWeight: 'bold' },
     formElement: { marginBottom: 20, width: '100%' },
-    radioGroup: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: 0 }
+    radioGroup: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: 0 },
+    noHoursMessage: {marginTop: '20px', textAlign: 'center', color: 'gray',},
 };
 const CardStyled = styled(Card)({
     maxWidth: 300,
@@ -83,42 +84,52 @@ const AgendamientoUsuarioComponent = () => {
     const [filteredTimes, setFilteredTimes] = useState([]);
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
-
-    const handleSeleccionFecha = (fecha) => {
-        setFechaSeleccionada(fecha);
-    };
+    const location = useLocation();
+    const { user } = location.state || {};
 
     const obtenerBloquesHoraPorFecha = (fecha) => {
+        const fechaActual = new Date();
+        const esHoy = format(fechaActual, 'yyyy-MM-dd') === fecha;
+
         if (Array.isArray(bloquesHora)) {
-            return bloquesHora.filter(bloque => bloque.fecha === fecha);
+            return bloquesHora
+                .filter(bloque => {
+                    if (bloque.fecha !== fecha) return false;
+                    if (esHoy) {
+                        const horaInicio = new Date(`${fecha}T${bloque.horaInicio}`);
+                        return horaInicio >= fechaActual;
+                    }
+                    return true;
+                })
+                .sort((a, b) => {
+                    const horaInicioA = new Date(`${fecha}T${a.horaInicio}`);
+                    const horaInicioB = new Date(`${fecha}T${b.horaInicio}`);
+                    return horaInicioA - horaInicioB;
+                });
         } else {
             console.error("bloquesHora no es un arreglo");
             return [];
         }
     };
 
+    const handleHoraSelect = (bloque) => {
+        setSelectedTime(bloque);
+    };
+
+    const handleSeleccionFecha = (fecha) => {
+        setFechaSeleccionada(fecha);
+        const fechaStr = format(fecha, 'yyyy-MM-dd');
+        const bloquesFiltrados = obtenerBloquesHoraPorFecha(fechaStr);
+        setFilteredTimes(bloquesFiltrados);
+        setSelectedTime(null);
+    };
+
     const handleSave = () => {
-        console.log('HoraData antes de guardar:', horaData);
-        if (validateStep1()) {
-            console.log('Datos de la hora:', horaData);
-
-            const sanitizedHoraData = {
-                idBloqueHora: horaData.idBloqueHora || 0,
-                idUsuario: horaData.idUsuario || 0,
-                idMascota: horaData.idMascota || 0,
-                motivo: horaData.motivo
-            };
-
-            BloqueHoraService.agendarBloqueHora(sanitizedHoraData.idBloqueHora, sanitizedHoraData.idUsuario, sanitizedHoraData.idMascota, sanitizedHoraData.motivo)
-                .then(response => {
-                    console.log('Hora general registrada:', response.data);
-                    setCurrentCard(4);  // Cambia a la tarjeta 4 después de guardar los datos
-                })
-                .catch(error => {
-                    console.error('Error al registrar la hora general:', error.response ? error.response.data : error.message);
-                });
-        }
-        if (validateStep2()) {
+        if (selectedTime) {
+            setHoraData(prevData => ({
+                ...prevData,
+                idBloqueHora: selectedTime.id
+            }));
             if (validateStep1() || validateStep2()) {
                 console.log('Datos de la hora:', horaData);
 
@@ -131,17 +142,16 @@ const AgendamientoUsuarioComponent = () => {
 
                 BloqueHoraService.agendarBloqueHora(sanitizedHoraData.idBloqueHora, sanitizedHoraData.idUsuario, sanitizedHoraData.idMascota, sanitizedHoraData.motivo)
                     .then(response => {
-                        console.log('Hora registrada:', response.data);
-                        setCurrentCard(selectedOption === 'general' ? 4 : 7);
+                        console.log('Hora general registrada:', response.data);
+                        setCurrentCard(4); 
                     })
                     .catch(error => {
-                        console.error('Error al registrar la hora:', error.response ? error.response.data : error.message);
+                        console.error('Error al registrar la hora general:', error.response ? error.response.data : error.message);
                     });
             }
         }
     }
 
-    // Donde el id = 1 hace referencia a la especialidad "general"
     const filteredDoctors = doctores.filter(doctor =>
         doctor.id_especialidad_1 === 1 || doctor.id_especialidad_2 === 1 || doctor.id_especialidad_3 === 1
     );
@@ -149,13 +159,12 @@ const AgendamientoUsuarioComponent = () => {
         setSelectedSpecialty(event.target.value);
         setSelectedDoctor('');
     };
-    // Donde se puede seleccionar cualquier medico, pero es ideal para los especialistas
+
     const filteredDoctors2 = doctores.filter(doctor =>
         doctor.id_especialidad_1 === selectedSpecialty ||
         doctor.id_especialidad_2 === selectedSpecialty ||
         doctor.id_especialidad_3 === selectedSpecialty
     );
-
 
     const handleBLoquesHora = async () => {
         try {
@@ -165,26 +174,12 @@ const AgendamientoUsuarioComponent = () => {
                 return;
             }
             const bloquesHoraDoctor = await BloqueHoraService.obtenerBloquesHoraPorVeterinario(idVeterinario);
-            console.log('Bloques de hora obtenidos:', bloquesHoraDoctor);
-            setBloquesHora(bloquesHoraDoctor);
-            console.log('Estado bloquesHora actualizado:', bloquesHoraDoctor);
-            console.log('Bloques de hora guardados:', bloquesHora);
+            setBloquesHora(bloquesHoraDoctor.data);
+            console.log('Bloques de hora obtenidos del doctor:', bloquesHoraDoctor.data);
         } catch (error) {
             console.error('Error al obtener los bloques de hora:', error);
         }
     };
-
-
-    // Necesito que dado un calendario, seleccionar una fecha (que no sea ya pasada, pero eso lo tengo en la card 7 para el ejemplo de los especialistas
-    // Seleccionar una fecha y que se me despliegue las horas disponibles, cuyas horas estan en el BloqueHora 
-
-    const handleTimeSelect = (bloqueHora) => {
-        setSelectedTime(bloqueHora);
-        setHoraData({ ...horaData, idBloqueHora: bloqueHora.id });
-        console.log('Bloque de hora seleccionado:', bloqueHora);
-    };
-    const location = useLocation();
-    const { user } = location.state || {};
 
     const [horaData, setHoraData] = useState({
         idBloqueHora: null,
@@ -206,7 +201,7 @@ const AgendamientoUsuarioComponent = () => {
                 setLoading(false);
             }
         };
-    
+
         const fetchDoctores = async () => {
             try {
                 const response = await DoctorService.getDoctores();
@@ -216,18 +211,31 @@ const AgendamientoUsuarioComponent = () => {
                 console.error('Error al obtener los doctores:', error);
             }
         };
-    
+
         if (user) {
             fetchMascotas();
             fetchDoctores();
         } else {
             setLoading(false);
         }
-        
-        console.log('Estado bloquesHora actualizado en useEffect:', bloquesHora);  
-    }, [user, bloquesHora]); 
-    
+    }, [user]);
 
+    useEffect(() => {
+        if (bloquesHora.length > 0) {
+            console.log('Estado bloquesHora actualizado:', bloquesHora);
+        }
+    }, [bloquesHora]);
+
+    useEffect(() => {
+        if (horaData.idVeterinario) {
+            handleBLoquesHora();
+        }
+    }, [horaData.idVeterinario]);
+
+    const handleOptionSelect = (option, targetCard) => {
+        setSelectedOption(option);
+        setCurrentCard(targetCard);
+    };
 
     const handleBack = () => {
         if (selectedOption === 'general' && currentCard > 2) {
@@ -244,12 +252,6 @@ const AgendamientoUsuarioComponent = () => {
 
     const handleClose = () => navigate('/usuario');
 
-    const handleOptionSelect = (option, targetCard) => {
-        setSelectedOption(option);
-        setCurrentCard(targetCard);
-    };
-
-
     const validateStep1 = () => {
         let newErrors = {};
         if (!horaData.idVeterinario) newErrors.idVeterinario = 'El doctor es requerido';
@@ -258,7 +260,6 @@ const AgendamientoUsuarioComponent = () => {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-
 
     const validateStep2 = () => {
         let newErrors = {};
@@ -271,39 +272,51 @@ const AgendamientoUsuarioComponent = () => {
     };
 
     const handleContinue = () => {
-        if (selectedOption === 'general') {
-            if (currentCard === 5) {
-                // Lógica para finalizar o continuar desde la card 4
-            } else {
-                if (currentCard === 2 && validateStep1()) {
-                    console.log("ID Doctor:" + horaData.idVeterinario);
-                    handleBLoquesHora();
-                    console.log("Datos Bloque Hora:", bloquesHora);
-                    
-                    setCurrentCard(3);
-                } else if (currentCard === 3) {
-                    setCurrentCard((prevCard) => prevCard + 1);
-                }
-            }
-        } else if (selectedOption === 'especialista') {
-            if (currentCard === 8) {
-                // Lógica para finalizar o continuar desde la card 7
-            } else {
-                if (currentCard === 5 && validateStep2()) {
-                    handleBLoquesHora();
-                    setCurrentCard(6);
-                } else if (currentCard === 6) {
-                    setCurrentCard((prevCard) => prevCard + 1);
-                }
-            }
-        } else if (selectedOption === 'anular') {
-            if (currentCard === 9) {
-                // Lógica para finalizar o continuar desde la card 9
-            } else {
+        const handleNextStep = () => {
+            if (selectedOption === 'general' && validateStep1()) {
+                setCurrentCard((prevCard) => prevCard + 1);
+            } else if (selectedOption === 'especialista' && validateStep2()) {
+                setCurrentCard((prevCard) => prevCard + 1);
+            } else if (selectedOption === 'anular') {
                 setCurrentCard((prevCard) => prevCard + 1);
             }
+        };
+
+        if (selectedOption === 'general') {
+            handleNextStep();
+        } else if (selectedOption === 'especialista') {
+            handleNextStep();
+        } else if (selectedOption === 'anular') {
+            handleNextStep();
         }
     };
+
+
+    const renderHorasDisponibles = () => (
+        <div>
+            <Typography variant="h6">Horas disponibles:</Typography>
+            <Grid container spacing={2}>
+                {filteredTimes.length > 0 ? (
+                    filteredTimes.map(bloque => (
+                        <Grid item xs={6} sm={4} md={3} key={bloque.id}>
+                            <Button
+                                variant={selectedTime && selectedTime.id === bloque.id ? "contained" : "outlined"}
+                                onClick={() => handleHoraSelect(bloque)}
+                                fullWidth
+                                disabled={bloque.taken} 
+                            >
+                                {bloque.horaInicio} - {bloque.horaFin}
+                            </Button>
+                        </Grid>
+                    ))
+                ) : (
+                    <Typography variant="body1" style={styles.noHoursMessage}>No hay horas disponibles para este día</Typography> 
+        
+                )}
+            </Grid>
+        </div>
+    );
+
     const renderCardContent = () => {
         switch (currentCard) {
             case 1:
@@ -318,7 +331,7 @@ const AgendamientoUsuarioComponent = () => {
                                 </Tooltip>
                             }
                             title={<Typography variant="h6" component="div">Agendamiento de hora veterinaria</Typography>}
-                            subheader="Selecciona la opcion para agendar tu cita a la veterinaria"
+                            subheader="Selecciona la opción para agendar tu cita a la veterinaria"
                             style={{ textAlign: 'left' }}
                         />
                         <Box sx={{ backgroundColor: '#fff1', minHeight: '50vh', padding: '20px' }}>
@@ -362,17 +375,17 @@ const AgendamientoUsuarioComponent = () => {
                                 </Tooltip>
                             }
                             title={
-                                <Typography variant="h6" component="div">Selecciona el medico y la mascota
+                                <Typography variant="h6" component="div">Selecciona el médico y la mascota
                                     <span style={styles.contador}>1 de 2</span>
                                 </Typography>
                             }
-                            subheader="Seleccione el medico con quien le gustaria atenderse"
+                            subheader="Seleccione el médico con quien le gustaría atenderse"
                             style={{ textAlign: 'left' }}
                         />
                         <CardContent>
                             <Grid container spacing={3}>
                                 <Grid item xs={12}>
-                                    <Typography variant="h6">Selecciona un medico</Typography>
+                                    <Typography variant="h6">Selecciona un médico</Typography>
                                     <Select
                                         value={horaData.idVeterinario}
                                         onChange={(e) => setHoraData({ ...horaData, idVeterinario: e.target.value })}
@@ -449,65 +462,30 @@ const AgendamientoUsuarioComponent = () => {
                             }
                             title="Selecciona una fecha"
                         />
-                        <CardActions center>
+                        <CardContent>
                             <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
                                 <StaticDatePicker
+                                    displayStaticWrapperAs="desktop"
                                     label="Selecciona una fecha"
                                     value={fechaSeleccionada}
-                                    onChange={(date) => handleSeleccionFecha (date)}
+                                    shouldDisableDate={(date) => date < new Date()}
+                                    onChange={(date) => handleSeleccionFecha(date)}
                                     renderInput={(params) => <TextField {...params} />}
                                 />
                             </LocalizationProvider>
-
+                        </CardContent>
+                        <CardContent>
+                            {renderHorasDisponibles()}
+                        </CardContent>
+                        <CardActions>
+                            <Button variant="contained" onClick={handleBack} sx={styles.button}>Atrás</Button>
+                            {selectedTime && (
+                                <Button variant="contained" onClick={() => handleSave(selectedTime)} sx={styles.button}>Agendar</Button>
+                            )}
                         </CardActions>
-                        {fechaSeleccionada && (
-                            <div>
-                                <h3>Bloques de hora para {fechaSeleccionada.toLocaleDateString()}</h3>
-                                <ul>
-                                    {obtenerBloquesHoraPorFecha(fechaSeleccionada.toISOString().slice(0, 10)).map(bloque => (
-                                        <li key={bloque.fecha + bloque.horaInicio}>
-                                            {bloque.horaInicio}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
                     </Card>
                 );
-            /** 
-            return (
-                <Card style={styles.card}>
-                    <CardHeader
-                        action={
-                            <Tooltip title="cerrar" placement="top-end">
-                                <IconButton aria-label="cerrar" onClick={handleClose}><CloseIcon /></IconButton>
-                            </Tooltip>
-                        }
-                        title="Selecciona una fecha"
-                    />
-                    <CardActions> 
-                        <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
-                            <StaticDatePicker
-                                displayStaticWrapperAs="desktop"
-                                value={date}
-                                onChange={handleDateChange}
-                            />
-                        </LocalizationProvider>
-                    </CardActions>
-                    <List>
-                        {handleBLoquesHora.map((time) => (
-                            <ListItem button onClick={() => handleTimeSelect(time)} key={time.id}>
-                                <ListItemText primary={`${time.start} - ${time.end}`} />
-                            </ListItem>
-                        ))}
-                    </List>
-                    <CardActions>
-                        <Button onClick={handleBack}>Back</Button>
-                        <Button onClick={() => handleSave(selectedTime)}>Save</Button>
-                    </CardActions>
-                </Card>
-            );
-            */
+
             case 4:
                 return (
                     <Card style={styles.card}>
@@ -517,19 +495,22 @@ const AgendamientoUsuarioComponent = () => {
                                     <IconButton aria-label="cerrar" onClick={handleClose}><CloseIcon /></IconButton>
                                 </Tooltip>
                             }
-                            title={<Typography variant="h6" component="div">Confirmación</Typography>}
-                            subheader="Confirmación de la cita agendada"
+                            title={<Typography variant="h6" component="div">Se ha agendado su hora!</Typography>}
                             style={{ textAlign: 'left' }}
                         />
-                        <CardContent>
-                            <Typography variant="h6">La hora se ha agendado exitosamente.</Typography>
+                        <CardMedia
+                            component="img"
+                            height="350"
+                            image="/images_app/doctora_1.png"
+                            alt="Imagen de la mascota"
+                        />
+                        <CardContent style={styles.cardContent}>
+                            <Typography variant="body1">Se ha agendado su hora exitosamente.</Typography>
                         </CardContent>
                         <CardActions disableSpacing>
-                            <Grid container spacing={2} sx={{ mt: -1 }}>
-                                <Grid item xs={12}>
-                                    <Button variant="contained" onClick={handleClose} sx={styles.button}>Cerrar</Button>
-                                </Grid>
-                            </Grid>
+                            <Button variant="contained" sx={styles.button} onClick={() => navigate('/mis_horas')}>
+                                Ver mis horas agendadas
+                            </Button>
                         </CardActions>
                     </Card>
                 );
@@ -544,17 +525,17 @@ const AgendamientoUsuarioComponent = () => {
                                 </Tooltip>
                             }
                             title={
-                                <Typography variant="h6" component="div">Selecciona el medico y la mascota
+                                <Typography variant="h6" component="div">Selecciona el médico y la mascota
                                     <span style={styles.contador}>1 de 2</span>
                                 </Typography>
                             }
-                            subheader="Seleccione el medico con quien le gustaria atenderse"
+                            subheader="Seleccione el médico con quien le gustaría atenderse"
                             style={{ textAlign: 'left' }}
                         />
                         <CardContent>
                             <Grid container spacing={3}>
                                 <Grid item xs={12}>
-                                    <Typography variant="h6">Selecciona la especialidad del medico</Typography>
+                                    <Typography variant="h6">Selecciona la especialidad del médico</Typography>
                                     <Select
                                         value={selectedSpecialty}
                                         onChange={handleSpecialtyChange}
@@ -569,7 +550,7 @@ const AgendamientoUsuarioComponent = () => {
                                     {errors.selectedSpecialty && <Typography color="error">{errors.selectedSpecialty}</Typography>}
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Typography variant="h6">Selecciona un medico</Typography>
+                                    <Typography variant="h6">Selecciona un médico</Typography>
                                     <Select
                                         value={horaData.idVeterinario}
                                         onChange={(e) => setHoraData({ ...horaData, idVeterinario: e.target.value })}
@@ -636,111 +617,6 @@ const AgendamientoUsuarioComponent = () => {
                         </CardActions>
                     </Card>
                 );
-
-            case 6:
-
-            return (
-                <Card style={styles.card}>
-                    <CardHeader
-                        action={
-                            <Tooltip title="cerrar" placement="top-end">
-                                <IconButton aria-label="cerrar" onClick={handleClose}><CloseIcon /></IconButton>
-                            </Tooltip>
-                        }
-                        title={
-                            <Typography variant="h6" component="div">
-                                Fecha y Hora de atención
-                                <span style={styles.contador}>2 de 2</span>
-                            </Typography>
-                        }
-                        subheader="Complete el formulario para continuar"
-                        style={{ textAlign: 'left' }}
-                    />
-                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-                        <Grid container spacing={2} sx={{ padding: 2 }}>
-                            <Grid item xs={12} sm={6}>
-                                <StaticDatePicker
-                                    displayStaticWrapperAs="desktop"
-                                    label="Seleccione una fecha"
-                                    value={date}
-                                    onChange={(newValue) => {
-                                        setDate(newValue);
-                                    
-                                    }}
-                                    renderInput={(params) => <TextField {...params} fullWidth />}
-                                    inputFormat="dd/MM/yyyy"
-                                    minDate={new Date()} // Disables past dates
-                                    componentsProps={{
-                                        actionBar: { actions: [] } // Hide the actions (cancel/accept buttons)
-                                    }}
-                                    // Custom style for the calendar
-                                    sx={{
-                                        '.MuiPickersBasePicker-container': {
-                                            width: '100%', // You can adjust this as needed
-                                            minHeight: '300px' // Adjust the height as needed
-                                        }
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                {selectedDate && (
-                                    <List>
-                                        {filteredTimes.map((time) => (
-                                            <ListItem key={time} button onClick={() => handleTimeSelect(time)}>
-                                                <ListItemText primary={time} />
-                                            </ListItem>
-                                        ))}
-                                    </List>
-                                )}
-                            </Grid>
-                        </Grid>
-                    </LocalizationProvider>
-                    <CardActions disableSpacing>
-                        <Grid container spacing={2} sx={{ mt: -1 }}>
-                            <Grid item xs={6}>
-                                <Button variant="contained" onClick={handleBack} sx={styles.button}>Atrás</Button>
-                            </Grid>
-                            {selectedTime && (
-                                <Grid item xs={6}>
-                                    <Button variant="contained" color="primary" onClick={handleSave} sx={styles.button}>
-                                        Agendar cita a las: {selectedTime}
-                                    </Button>
-                                </Grid>
-                            )}
-                        </Grid>
-                    </CardActions>
-                </Card>
-            
-            );
-
-            case 7:
-                return (
-                    <Card style={styles.card}>
-                        <CardHeader
-                            action={
-                                <Tooltip title="cerrar" placement="top-end">
-                                    <IconButton aria-label="cerrar" onClick={handleClose}><CloseIcon /></IconButton>
-                                </Tooltip>
-                            }
-                            title={<Typography variant="h6" component="div">Hora agendada! </Typography>}
-                            style={{ textAlign: 'left' }}
-                        />
-                        <CardMedia
-                            component="img"
-                            height="350" // Altura de la imagen
-                            image="/images_app/doctora_1.png" // Ruta de tu imagen
-                            alt="Imagen de la mascota" // Descripción de la imagen
-                        />
-                        <CardContent style={styles.cardContent}>
-                            <Typography variant="body1">Se ha agendado su hora exitosamente.</Typography>
-                        </CardContent>
-                        <CardActions disableSpacing>
-                            <Button variant="contained" sx={styles.button} onClick={() => navigate('/mis_horas')}>
-                                Ver mis horas agendadas
-                            </Button>
-                        </CardActions>
-                    </Card>
-                );
             case 8:
                 return (
                     <Card style={styles.card}>
@@ -758,7 +634,7 @@ const AgendamientoUsuarioComponent = () => {
                             subheader="Complete el formulario para continuar"
                             style={{ textAlign: 'left' }}
                         />
-                        {/* Aquí puedes añadir la lógica para la anulación de citas */}
+                        {/* Aquí hay que añadir la lógica para la anular la cita al veterinario */}
                         <CardActions disableSpacing>
                             <Grid container spacing={2} sx={{ mt: -1 }}>
                                 <Grid item xs={6}>
@@ -781,14 +657,14 @@ const AgendamientoUsuarioComponent = () => {
                                     <IconButton aria-label="cerrar" onClick={handleClose}><CloseIcon /></IconButton>
                                 </Tooltip>
                             }
-                            title={<Typography variant="h6" component="div">Hora Anulada </Typography>}
+                            title={<Typography variant="h6" component="div">Hora Anulada</Typography>}
                             style={{ textAlign: 'left' }}
                         />
                         <CardMedia
                             component="img"
-                            height="350" // Altura de la imagen
-                            image="/images_app/doctora_1.png" // Ruta de tu imagen
-                            alt="Imagen de la mascota" // Descripción de la imagen
+                            height="350"
+                            image="/images_app/doctora_1.png"
+                            alt="Imagen de la mascota"
                         />
                         <CardContent style={styles.cardContent}>
                             <Typography variant="body1">Se ha anulado su hora agendada exitosamente.</Typography>
