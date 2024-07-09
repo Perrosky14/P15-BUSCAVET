@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  buscavet-postgres:
+    image: postgres:12
+    container_name: buscavet-postgres
+    environment:
+      POSTGRES_DB: BUSCAVET
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Paralele34
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  buscavet-backend:
+    image: buscavet-backend
+    container_name: buscavet-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://buscavet-postgres:5432/BUSCAVET
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=Paralele34
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - buscavet-postgres
+    ports:
+      - "8080:8080"
