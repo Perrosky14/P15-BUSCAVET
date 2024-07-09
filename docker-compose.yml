@@ -28,3 +28,11 @@ services:
       - buscavet-postgres
     ports:
       - "8080:8080"
+
+  buscavet-frontend:
+    container_name: buscavet-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
