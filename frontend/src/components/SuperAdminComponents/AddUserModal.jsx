@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, FormControlLabel } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Checkbox, FormControlLabel, Grid, Card, CardActionArea, CardContent, Typography } from '@mui/material';
 import DoctorService from '../../services/DoctorService';
 import UsuarioService from '../../services/UsuarioService';
 import MascotaService from '../../services/MascotaService';
 import VeterinariaService from '../../services/VeterinariaService';
+import PersonIcon from '@mui/icons-material/Person'; // Icon for Usuario
+import PetsIcon from '@mui/icons-material/Pets'; // Icon for Mascota
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital'; // Icon for Doctor
+import BusinessIcon from '@mui/icons-material/Business'; // Icon for Veterinaria
+import { Box } from '@mui/material';
 
 const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
     const [hoverConfirm, setHoverConfirm] = useState(false);
@@ -107,6 +112,47 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
         }
     };
 
+    const resetUserData = () => {
+        setUserData({
+            tipo: '',
+            contrasenia: '',
+            id_institucion_vet_1: '',
+            id_institucion_vet_2: '',
+            id_institucion_vet_3: '',
+            id_pais: '',
+            rut: '',
+            matricula: '',
+            nombre1: '',
+            nombre2: '',
+            apellido1: '',
+            apellido2: '',
+            id_genero: '',
+            dia_nac: '',
+            mes_nac: '',
+            anio_nac: '',
+            id_nacionalidad: '',
+            id_especialidad_1: '',
+            id_especialidad_2: '',
+            id_especialidad_3: '',
+            resenia: '',
+            resenia_confirmada: '',
+            id_estado_medico_vet: '',
+            telefono: '',
+            codigo_area: '',
+            celular: '',
+            id_convenio: '',
+            email: '',
+            RRSS1: '',
+            RRSS2: '',
+            asistente_nom: '',
+            asistente_telefono: '',
+            asistente_codigo_area: '',
+            asistente_celular: '',
+            otro: '',
+            validado: false,
+        });
+    };
+
     const buttonConfirmStyle = {
         backgroundColor: hoverConfirm ? '#e03a5e' : '#ff436f',
         color: 'white',
@@ -117,7 +163,7 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
         color: 'white',
     };
 
-    const renderCommonFields = () => (
+    const renderDoctorForm = () => (
         <>
             <TextField
                 fullWidth
@@ -191,12 +237,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 onChange={handleChange}
                 variant="outlined"
             />
-        </>
-    );
-
-    const renderDoctorForm = () => (
-        <>
-            {renderCommonFields()}
             <TextField
                 fullWidth
                 margin="dense"
@@ -452,7 +492,78 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
 
     const renderUsuarioForm = () => (
         <>
-            {renderCommonFields()}
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre 1"
+                name="nombre1"
+                value={userData.nombre1}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre 2"
+                name="nombre2"
+                value={userData.nombre2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Apellido 1"
+                name="apellido1"
+                value={userData.apellido1}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Apellido 2"
+                name="apellido2"
+                value={userData.apellido2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="RUT"
+                name="rut"
+                value={userData.rut}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Teléfono"
+                name="telefono"
+                value={userData.telefono}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Celular"
+                name="celular"
+                value={userData.celular}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Email"
+                name="email"
+                value={userData.email}
+                onChange={handleChange}
+                variant="outlined"
+            />
             <TextField
                 fullWidth
                 margin="dense"
@@ -562,7 +673,78 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
 
     const renderVeterinariaForm = () => (
         <>
-            {renderCommonFields()}
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre 1"
+                name="nombre1"
+                value={userData.nombre1}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nombre 2"
+                name="nombre2"
+                value={userData.nombre2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Apellido 1"
+                name="apellido1"
+                value={userData.apellido1}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Apellido 2"
+                name="apellido2"
+                value={userData.apellido2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="RUT"
+                name="rut"
+                value={userData.rut}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Teléfono"
+                name="telefono"
+                value={userData.telefono}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Celular"
+                name="celular"
+                value={userData.celular}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Email"
+                name="email"
+                value={userData.email}
+                onChange={handleChange}
+                variant="outlined"
+            />
             <TextField
                 fullWidth
                 margin="dense"
@@ -880,39 +1062,87 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
         </>
     );
 
+    const renderSelectionGrid = () => (
+        <Grid container spacing={2}>
+            <Grid item xs={6} sm={6} md={3}>
+                <Card>
+                    <CardActionArea onClick={() => setUserData({ ...userData, tipo: 'Doctor' })}>
+                        <CardContent style={{ textAlign: 'center' }}>
+                            <LocalHospitalIcon style={{ fontSize: 50, color: '#ff436f' }} />
+                            <Typography variant="h6">Doctor</Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            </Grid>
+            <Grid item xs={6} sm={6} md={3}>
+                <Card>
+                    <CardActionArea onClick={() => setUserData({ ...userData, tipo: 'Usuario' })}>
+                        <CardContent style={{ textAlign: 'center' }}>
+                            <PersonIcon style={{ fontSize: 50, color: '#ff436f' }} />
+                            <Typography variant="h6">Usuario</Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            </Grid>
+            <Grid item xs={6} sm={6} md={3}>
+                <Card>
+                    <CardActionArea onClick={() => setUserData({ ...userData, tipo: 'Veterinaria' })}>
+                        <CardContent style={{ textAlign: 'center' }}>
+                            <BusinessIcon style={{ fontSize: 50, color: '#ff436f' }} />
+                            <Typography variant="h6">Veterinaria</Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            </Grid>
+            <Grid item xs={6} sm={6} md={3}>
+                <Card>
+                    <CardActionArea onClick={() => setUserData({ ...userData, tipo: 'Mascota' })}>
+                        <CardContent style={{ textAlign: 'center' }}>
+                            <PetsIcon style={{ fontSize: 50, color: '#ff436f' }} />
+                            <Typography variant="h6">Mascota</Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            </Grid>
+        </Grid>
+    );
+
     return (
         <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
             <DialogTitle>Agregar Usuario</DialogTitle>
             <DialogContent dividers>
-                <FormControl fullWidth margin="dense" variant="outlined">
-                    <InputLabel>Tipo</InputLabel>
-                    <Select
-                        name="tipo"
-                        value={userData.tipo}
-                        onChange={handleChange}
-                        label="Tipo"
-                    >
-                        <MenuItem value="">Seleccione un tipo</MenuItem>
-                        <MenuItem value="Doctor">Doctor</MenuItem>
-                        <MenuItem value="Usuario">Usuario</MenuItem>
-                        <MenuItem value="Veterinaria">Veterinaria</MenuItem>
-                        <MenuItem value="Mascota">Mascota</MenuItem>
-                    </Select>
-                </FormControl>
-                {userData.tipo === 'Doctor' && renderDoctorForm()}
-                {userData.tipo === 'Usuario' && renderUsuarioForm()}
-                {userData.tipo === 'Veterinaria' && renderVeterinariaForm()}
-                {userData.tipo === 'Mascota' && renderMascotaForm()}
+                {userData.tipo ? (
+                    <>
+                        {userData.tipo === 'Doctor' && renderDoctorForm()}
+                        {userData.tipo === 'Usuario' && renderUsuarioForm()}
+                        {userData.tipo === 'Veterinaria' && renderVeterinariaForm()}
+                        {userData.tipo === 'Mascota' && renderMascotaForm()}
+                    </>
+                ) : (
+                    renderSelectionGrid()
+                )}
             </DialogContent>
             <DialogActions>
-                <Button
-                    onClick={handleSaveUser}
-                    onMouseEnter={() => setHoverConfirm(true)}
-                    onMouseLeave={() => setHoverConfirm(false)}
-                    style={buttonConfirmStyle}
-                >
-                    Guardar
-                </Button>
+                {userData.tipo && (
+                    <Box flex="1">
+                        <Button
+                            onClick={resetUserData}
+                            style={{ backgroundColor: '#ff436f', color: 'white' }}
+                        >
+                            Atrás
+                        </Button>
+                    </Box>
+                )}
+                {userData.tipo && (
+                    <Button
+                        onClick={handleSaveUser}
+                        onMouseEnter={() => setHoverConfirm(true)}
+                        onMouseLeave={() => setHoverConfirm(false)}
+                        style={buttonConfirmStyle}
+                    >
+                        Guardar
+                    </Button>
+                )}
                 <Button
                     onClick={handleClose}
                     style={buttonCancelStyle}

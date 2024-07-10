@@ -8,6 +8,7 @@ class UsuarioService {
         return axios.post(USUARIO_API_URL + "/nuevo-usuario", usuario);
     }
 
+
 }
 
 export default new UsuarioService();

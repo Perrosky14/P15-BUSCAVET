@@ -1,53 +1,54 @@
 import React from 'react';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
-const SortButton = ({ onSortChange }) => {
+const SortButton = ({ onSortChange, initialSort }) => {
     return (
         <FormControl
             variant="outlined"
             sx={{
-                minWidth: 100, // Reducido el tamaño mínimo
+                minWidth: 100,
                 '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                        borderColor: '#ff436f', // Rosado
+                        borderColor: '#ff436f',
                     },
                     '&:hover fieldset': {
-                        borderColor: '#ff436f', // Rosado en hover
+                        borderColor: '#ff436f',
                     },
                     '&.Mui-focused fieldset': {
-                        borderColor: '#ff436f', // Rosado en focus
+                        borderColor: '#ff436f',
                     },
                     '& .MuiSelect-select': {
-                        padding: '8px 14px', // Ajustar padding para tamaño más pequeño
-                        fontSize: '14px', // Asegurar el tamaño de fuente consistente
+                        padding: '8px 14px',
+                        fontSize: '14px',
                     },
                 },
                 '& .MuiInputLabel-root': {
-                    color: '#ff436f', // Color del label
-                    fontSize: '14px', // Tamaño de fuente consistente
+                    color: '#ff436f',
+                    fontSize: '14px',
                 },
                 '& .MuiInputLabel-root.Mui-focused': {
-                    color: '#ff436f', // Color del label en focus
+                    color: '#ff436f',
                 },
-                fontSize: '14px', // Tamaño de fuente consistente
+                fontSize: '14px',
             }}
         >
             <InputLabel id="sort-options-label">Ordenar por</InputLabel>
             <Select
                 labelId="sort-options-label"
                 id="sortOptions"
+                value={initialSort}
                 onChange={(e) => onSortChange(e.target.value)}
                 label="Ordenar por"
                 MenuProps={{
                     PaperProps: {
                         sx: {
                             '& .MuiMenuItem-root': {
-                                fontSize: '14px', // Tamaño de fuente consistente
+                                fontSize: '14px',
                                 '&.Mui-selected': {
-                                    backgroundColor: '#ff436f1a', // Fondo rosado claro al seleccionar
+                                    backgroundColor: '#ff436f1a',
                                 },
                                 '&:hover': {
-                                    backgroundColor: '#ff436f1a', // Fondo rosado claro al pasar el mouse
+                                    backgroundColor: '#ff436f1a',
                                 },
                             },
                         },

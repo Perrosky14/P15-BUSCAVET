@@ -48,22 +48,23 @@ public class MascotaService {
 
     public MascotaEntity transformarMascota(Map<String, Object> mascotaData) {
         MascotaEntity mascota = new MascotaEntity();
-        mascota.setId_categoria_animal((Integer) mascotaData.get("id_categoria_animal"));
-        mascota.setId_especie((Integer) mascotaData.get("id_especie"));
-        mascota.setId_raza((Integer) mascotaData.get("id_raza"));
-        mascota.setId_sexo((Integer) mascotaData.get("id_sexo"));
-        mascota.setNombre((String) mascotaData.get("nombre"));
-        mascota.setDia_nac((Integer) mascotaData.get("dia_nac"));
-        mascota.setMes_nac((Integer) mascotaData.get("mes_nac"));
-        mascota.setAnio_nac((Integer) mascotaData.get("anio_nac"));
-        mascota.setOtro((String) mascotaData.get("otro"));
-        mascota.setHistorial_consulta((String) mascotaData.get("historial_consulta"));
-        mascota.setEstatura((Double) mascotaData.get("estatura"));
-        mascota.setColor((String) mascotaData.get("color"));
-        mascota.setPeso((Double) mascotaData.get("peso"));
-        mascota.setOtro2((String) mascotaData.get("otro2"));
+        mascota.setId_categoria_animal(Integer.parseInt(mascotaData.get("id_categoria_animal").toString()));
+        mascota.setId_especie(Integer.parseInt(mascotaData.get("id_especie").toString()));
+        mascota.setId_raza(Integer.parseInt(mascotaData.get("id_raza").toString()));
+        mascota.setId_sexo(Integer.parseInt(mascotaData.get("id_sexo").toString()));
+        mascota.setNombre(mascotaData.get("nombre").toString());
+        mascota.setDia_nac(Integer.parseInt(mascotaData.get("dia_nac").toString()));
+        mascota.setMes_nac(Integer.parseInt(mascotaData.get("mes_nac").toString()));
+        mascota.setAnio_nac(Integer.parseInt(mascotaData.get("anio_nac").toString()));
+        mascota.setOtro(mascotaData.get("otro").toString());
+        mascota.setHistorial_consulta(mascotaData.get("historial_consulta").toString());
+        mascota.setEstatura(Double.parseDouble(mascotaData.get("estatura").toString()));
+        mascota.setColor(mascotaData.get("color").toString());
+        mascota.setPeso(Double.parseDouble(mascotaData.get("peso").toString()));
+        mascota.setOtro2(mascotaData.get("otro2").toString());
         return mascota;
     }
+
 
     public void eliminarMascota(Long id){
         mascotaRepository.deleteById(id);

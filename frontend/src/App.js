@@ -4,11 +4,11 @@ import SuperAdminControls from './components/SuperAdminComponents/UserList';
 import UserSessionComponent from './components/UserSessionComponent';
 import RegisterComponent from './components/RegisterComponent';
 import RegisterTutorComponent from './components/RegisterTutorComponent'
-
 import HomeComponent from './components/HomeComponent';
 import FichaMascotaComponent from './components/FichaMascotaComponent';
 import RegistarMascotaComponent from './components/RegistrarMascotaComponent';
 import ListaMascotaComponent from './components/ListaMascotaComponent';
+import MainViewSuperAdmin from "./components/SuperAdminComponents/MainViewSuperAdmin";
 function App() {
   return (
     <div>
@@ -24,6 +24,7 @@ function App() {
         <Route path="/registroTutor" element = {<RegisterTutorComponent/>}/>
         <Route path="/registroVeterinario"/>
         <Route path="/registroCentro"/>
+        <Route path="/admin/usuarios" element={<MainViewSuperAdmin/>}/>
       </Routes>
     </BrowserRouter>
       

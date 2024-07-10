@@ -1,92 +1,100 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Box, Typography, Button, IconButton } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
-import UserDetailsModal from './UserDetailsModal';
+import UserDetailsModal from './UserDetailsModal/UserDetailsModal';
 import DeleteUserModal from './DeleteUserModal';
 import AddUserModal from './AddUserModal';
-import SortButton from './SortButton';
-import FilterByType from './FilterByType';
 import DoctorService from '../../services/DoctorService';
 import UsuarioService from '../../services/UsuarioService';
 import MascotaService from '../../services/MascotaService';
 import VeterinariaService from '../../services/VeterinariaService';
-import { Button, Box } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../styles/themeComponent';
+import UserComponent from './UserComponent';
+import AdvancedSearchModal from './AdvanceSearchModal';
 
 const styles = {
     container: {
+        backgroundColor: '#FBFBFB',
+        borderRadius: '16px',
+        p: 0,
+        width: '60%',
         maxWidth: '1200px',
-        margin: 'auto',
-        backgroundColor: '#fff',
-        padding: '10px',
-        borderRadius: '10px',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+        marginLeft: 2,
         overflowY: 'auto',
-        height: '90vh',  // Adjust height to make sure it allows scrolling
+        height: '90vh',
+    },
+    headerContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        mb: 0.5,
     },
     header: {
-        fontWeight: 600,
+        fontWeight: 'bold',
         color: '#ff436f',
         textAlign: 'center',
         fontSize: '24px',
     },
-    table: {
-        width: '100%',
-        tableLayout: 'fixed',
-        borderCollapse: 'collapse',
-        marginTop: '10px',
-    },
-    tableHeader: {
-        backgroundColor: '#f5f5f5',
-    },
-    tableCell: {
-        border: '1px solid #ddd',
-        padding: '8px', // Reduce padding for better fit
-        fontSize: '16px', // Adjust font size
+    recargarIcon: {
+        color: '#FF4081',
+        fontSize: '30px',
+        mt: 2.5,
+        mr: 1,
     },
     button: {
-        border: '1px solid #ff436f', // Border color to pink
-        borderRadius: '5px',
-        padding: '4px 8px', // Adjust padding for better fit
-        fontWeight: 600,
-        transition: 'background-color 0.3s ease, color 0.3s ease',
-        marginRight: '5px',
-        fontSize: '12px',
-        cursor: 'pointer',
-        color: '#ff436f', // Font color to pink
-        '&:hover': {
-            backgroundColor: '#ff436f',
-            color: 'white',
-            borderColor: '#ff436f', // Ensure border color stays pink on hover
-        },
-        '&:focus': {
-            borderColor: '#ff436f', // Ensure border color stays pink on focus
-            outline: 'none',
-            boxShadow: '0 0 0 3px rgba(255, 67, 111, 0.5)', // Optional: Add pink shadow for focus
-        },
-    },
-    buttonHover: {
-        backgroundColor: '#ff436f',
-        color: 'white',
-    },
-    pagination: {
-        marginTop: '10px',
-        display: 'flex',
-        justifyContent: 'center',
+        borderRadius: '25px',
+        border: '1px solid #FF4081',
+        color: '#000000',
+        padding: '10px 25px',
+        textTransform: 'none',
+        fontSize: '17px',
+        height: '30px',
+        mt: 2.5,
     },
     paginationButton: {
-        '& .MuiPaginationItem-root': {
-            color: '#ff436f',
-        },
-        '& .Mui-selected': {
-            backgroundColor: '#ff436f !important',
-            color: 'white',
-        },
-    },
-    formControl: {
-        marginTop: '10px',
-        marginBottom: '10px',
-        width: '100%',
+        mt: 0,
+        mx: 1,
     },
 };
+
+const normalizeText = (text) => {
+    if (typeof text !== 'string') return '';
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+};
+
+const normalizeRut = (rut) => {
+    if (typeof rut !== 'string') return '';
+    return rut.replace(/[.\-]/g, '').toLowerCase();
+};
+
+const HeaderWithButton = ({ totalUsers, recargar, onSortChange, onFilterChange, onSearchChange, initialSort, initialFilter, initialSearchType, initialSearchValue }) => (
+    <Box sx={styles.headerContainer}>
+        <Box>
+            <Typography variant="h6" sx={{ mb: -0.5, fontWeight: 'bold' }}>Usuarios en el Sistema</Typography>
+            <Typography variant="subtitle1" sx={{ color: '#B9B9B9' }}>Hay {totalUsers} usuarios registrados</Typography>
+        </Box>
+        <Box>
+            <IconButton
+                sx={styles.recargarIcon}
+                onClick={recargar}
+            >
+                <RefreshIcon />
+            </IconButton>
+            <AdvancedSearchModal
+                style={styles.button}
+                onSortChange={onSortChange}
+                onFilterChange={onFilterChange}
+                onSearchChange={onSearchChange}
+                initialSort={initialSort}
+                initialFilter={initialFilter}
+                initialSearchType={initialSearchType}
+                initialSearchValue={initialSearchValue}
+            />
+        </Box>
+    </Box>
+);
 
 const UserList = () => {
     const [users, setUsers] = useState([]);
@@ -96,9 +104,11 @@ const UserList = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [sortAttribute, setSortAttribute] = useState('id');
     const [filterType, setFilterType] = useState('');
+    const [searchCriteria, setSearchCriteria] = useState({ type: 'name', value: '' });
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
-    const usersPerPage = 10;
+    const usersPerPage = 6; // Cambiado a 6 usuarios por página
+    const [key, setKey] = useState(0);
 
     const fetchData = async () => {
         try {
@@ -145,7 +155,7 @@ const UserList = () => {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [key]);
 
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
@@ -168,7 +178,8 @@ const UserList = () => {
     };
 
     const reloadCurrentPage = () => {
-        fetchData();
+        fetchData(); // Simplemente vuelve a cargar los datos sin modificar la paginación
+        setKey(key + 1); // Este valor puede ser utilizado para forzar una recarga visual si es necesario
     };
 
     const handleSortChange = (attribute) => {
@@ -177,6 +188,11 @@ const UserList = () => {
 
     const handleFilterChange = (type) => {
         setFilterType(type);
+        setCurrentPage(1);
+    };
+
+    const handleSearchChange = (criteria) => {
+        setSearchCriteria(criteria);
         setCurrentPage(1);
     };
 
@@ -193,107 +209,105 @@ const UserList = () => {
     const filteredAndSortedUsers = useMemo(() => {
         let filteredUsers = filterType ? users.filter(user => user.tipo === filterType) : users;
 
+        if (searchCriteria.value) {
+            filteredUsers = filteredUsers.filter(user => {
+                if (searchCriteria.type === 'rut') {
+                    return normalizeRut(user[searchCriteria.type] ?? '').includes(normalizeRut(searchCriteria.value));
+                }
+                return normalizeText(user[searchCriteria.type] ?? '').includes(normalizeText(searchCriteria.value));
+            });
+        }
+
         filteredUsers.sort((a, b) => {
-            if (a[sortAttribute] < b[sortAttribute]) return -1;
-            if (a[sortAttribute] > b[sortAttribute]) return 1;
+            const aValue = normalizeText(a[sortAttribute] ?? '');
+            const bValue = normalizeText(b[sortAttribute] ?? '');
+            if (aValue < bValue) return -1;
+            if (aValue > bValue) return 1;
             return 0;
         });
 
         return filteredUsers;
-    }, [users, filterType, sortAttribute]);
+    }, [users, filterType, sortAttribute, searchCriteria]);
 
     const offset = (currentPage - 1) * usersPerPage;
     const currentPageData = filteredAndSortedUsers.slice(offset, offset + usersPerPage);
 
     return (
-        <div style={styles.container}>
-            <h2 style={styles.header}>Lista de Usuarios</h2>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Button
-                    variant="outlined"
-                    sx={{ borderColor: '#ff436f', color: '#ff436f', '&:hover': { backgroundColor: '#ff436f', color: 'white' } }}
-                    onClick={() => setShowAddModal(true)}
-                >
-                    Agregar Usuario
-                </Button>
-                <Box display="flex" alignItems="center">
-                    <FilterByType onFilterChange={handleFilterChange} />
-                    <SortButton onSortChange={handleSortChange} sx={{ ml: 2 }} />
+        <ThemeProvider theme={theme}>
+            <Box key={key} sx={styles.container}>
+                <HeaderWithButton
+                    totalUsers={users.length}
+                    recargar={reloadCurrentPage}
+                    onSortChange={handleSortChange}
+                    onFilterChange={handleFilterChange}
+                    onSearchChange={handleSearchChange}
+                    initialSort={sortAttribute}
+                    initialFilter={filterType}
+                    initialSearchType={searchCriteria.type}
+                    initialSearchValue={searchCriteria.value}
+                />
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} px={2}>
+                    <Button
+                        variant="outlined"
+                        sx={{ borderColor: '#ff436f', color: '#ff436f', '&:hover': { backgroundColor: '#ff436f', color: 'white' } }}
+                        onClick={() => setShowAddModal(true)}
+                    >
+                        Agregar Usuario
+                    </Button>
                 </Box>
+                {currentPageData.length > 0 ? (
+                    currentPageData.map(user => (
+                        <UserComponent
+                            key={user.id}
+                            user={user}
+                            onDelete={handleDeleteUser}
+                            onView={handleShowModal}
+                        />
+                    ))
+                ) : (
+                    <Typography variant="body1" color="textSecondary" sx={{ textAlign: 'center' }}>
+                        No hay usuarios para esta busqueda
+                    </Typography>
+                )}
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 0.5 }}>
+                    <Button
+                        variant="outlined"
+                        sx={styles.paginationButton}
+                        disabled={currentPage === 1 || filteredAndSortedUsers.length === 0}
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                    >
+                        Anterior
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        sx={styles.paginationButton}
+                        disabled={currentPage === Math.ceil(filteredAndSortedUsers.length / usersPerPage) || filteredAndSortedUsers.length === 0}
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                    >
+                        Siguiente
+                    </Button>
+                </Box>
+                <UserDetailsModal
+                    open={showModal}
+                    handleClose={handleCloseModal}
+                    user={selectedUser}
+                    reloadCurrentPage={reloadCurrentPage}
+                />
+                <DeleteUserModal
+                    show={showDeleteModal}
+                    handleClose={() => setShowDeleteModal(false)}
+                    user={selectedUser}
+                    handleDelete={handleConfirmDelete}
+                    reloadCurrentPage={reloadCurrentPage}
+                />
+                <AddUserModal
+                    show={showAddModal}
+                    handleClose={() => setShowAddModal(false)}
+                    reloadCurrentPage={reloadCurrentPage}
+                />
             </Box>
-            <table style={styles.table}>
-                <thead style={styles.tableHeader}>
-                <tr>
-                    <th style={styles.tableCell}>ID</th>
-                    <th style={styles.tableCell}>RUT</th>
-                    <th style={styles.tableCell}>Nombre</th>
-                    <th style={styles.tableCell}>Tipo</th>
-                    <th style={styles.tableCell}>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                {currentPageData.map(user => (
-                    <tr key={user.id}>
-                        <td style={styles.tableCell}>{user.id}</td>
-                        <td style={styles.tableCell}>{user.rut}</td>
-                        <td style={styles.tableCell}>{user.name}</td>
-                        <td style={styles.tableCell}>{user.tipo}</td>
-                        <td style={styles.tableCell}>
-                            <Button
-                                variant="outlined"
-                                sx={{ ...styles.button }}
-                                onClick={() => handleShowModal(user, false)}
-                            >
-                                Ver
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                sx={{ ...styles.button }}
-                                onClick={() => handleShowModal(user, true)}
-                            >
-                                Editar
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                sx={{ ...styles.button }}
-                                onClick={() => handleDeleteUser(user)}
-                            >
-                                Eliminar
-                            </Button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-            <Pagination
-                count={Math.ceil(filteredAndSortedUsers.length / usersPerPage)}
-                page={currentPage}
-                onChange={handlePageChange}
-                color="primary"
-                sx={{ ...styles.pagination, ...styles.paginationButton }}
-            />
-            <UserDetailsModal
-                showModal={showModal}
-                handleClose={handleCloseModal}
-                userDetails={selectedUser}
-                isEditMode={isEditMode}
-                reloadCurrentPage={reloadCurrentPage}
-            />
-            <DeleteUserModal
-                show={showDeleteModal}
-                handleClose={() => setShowDeleteModal(false)}
-                user={selectedUser}
-                handleDelete={handleConfirmDelete}
-                reloadCurrentPage={reloadCurrentPage}
-            />
-            <AddUserModal
-                show={showAddModal}
-                handleClose={() => setShowAddModal(false)}
-                reloadCurrentPage={reloadCurrentPage}
-            />
-        </div>
+        </ThemeProvider>
     );
 };
 
 export default UserList;
-
