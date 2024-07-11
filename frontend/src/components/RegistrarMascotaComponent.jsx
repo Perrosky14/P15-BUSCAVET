@@ -118,7 +118,7 @@ export default function RegistarMascotaComponent() {
 
 
     const handleBack = () => setCurrentCard(prevCard => prevCard - 1);
-    const handleClose = () => navigate('/');
+    const handleClose = () => navigate('/usuario');
     const handleSave = () => {
         if (validateStep1() && validateStep2()) {
             console.log('Datos de la mascota:', mascotaData);

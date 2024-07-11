@@ -3,12 +3,11 @@ import { Drawer, List, ListItem, ListItemText, ListItemIcon, Avatar } from "@mui
 import { Settings, MonitorHeart, CalendarMonth, MarkEmailRead, BarChart, ExitToApp } from "@mui/icons-material";
 import ImageIcon from '@mui/icons-material/Image';
 import { styled } from '@mui/system';
-import { jwtDecode } from 'jwt-decode';
-
+import PetsIcon from '@mui/icons-material/Pets';
+import { useNavigate } from "react-router-dom";
+import {jwtDecode} from 'jwt-decode';
 
 const drawerWidth = 250;
-
-const token = localStorage.getItem('token');
 
 const DrawerStyled = styled(Drawer)({
   width: drawerWidth,
@@ -94,22 +93,48 @@ const Logout = styled(ListItemStyled)({
 });
 
 function VerticalNavbarComponent() {
+  const [user, setUser] = useState(null);
   const [userName, setUserName] = useState('');
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (token) {
       // Si necesitas decodificar el token
       const tokenDecodificado = jwtDecode(token);
       setUserName(tokenDecodificado.nombre);
+      setUser(tokenDecodificado);
     } else {
       console.error('No se encontró un token en el localStorage');
     }
-  }, []);
+  }, [token]);
+
+  const navigateToUsuario = () => {
+    navigate('/usuario', { state: { user } });
+  };
+
+  const navigateToMisHoras = () => {
+    navigate('/mis_horas', { state: { user } });
+  };
+
+  const navigateToFichaMascota = () => {
+    navigate('/ficha_mascota', { state: { user } });
+  };
+
+  const navigateToPerfilUsuario = () => {
+    navigate('/perfil_usuario', { state: { user } });
+  };
+
+  const navigateToFacturaUsuario = () => {
+    navigate('/factura_usuario', { state: { user } });
+  };
+
+  const navigateToConfiguracion = () => {
+    navigate('/configuracion', { state: { user } });
+  };
 
   return (
-    <DrawerStyled
-      variant="permanent"
-    >
+    <DrawerStyled variant="permanent">
       <Logo>
         <LogoImage src="/images/logo-buscavet-5.png" alt="Logo buscavet" />
       </Logo>
@@ -123,23 +148,27 @@ function VerticalNavbarComponent() {
         </div>
       </UserInfo>
       <List>
-        <ListItemStyled button component="a" href="/usuario">
+        <ListItemStyled button component="a" onClick={navigateToUsuario}>
           <ListItemIconStyled><MonitorHeart /></ListItemIconStyled>
           <ListItemTextStyled primary="Inicio" />
         </ListItemStyled>
-        <ListItemStyled button component="a" href="/mis_horas">
+        <ListItemStyled button component="a" onClick={navigateToMisHoras}>
           <ListItemIconStyled><CalendarMonth /></ListItemIconStyled>
           <ListItemTextStyled primary="Mis horas" />
         </ListItemStyled>
-        <ListItemStyled button component="a" href="/perfil_usuario">
+        <ListItemStyled button component="a" onClick={navigateToFichaMascota}>
+          <ListItemIconStyled><PetsIcon /></ListItemIconStyled>
+          <ListItemTextStyled primary="Mis mascotas" />
+        </ListItemStyled>
+        <ListItemStyled button component="a" onClick={navigateToPerfilUsuario}>
           <ListItemIconStyled><MarkEmailRead /></ListItemIconStyled>
           <ListItemTextStyled primary="Perfil" />
         </ListItemStyled>
-        <ListItemStyled button component="a" href="/factura_usuario">
+        <ListItemStyled button component="a" onClick={navigateToFacturaUsuario}>
           <ListItemIconStyled><BarChart /></ListItemIconStyled>
           <ListItemTextStyled primary="Facturación" />
         </ListItemStyled>
-        <ListItemStyled button component="a" href="/configuracion">
+        <ListItemStyled button component="a" onClick={navigateToConfiguracion}>
           <ListItemIconStyled><Settings /></ListItemIconStyled>
           <ListItemTextStyled primary="Configuración" />
         </ListItemStyled>
