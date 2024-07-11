@@ -69,38 +69,64 @@ public class BloqueHoraService {
         return null;
     }
 
-    public BloqueHoraEntity actualizarBloqueHora(Long id, BloqueHoraEntity bloqueHoraActualizado) {
+    public BloqueHoraEntity actualizarBloqueHora(Long id, Map<String, Object> bloqueHoraData) {
         BloqueHoraEntity bloqueHoraExistente= bloqueHoraRepository.findById(id).orElse(null);
         if (bloqueHoraExistente != null) {
-            bloqueHoraExistente.setIdCentro(bloqueHoraActualizado.getIdCentro());
-            bloqueHoraExistente.setMotivo(bloqueHoraActualizado.getMotivo());
-            bloqueHoraExistente.setActivo(bloqueHoraActualizado.getActivo());
-            bloqueHoraExistente.setTomadoTemporal(bloqueHoraActualizado.getTomadoTemporal());
-            bloqueHoraExistente.setAgendadoPorUsuario(bloqueHoraActualizado.getAgendadoPorUsuario());
-            bloqueHoraExistente.setTiempoAtencion(bloqueHoraActualizado.getTiempoAtencion());
-            bloqueHoraExistente.setHoraInicio(bloqueHoraActualizado.getHoraInicio());
-            bloqueHoraExistente.setBloqueoTemporal(bloqueHoraActualizado.getBloqueoTemporal());
-            bloqueHoraExistente.setFecha(bloqueHoraActualizado.getFecha());
-            bloqueHoraExistente.setUsuario(bloqueHoraActualizado.getUsuario());
-            bloqueHoraExistente.setMascota(bloqueHoraActualizado.getMascota());
-            bloqueHoraExistente.setDoctor(bloqueHoraActualizado.getDoctor());
+            transformarBloqueHora(bloqueHoraExistente, bloqueHoraData);
             return bloqueHoraRepository.save(bloqueHoraExistente);
         }
         return null;
     }
 
-    public BloqueHoraEntity transformarBloqueHora(Map<String, Object> bloqueHoraData) {
-        BloqueHoraEntity bloqueHora = new BloqueHoraEntity();
-        bloqueHora.setIdCentro((Integer) bloqueHoraData.get("idCentro"));
-        bloqueHora.setMotivo((String) bloqueHoraData.get("motivo"));
-        bloqueHora.setActivo((Boolean) bloqueHoraData.get("activo"));
-        bloqueHora.setTomadoTemporal((Boolean) bloqueHoraData.get("tomadoTemporal"));
-        bloqueHora.setAgendadoPorUsuario((Boolean) bloqueHoraData.get("agendadoPorUsuario"));
-        bloqueHora.setTiempoAtencion(LocalTime.parse((String) bloqueHoraData.get("tiempoAtencion")));
-        bloqueHora.setHoraInicio(LocalTime.parse((String) bloqueHoraData.get("horaInicio")));
-        bloqueHora.setBloqueoTemporal(LocalTime.parse((String) bloqueHoraData.get("bloqueoTemporal")));
-        bloqueHora.setFecha(LocalDate.parse((String) bloqueHoraData.get("fecha")));
-        return bloqueHora;
+    public void agendarBloqueHora(Long idBloqueHora, String motivo, UsuarioEntity usuario, MascotaEntity mascota) {
+        BloqueHoraEntity bloqueHora = bloqueHoraRepository.findById(idBloqueHora).orElse(null);
+        if (bloqueHora != null) {
+            bloqueHora.setMotivo(motivo);
+            bloqueHora.setAgendadoPorUsuario(Boolean.TRUE);
+            bloqueHora.setUsuario(usuario);
+            bloqueHora.setMascota(mascota);
+            bloqueHoraRepository.save(bloqueHora);
+        }
+    }
+
+    public void transformarBloqueHora(BloqueHoraEntity bloqueHoraExistente, Map<String, Object> bloqueHoraData) {
+
+        if (bloqueHoraData.containsKey("idCentro")) {
+            bloqueHoraExistente.setIdCentro((Integer) bloqueHoraData.get("idCentro"));
+        }
+        if (bloqueHoraData.containsKey("motivo")) {
+            bloqueHoraExistente.setMotivo((String) bloqueHoraData.get("motivo"));
+        }
+        if (bloqueHoraData.containsKey("activo")) {
+            bloqueHoraExistente.setActivo((Boolean) bloqueHoraData.get("activo"));
+        }
+        if (bloqueHoraData.containsKey("tomadoTemporal")) {
+            bloqueHoraExistente.setTomadoTemporal((Boolean) bloqueHoraData.get("tomadoTemporal"));
+        }
+        if (bloqueHoraData.containsKey("agendadoPorUsuario")) {
+            bloqueHoraExistente.setAgendadoPorUsuario((Boolean) bloqueHoraData.get("agendadoPorUsuario"));
+        }
+        if (bloqueHoraData.containsKey("fecha")) {
+            bloqueHoraExistente.setFecha(LocalDate.parse((String) bloqueHoraData.get("fecha")));
+        }
+        if (bloqueHoraData.containsKey("tiempoAtencion")) {
+            bloqueHoraExistente.setTiempoAtencion(LocalTime.parse((String) bloqueHoraData.get("tiempoAtencion")));
+        }
+        if (bloqueHoraData.containsKey("horaInicio")) {
+            bloqueHoraExistente.setHoraInicio(LocalTime.parse((String) bloqueHoraData.get("horaInicio")));
+        }
+        if (bloqueHoraData.containsKey("bloqueoTemporal")) {
+            bloqueHoraExistente.setBloqueoTemporal(LocalTime.parse((String) bloqueHoraData.get("bloqueoTemporal")));
+        }
+        if (bloqueHoraData.containsKey("usuario")) {
+            bloqueHoraExistente.setUsuario((UsuarioEntity) bloqueHoraData.get("usuario"));
+        }
+        if (bloqueHoraData.containsKey("mascota")) {
+            bloqueHoraExistente.setMascota((MascotaEntity) bloqueHoraData.get("mascota"));
+        }
+        if (bloqueHoraData.containsKey("doctor")) {
+            bloqueHoraExistente.setDoctor((DoctorEntity) bloqueHoraData.get("doctor"));
+        }
     }
 
     public void crearBloquesHoraInicial(DoctorEntity veterinario, BloqueHorarioEntity bloqueHorario) {
