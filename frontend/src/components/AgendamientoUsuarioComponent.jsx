@@ -85,6 +85,8 @@ const AgendamientoUsuarioComponent = () => {
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
     const location = useLocation();
+    const [scheduledHours, setScheduledHours] = useState([]);
+    const [selectedHourToCancel, setSelectedHourToCancel] = useState('');
     const { user } = location.state || {};
 
     const obtenerBloquesHoraPorFecha = (fecha) => {
@@ -113,6 +115,7 @@ const AgendamientoUsuarioComponent = () => {
     };
 
     const handleHoraSelect = (bloque) => {
+        console.log("horaBloqueSeleccionada: ",bloque.id);
         setSelectedTime(bloque);
     };
 
@@ -126,31 +129,32 @@ const AgendamientoUsuarioComponent = () => {
 
     const handleSave = () => {
         if (selectedTime) {
-            setHoraData(prevData => ({
-                ...prevData,
-                idBloqueHora: selectedTime.id
-            }));
-            if (validateStep1() || validateStep2()) {
-                console.log('Datos de la hora:', horaData);
-
-                const sanitizedHoraData = {
-                    idBloqueHora: horaData.idBloqueHora || 0,
-                    idUsuario: horaData.idUsuario || 0,
-                    idMascota: horaData.idMascota || 0,
-                    motivo: horaData.motivo
+            setHoraData(prevData => {
+                const newHoraData = {
+                    ...prevData,
+                    idBloqueHora: selectedTime.id
                 };
-
-                BloqueHoraService.agendarBloqueHora(sanitizedHoraData.idBloqueHora, sanitizedHoraData.idUsuario, sanitizedHoraData.idMascota, sanitizedHoraData.motivo)
-                    .then(response => {
-                        console.log('Hora general registrada:', response.data);
-                        setCurrentCard(4); 
-                    })
-                    .catch(error => {
-                        console.error('Error al registrar la hora general:', error.response ? error.response.data : error.message);
-                    });
-            }
+                if (validateStep1() || validateStep2()) {
+                    const sanitizedHoraData = {
+                        idBloqueHora: newHoraData.idBloqueHora,
+                        idUsuario: newHoraData.idUsuario,
+                        idMascota: newHoraData.idMascota,
+                        motivo: newHoraData.motivo
+                    };
+    
+                    BloqueHoraService.agendarBloqueHora(sanitizedHoraData.idBloqueHora, sanitizedHoraData.idUsuario, sanitizedHoraData.idMascota, sanitizedHoraData.motivo)
+                        .then(response => {
+                            console.log('Hora general registrada:', response.data);
+                            setCurrentCard(4); 
+                        })
+                        .catch(error => {
+                            console.error('Error al registrar la hora general:', error.response ? error.response.data : error.message);
+                        });
+                }
+                return newHoraData;
+            });
         }
-    }
+    };
 
     const filteredDoctors = doctores.filter(doctor =>
         doctor.id_especialidad_1 === 1 || doctor.id_especialidad_2 === 1 || doctor.id_especialidad_3 === 1
@@ -212,13 +216,31 @@ const AgendamientoUsuarioComponent = () => {
             }
         };
 
+        const fetchScheduledHours = async () => {
+            try {
+                const response = await BloqueHoraService.obtenerBloquesHoraPorUsuario(user.id);
+                setScheduledHours(response.data);
+            } catch (error) {
+                console.error('Error al obtener las horas agendadas:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        
+
         if (user) {
+            setLoading(true);
             fetchMascotas();
             fetchDoctores();
+            fetchScheduledHours();
         } else {
             setLoading(false);
         }
     }, [user]);
+
+    
+    console.log(scheduledHours);
 
     useEffect(() => {
         if (bloquesHora.length > 0) {
@@ -231,6 +253,31 @@ const AgendamientoUsuarioComponent = () => {
             handleBLoquesHora();
         }
     }, [horaData.idVeterinario]);
+
+    const handleCancel = () => {
+        const selectedHourId = parseInt(selectedHourToCancel, 10);
+        if (!selectedHourToCancel) return;
+
+        const bloqueHoraActualizada = {
+            motivo: '',
+            agendadoPorUsuario: false,
+
+        };
+        handleContinue();
+        BloqueHoraService.actualizarBloqueHora(selectedHourId, bloqueHoraActualizada)
+            .then(() => {
+                setScheduledHours(scheduledHours.filter(hour => hour.id !== selectedHourToCancel));
+                setSelectedHourToCancel('');
+                navigate('/mis_horas');
+            })
+            .catch(error => {
+                console.error('Error al anular la hora:', error);
+            });
+    };
+
+    if (loading) {
+        return <CircularProgress />;
+    }
 
     const handleOptionSelect = (option, targetCard) => {
         setSelectedOption(option);
@@ -249,6 +296,8 @@ const AgendamientoUsuarioComponent = () => {
             setSelectedOption(null);
         }
     };
+
+    
 
     const handleClose = () => navigate('/usuario');
 
@@ -276,7 +325,7 @@ const AgendamientoUsuarioComponent = () => {
             if (selectedOption === 'general' && validateStep1()) {
                 setCurrentCard((prevCard) => prevCard + 1);
             } else if (selectedOption === 'especialista' && validateStep2()) {
-                setCurrentCard((prevCard) => prevCard + 1);
+                setCurrentCard(3);
             } else if (selectedOption === 'anular') {
                 setCurrentCard((prevCard) => prevCard + 1);
             }
@@ -305,7 +354,7 @@ const AgendamientoUsuarioComponent = () => {
                                 fullWidth
                                 disabled={bloque.taken} 
                             >
-                                {bloque.horaInicio} - {bloque.horaFin}
+                                {bloque.horaInicio}
                             </Button>
                         </Grid>
                     ))
@@ -617,36 +666,52 @@ const AgendamientoUsuarioComponent = () => {
                         </CardActions>
                     </Card>
                 );
-            case 8:
-                return (
-                    <Card style={styles.card}>
-                        <CardHeader
-                            action={
-                                <Tooltip title="cerrar" placement="top-end">
-                                    <IconButton aria-label="cerrar" onClick={handleClose}><CloseIcon /></IconButton>
-                                </Tooltip>
-                            }
-                            title={
-                                <Typography variant="h6" component="div">Anulación de Hora
-                                    <span style={styles.contador}></span>
-                                </Typography>
-                            }
-                            subheader="Complete el formulario para continuar"
-                            style={{ textAlign: 'left' }}
-                        />
-                        {/* Aquí hay que añadir la lógica para la anular la cita al veterinario */}
-                        <CardActions disableSpacing>
-                            <Grid container spacing={2} sx={{ mt: -1 }}>
-                                <Grid item xs={6}>
-                                    <Button variant="contained" onClick={handleBack} sx={styles.button}>Atrás</Button>
+                case 8:
+                    return (
+                        <Card style={styles.card}>
+                            <CardHeader
+                                action={
+                                    <Tooltip title="cerrar" placement="top-end">
+                                        <IconButton aria-label="cerrar" onClick={() => navigate('/mis_horas')}><CloseIcon /></IconButton>
+                                    </Tooltip>
+                                }
+                                title={
+                                    <Typography variant="h6" component="div">Anulación de Hora</Typography>
+                                }
+                                subheader="Seleccione la hora que desea anular"
+                                style={{ textAlign: 'left' }}
+                            />
+                            <CardContent>
+                                <Select
+                                    value={selectedHourToCancel}
+                                    onChange={e => setSelectedHourToCancel(e.target.value)}
+                                    displayEmpty
+                                    fullWidth
+                                >
+                                    <MenuItem value="" disabled>
+                                        Seleccione la hora que desea anular 
+                                    </MenuItem>
+                                    {scheduledHours.map(hour => (
+                                        <MenuItem key={hour.id} value={hour.id}>
+                                            {hour.idVeterinario}: {hour.fecha} {hour.horaInicio} - hora para: {hour.idMascota}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </CardContent>
+                            <CardActions disableSpacing>
+                                <Grid container spacing={2} sx={{ mt: -1 }}>
+                                    <Grid item xs={6}>
+                                        <Button variant="contained" onClick={handleBack} sx={styles.button}>Atrás</Button>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Button variant="contained" onClick={handleCancel} sx={styles.button} disabled={!selectedHourToCancel}>
+                                            Anular
+                                        </Button>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={6}>
-                                    <Button variant="contained" onClick={handleContinue} sx={styles.button}>Continuar</Button>
-                                </Grid>
-                            </Grid>
-                        </CardActions>
-                    </Card>
-                );
+                            </CardActions>
+                        </Card>
+                    );
 
             case 9:
                 return (
