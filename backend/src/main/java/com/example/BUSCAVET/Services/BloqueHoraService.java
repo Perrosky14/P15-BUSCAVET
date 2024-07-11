@@ -134,7 +134,7 @@ public class BloqueHoraService {
                 LocalDate fechaHoy = LocalDate.now();
                 Long diasDiferencia = Math.abs(ChronoUnit.DAYS.between(ultimaFecha, fechaHoy));
 
-                if (diasDiferencia < 15) {
+                if (diasDiferencia < 15 || bloquesHorasTomados(doctor)) {
                     Integer cantBloques = bloqueHorario.getCantidadBloquesPorDia();
                     LocalTime horaInicio = bloqueHorario.getHoraInicio();
                     LocalTime tiempoAtencion = bloqueHorario.getTiempoBloques();
@@ -163,7 +163,7 @@ public class BloqueHoraService {
         bloqueHora.setFecha(fecha);
         bloqueHora.setTiempoAtencion(tiempoAtencion);
         bloqueHora.setHoraInicio(horaInicio);
-        bloqueHora.setActivo(true);
+        bloqueHora.setActivo(false);
         bloqueHora.setAgendadoPorUsuario(false);
         bloqueHora.setTomadoTemporal(false);
         bloqueHora.setBloqueoTemporal(LocalTime.of(0,5,0));
@@ -171,6 +171,19 @@ public class BloqueHoraService {
         bloqueHora.setIdCentro(0);
         bloqueHora.setMotivo("");
         bloqueHoraRepository.save(bloqueHora);
+    }
+
+    //Metodo que es para comprobar que no les queda bloques de hora disponibles.
+    public Boolean bloquesHorasTomados(DoctorEntity doctor) {
+        ArrayList<BloqueHoraEntity> bloquesHora = bloqueHoraRepository.findAllByDoctor(doctor);
+
+        for (BloqueHoraEntity bloqueHora: bloquesHora) {
+            //Pregunta si el bloque de hora iterado no esta agendado.
+            if (!bloqueHora.getAgendadoPorUsuario()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public LocalDate obtenerUltimaFechaBloqueHoraDoctor(DoctorEntity doctor) {

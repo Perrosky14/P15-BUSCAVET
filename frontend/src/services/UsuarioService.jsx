@@ -24,8 +24,8 @@ class UsuarioService {
         return axios.put(USUARIO_API_URL + '/actualizar-mascota', { idMascota, mascotaActualizada });
     }
 
-    deleteMascota(idMascota) {
-        return axios.delete(USUARIO_API_URL + '/eliminar-mascota', { data: { idMascota } });
+    deleteMascota(idUsuario, idMascota) {
+        return axios.delete(USUARIO_API_URL + '/eliminar-mascota', { data: { idUsuario, idMascota } });
 
     }
 }
