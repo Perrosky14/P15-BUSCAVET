@@ -32,7 +32,7 @@ public class DoctorController {
         return doctorService.obtenerDoctor();
     }
 
-    @GetMapping("/obtener-doctor")
+    @PostMapping("/obtener-doctor")
     public ResponseEntity<?> obtenerDoctorPorId(@RequestBody Map<String, Object> requestBody){
         Long idDoctor = ((Number) requestBody.get("idDoctor")).longValue();
         DoctorEntity doctor = doctorService.obtenerPorId(idDoctor);

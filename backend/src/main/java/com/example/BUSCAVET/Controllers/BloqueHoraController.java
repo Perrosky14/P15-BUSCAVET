@@ -1,13 +1,11 @@
 package com.example.BUSCAVET.Controllers;
 
+import com.example.BUSCAVET.DTO.BloqueHoraDTO;
 import com.example.BUSCAVET.Entities.BloqueHoraEntity;
 import com.example.BUSCAVET.Entities.DoctorEntity;
 import com.example.BUSCAVET.Entities.MascotaEntity;
 import com.example.BUSCAVET.Entities.UsuarioEntity;
-import com.example.BUSCAVET.Services.BloqueHoraService;
-import com.example.BUSCAVET.Services.DoctorService;
-import com.example.BUSCAVET.Services.MascotaService;
-import com.example.BUSCAVET.Services.UsuarioService;
+import com.example.BUSCAVET.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +29,9 @@ public class BloqueHoraController {
 
     @Autowired
     MascotaService mascotaService;
+
+    @Autowired
+    DTOService dtoService;
 
     @GetMapping("/obtener-bloquesHora")
     public ArrayList<BloqueHoraEntity> obtenerBloquesHora() {
@@ -142,6 +143,21 @@ public class BloqueHoraController {
         }
         bloqueHoraService.eliminarBloquehora(idBloqueHora);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("El bloque de hora con la id: " + idBloqueHora + " se ha eliminado correctamente.");
+    }
+
+    @PostMapping("/desagendar-bloqueHora")
+    public ResponseEntity<?> obtenerBloquesHoraDesagendar(@RequestBody Map<String, Object> requestBody){
+        Long idUsuario = ((Number) requestBody.get("idUsuario")).longValue();
+        if (usuarioService.obtenerPorId(idUsuario) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario);
+        }
+        ArrayList<BloqueHoraEntity> bloquesHora = bloqueHoraService.obtenerPorUsuario(idUsuario);
+        ArrayList<BloqueHoraDTO> bloquesHoraDTO = new ArrayList<>();
+        for (BloqueHoraEntity bloqueHora: bloquesHora){
+            BloqueHoraDTO bloqueHoraDTO = dtoService.toBloqueHoraDTO(bloqueHora);
+            bloquesHoraDTO.add(bloqueHoraDTO);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(bloquesHoraDTO);
     }
 
 }

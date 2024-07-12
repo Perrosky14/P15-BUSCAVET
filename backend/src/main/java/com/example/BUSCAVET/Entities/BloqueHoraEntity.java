@@ -41,14 +41,13 @@ public class BloqueHoraEntity {
     @JsonBackReference(value = "usuario_bloqueHora")
     private UsuarioEntity usuario;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_veterinario_asociado")
     @JsonBackReference(value = "doctor_bloqueHora")
     private DoctorEntity doctor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_mascota_asociada")
     @JsonBackReference(value = "mascota_bloqueHora")
     private MascotaEntity mascota;
-
 }
