@@ -16,6 +16,7 @@ import DoctorService from "../services/DoctorService";
 import BloqueHoraService from '../services/BloqueHoraService';
 import { format } from 'date-fns';
 import { styled } from '@mui/material/styles';
+import BloquesHoraListComponent from './BloqueHoraUsuarioView/BloquesHoraListComponent';
 
 
 const styles = {
@@ -28,7 +29,7 @@ const styles = {
     contador: { color: '#6BC62D', marginLeft: '10px', fontSize: '0.8em', fontWeight: 'bold' },
     formElement: { marginBottom: 20, width: '100%' },
     radioGroup: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: 0 },
-    noHoursMessage: {marginTop: '20px', textAlign: 'center', color: 'gray',},
+    noHoursMessage: { marginTop: '20px', textAlign: 'center', color: 'gray', },
 };
 const CardStyled = styled(Card)({
     maxWidth: 300,
@@ -87,6 +88,7 @@ const AgendamientoUsuarioComponent = () => {
     const location = useLocation();
     const [scheduledHours, setScheduledHours] = useState([]);
     const [selectedHourToCancel, setSelectedHourToCancel] = useState('');
+    const [bloqueHoraDesagendar, setBloqueHoraDesagendar] = useState(null);
     const { user } = location.state || {};
 
     const obtenerBloquesHoraPorFecha = (fecha) => {
@@ -115,7 +117,7 @@ const AgendamientoUsuarioComponent = () => {
     };
 
     const handleHoraSelect = (bloque) => {
-        console.log("horaBloqueSeleccionada: ",bloque.id);
+        console.log("horaBloqueSeleccionada: ", bloque.id);
         setSelectedTime(bloque);
     };
 
@@ -141,11 +143,11 @@ const AgendamientoUsuarioComponent = () => {
                         idMascota: newHoraData.idMascota,
                         motivo: newHoraData.motivo
                     };
-    
+
                     BloqueHoraService.agendarBloqueHora(sanitizedHoraData.idBloqueHora, sanitizedHoraData.idUsuario, sanitizedHoraData.idMascota, sanitizedHoraData.motivo)
                         .then(response => {
                             console.log('Hora general registrada:', response.data);
-                            setCurrentCard(4); 
+                            setCurrentCard(4);
                         })
                         .catch(error => {
                             console.error('Error al registrar la hora general:', error.response ? error.response.data : error.message);
@@ -227,7 +229,7 @@ const AgendamientoUsuarioComponent = () => {
             }
         };
 
-        
+
 
         if (user) {
             setLoading(true);
@@ -239,7 +241,7 @@ const AgendamientoUsuarioComponent = () => {
         }
     }, [user]);
 
-    
+
     console.log(scheduledHours);
 
     useEffect(() => {
@@ -255,20 +257,22 @@ const AgendamientoUsuarioComponent = () => {
     }, [horaData.idVeterinario]);
 
     const handleCancel = () => {
-        const selectedHourId = parseInt(selectedHourToCancel, 10);
-        if (!selectedHourToCancel) return;
+        if (!bloqueHoraDesagendar) return;
 
         const bloqueHoraActualizada = {
             motivo: '',
+            usuario: null,
+            mascota: null,
             agendadoPorUsuario: false,
 
         };
-        handleContinue();
-        BloqueHoraService.actualizarBloqueHora(selectedHourId, bloqueHoraActualizada)
+        BloqueHoraService.actualizarBloqueHora(bloqueHoraDesagendar.id, bloqueHoraActualizada)
             .then(() => {
-                setScheduledHours(scheduledHours.filter(hour => hour.id !== selectedHourToCancel));
+                setScheduledHours(scheduledHours.filter(bloqueHoraDesagendar => bloqueHoraDesagendar.id !== bloqueHoraDesagendar));
                 setSelectedHourToCancel('');
-                navigate('/mis_horas');
+                handleContinue();
+
+
             })
             .catch(error => {
                 console.error('Error al anular la hora:', error);
@@ -297,7 +301,7 @@ const AgendamientoUsuarioComponent = () => {
         }
     };
 
-    
+
 
     const handleClose = () => navigate('/usuario');
 
@@ -340,6 +344,9 @@ const AgendamientoUsuarioComponent = () => {
         }
     };
 
+    const handleSelectBloqueHora = (bloqueHoraSeleccionado) => {
+        setBloqueHoraDesagendar(bloqueHoraSeleccionado);
+    }
 
     const renderHorasDisponibles = () => (
         <div>
@@ -352,15 +359,15 @@ const AgendamientoUsuarioComponent = () => {
                                 variant={selectedTime && selectedTime.id === bloque.id ? "contained" : "outlined"}
                                 onClick={() => handleHoraSelect(bloque)}
                                 fullWidth
-                                disabled={bloque.taken} 
+                                disabled={bloque.taken}
                             >
                                 {bloque.horaInicio}
                             </Button>
                         </Grid>
                     ))
                 ) : (
-                    <Typography variant="body1" style={styles.noHoursMessage}>No hay horas disponibles para este día</Typography> 
-        
+                    <Typography variant="body1" style={styles.noHoursMessage}>No hay horas disponibles para este día</Typography>
+
                 )}
             </Grid>
         </div>
@@ -666,52 +673,39 @@ const AgendamientoUsuarioComponent = () => {
                         </CardActions>
                     </Card>
                 );
-                case 8:
-                    return (
-                        <Card style={styles.card}>
-                            <CardHeader
-                                action={
-                                    <Tooltip title="cerrar" placement="top-end">
-                                        <IconButton aria-label="cerrar" onClick={() => navigate('/mis_horas')}><CloseIcon /></IconButton>
-                                    </Tooltip>
-                                }
-                                title={
-                                    <Typography variant="h6" component="div">Anulación de Hora</Typography>
-                                }
-                                subheader="Seleccione la hora que desea anular"
-                                style={{ textAlign: 'left' }}
-                            />
-                            <CardContent>
-                                <Select
-                                    value={selectedHourToCancel}
-                                    onChange={e => setSelectedHourToCancel(e.target.value)}
-                                    displayEmpty
-                                    fullWidth
-                                >
-                                    <MenuItem value="" disabled>
-                                        Seleccione la hora que desea anular 
-                                    </MenuItem>
-                                    {scheduledHours.map(hour => (
-                                        <MenuItem key={hour.id} value={hour.id}>
-                                            {hour.idVeterinario}: {hour.fecha} {hour.horaInicio} - hora para: {hour.idMascota}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </CardContent>
-                            <CardActions disableSpacing>
-                                <Grid container spacing={2} sx={{ mt: -1 }}>
-                                    <Grid item xs={6}>
-                                        <Button variant="contained" onClick={handleBack} sx={styles.button}>Atrás</Button>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Button variant="contained" onClick={handleCancel} sx={styles.button} disabled={!selectedHourToCancel}>
-                                            Anular
-                                        </Button>
-                                    </Grid>
+            case 8:
+                return (
+                    <Card style={styles.card}>
+                        <CardHeader
+                            action={
+                                <Tooltip title="cerrar" placement="top-end">
+                                    <IconButton aria-label="cerrar" onClick={() => navigate('/mis_horas')}><CloseIcon /></IconButton>
+                                </Tooltip>
+                            }
+                            title={
+                                <Typography variant="h6" component="div">Anulación de Hora</Typography>
+                            }
+                            subheader="Seleccione la hora que desea anular"
+                            style={{ textAlign: 'left' }}
+                        />
+                        <CardContent>
+                            <BloquesHoraListComponent onSelectBloqueHora={handleSelectBloqueHora}>
+                            </BloquesHoraListComponent>
+                        </CardContent>
+                        <CardActions disableSpacing>
+                            <Grid container spacing={2} sx={{ mt: -1 }}>
+                                <Grid item xs={6}>
+                                    <Button variant="contained" onClick={handleBack} sx={styles.button}>Atrás</Button>
                                 </Grid>
-                            </CardActions>
-                        </Card>
-                    );
+                                <Grid item xs={6}>
+                                    <Button variant="contained" onClick={handleCancel} sx={styles.button} disabled={!bloqueHoraDesagendar}>
+                                        Anular
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </CardActions>
+                    </Card>
+                );
 
             case 9:
                 return (

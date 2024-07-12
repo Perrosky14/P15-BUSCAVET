@@ -42,6 +42,10 @@ class BloqueHoraService {
     eliminarBloqueHora(idBloqueHora) {
         return axios.delete(API_URL + '/eliminar-bloqueHora', { data: { idBloqueHora } });
     }
+
+    obtenerBloquesHoraDesagendar(idUsuario){
+        return axios.post(API_URL + '/desagendar-bloqueHora',{idUsuario});
+    }
 }
 
 export default new BloqueHoraService();

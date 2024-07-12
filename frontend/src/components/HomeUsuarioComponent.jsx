@@ -122,11 +122,6 @@ const HomeUsuarioComponent = () => {
     setSelectedIndex(index);
   };
 
-  const handleDelete = (mascota) => {
-    setSelectedMascota(mascota);
-    setOpenDialog(true);
-    handleClose();
-};
 
 const confirmDelete = async () => {
   try {
@@ -293,7 +288,7 @@ const confirmDelete = async () => {
               <Typography style={styles.subtitle2}>Lista de mascotas registradas</Typography>
               <Box sx={{ display: 'flex', gap: 1, marginBottom: '16px' }}>
                 <Button variant="contained" sx={{ backgroundColor: '#FF4081', borderRadius: '10px', '&:hover': { backgroundColor: '#FF80AB' } }} onClick={() => navigateToRegistrarMascota('/registrar_mascota')}>Añadir Mascota</Button>
-                <Button variant="contained" sx={{ backgroundColor: '#FF4081', borderRadius: '10px', '&:hover': { backgroundColor: '#FF80AB' } }} onClick={() => navigate('/lista_mascota')}>Lista de Mascotas</Button>
+                <Button variant="contained" sx={{ backgroundColor: '#FF4081', borderRadius: '10px', '&:hover': { backgroundColor: '#FF80AB' } }} onClick={() => navigateToFichaMascota('/ficha_mascota')}>Lista de Mascotas</Button>
               </Box>
               <Grid item xs={10}>
                 <Card style={styles.mascotaCard}>
@@ -328,23 +323,12 @@ const confirmDelete = async () => {
                                 </React.Fragment>
                               }
                             />
-                            <IconButton
-                              aria-label="more"
-                              aria-controls="long-menu"
-                              aria-haspopup="true"
-                              onClick={(event) => handleClick(event, index)}
-                              sx={{ color: '#FF4081' }}
-                            >
-                              <MoreVert />
-                            </IconButton>
+                            
                             <Menu
                               anchorEl={anchorEl}
                               open={Boolean(anchorEl) && selectedIndex === index}
                               onClose={handleClose}
                             >
-                              <MenuItem onClick={() => navigateToFichaMascota('/ficha_mascota')}>Ver</MenuItem>
-                              <MenuItem onClick={() => navigate('/registrar_mascota')}>Editar</MenuItem>
-                              <MenuItem onClick={() => handleDelete(mascota)}>Eliminar</MenuItem>
                             </Menu>
                           </ListItem>
                           {index < mascotas.length - 1 && <Divider component="li" />}
