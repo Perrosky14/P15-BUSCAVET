@@ -88,7 +88,8 @@ public class BloqueHoraController {
         Long iddoctor = ((Number) requestBody.get("idDoctor")).longValue();
         DoctorEntity doctor = doctorService.obtenerPorId(iddoctor);
         if (doctor != null) {
-            BloqueHoraEntity bloqueHora = bloqueHoraService.transformarBloqueHora((Map<String, Object>) requestBody.get("bloqueHora"));
+            BloqueHoraEntity bloqueHora = new BloqueHoraEntity();
+            bloqueHoraService.transformarBloqueHora(bloqueHora, (Map<String, Object>) requestBody.get("bloqueHora"));
             bloqueHora.setDoctor(doctor);
             bloqueHoraService.guardarBloqueHora(bloqueHora);
             return ResponseEntity.status(HttpStatus.CREATED).body("El bloque de hora se ha registrado correctamente.");
@@ -110,11 +111,7 @@ public class BloqueHoraController {
                     if (mascota != null) {
                         if (usuario.equals(mascota.getUsuario())) {
                             String motivo = ((String) requestBody.get("motivo"));
-                            bloqueHora.setMotivo(motivo);
-                            bloqueHora.setAgendadoPorUsuario(Boolean.TRUE);
-                            bloqueHora.setUsuario(usuario);
-                            bloqueHora.setMascota(mascota);
-                            bloqueHoraService.actualizarBloqueHora(idBloqueHora, bloqueHora);
+                            bloqueHoraService.agendarBloqueHora(idBloqueHora, motivo, usuario, mascota);
                             return ResponseEntity.status(HttpStatus.ACCEPTED).body("Se ha agendado la hora con id: " + idBloqueHora + ", con el usuario con id: " + idUsuario + ", con la mascota con id: " + idMascota + ", de forma exitosa.");
                         }
                         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("El usuario con id: " + idUsuario + " no puede agendar hora con la mascota con id: " + idMascota + ", ya que el usuario no creó dicha mascota. No tiene dicha autorización.");
@@ -134,8 +131,7 @@ public class BloqueHoraController {
         if (bloqueHoraService.obtenerPorId(idBloqueHora) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún bloque de hora que tenga la id: " + idBloqueHora);
         }
-        BloqueHoraEntity bloqueHoraActualizada = bloqueHoraService.transformarBloqueHora((Map<String, Object>) requestBody.get("bloqueHoraActualizada"));
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(bloqueHoraService.actualizarBloqueHora(idBloqueHora, bloqueHoraActualizada));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(bloqueHoraService.actualizarBloqueHora(idBloqueHora, (Map<String, Object>) requestBody.get("bloqueHoraActualizada")));
     }
 
     @DeleteMapping("/eliminar-bloqueHora")
