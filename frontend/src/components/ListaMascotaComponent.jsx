@@ -1,56 +1,88 @@
-import styled from "styled-components";
-import { createGlobalStyle } from 'styled-components';
-import NavbarComponent2 from "./Navbar2Component";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent, Typography, Grid, Button, CircularProgress } from "@mui/material";
+import UsuarioService from '../services/UsuarioService';
+import Navbar2Component from "./Navbar2Component";
+import {jwtDecode} from 'jwt-decode';
+
+const styles = {
+    container: { padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' },
+    card: { width: '300px', margin: '10px', textAlign: 'center' },
+    button: { marginTop: '20px', borderRadius: '20px', backgroundColor: '#FF4081' },
+    loading: { marginTop: '50px' }
+};
 
 const ListaMascotaComponent = () => {
+    const [mascotas, setMascotas] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
-return (
-    <div>
-        <NavbarComponent2></NavbarComponent2>
-        <GlobalStyle />    
-        <h1>Hola </h1>
-        <HomeStyle>
-        </HomeStyle>
-    </div>
-);
-}
+    useEffect(() => {
+        const fetchUserFromToken = () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const decodedUser = jwtDecode(token);
+                setUser(decodedUser);
+            }
+        };
+
+        fetchUserFromToken();
+    }, []);
+
+    useEffect(() => {
+        const fetchMascotas = async () => {
+            if (user && user.id) {
+                setLoading(true);
+                try {
+                    const response = await UsuarioService.getMascotas(user.id);
+                    console.log(response.data);
+                    setMascotas(response.data);
+                } catch (error) {
+                    console.error('Error al obtener las mascotas:', error);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setLoading(false);
+            }
+        };
+
+        fetchMascotas();
+    }, [user]);
+
+    const handleAddMascota = () => {
+        navigate('/registrar_mascota', { state: { user } });
+    };
+
+    return (
+        <>
+            <Navbar2Component />
+            <div style={styles.container}>
+                <Button variant="contained" color="primary" onClick={handleAddMascota} style={styles.button}>
+                    Registrar Nueva Mascota
+                </Button>
+                {loading ? (
+                    <CircularProgress style={styles.loading} />
+                ) : (
+                    <Grid container spacing={3}>
+                        {mascotas.map(mascota => (
+                            <Grid item key={mascota.id}>
+                                <Card style={styles.card}>
+                                    <CardContent>
+                                        <Typography variant="h6">{mascota.nombre}</Typography>
+                                        <Typography variant="body2">Especie: {mascota.id_especie}</Typography>
+                                        <Typography variant="body2">Raza: {mascota.id_raza}</Typography>
+                                        <Typography variant="body2">Color: {mascota.color}</Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                )}
+            </div>
+        </>
+    );
+};
 
 export default ListaMascotaComponent;
-
-
-const GlobalStyle = createGlobalStyle`
-body { 
-    background-color: #FBFBFB;
-`
-const HomeStyle = styled.nav`
-
-.text-center {
-text-align: center;
-justify-content: center;
-padding-top: 8px;
-color: #fff;
-}
-
-.box-area{
-display: flex;
-flex-wrap: wrap;
-justify-content: center;
-align-items: center;
-}
-
-.single-box{
-position: relative;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-width: 400px;
-height: auto;
-border-radius: 4px;
-background-color: #fff;
-text-align: center;
-margin: 20px;
-padding: 20px;
-transition: .3s
-}
-`

@@ -1,6 +1,7 @@
 package com.example.BUSCAVET.Services;
 
 import com.example.BUSCAVET.Entities.MascotaEntity;
+import com.example.BUSCAVET.Entities.UsuarioEntity;
 import com.example.BUSCAVET.Repositories.MascotaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,25 +47,34 @@ public class MascotaService {
         return null;
     }
 
-    public MascotaEntity transformarMascota(Map<String, Object> mascotaData) {
+    public MascotaEntity transformarMascota(Map<String, Object> mascotaMap) {
         MascotaEntity mascota = new MascotaEntity();
-        mascota.setId_categoria_animal(Integer.parseInt(mascotaData.get("id_categoria_animal").toString()));
-        mascota.setId_especie(Integer.parseInt(mascotaData.get("id_especie").toString()));
-        mascota.setId_raza(Integer.parseInt(mascotaData.get("id_raza").toString()));
-        mascota.setId_sexo(Integer.parseInt(mascotaData.get("id_sexo").toString()));
-        mascota.setNombre(mascotaData.get("nombre").toString());
-        mascota.setDia_nac(Integer.parseInt(mascotaData.get("dia_nac").toString()));
-        mascota.setMes_nac(Integer.parseInt(mascotaData.get("mes_nac").toString()));
-        mascota.setAnio_nac(Integer.parseInt(mascotaData.get("anio_nac").toString()));
-        mascota.setOtro(mascotaData.get("otro").toString());
-        mascota.setHistorial_consulta(mascotaData.get("historial_consulta").toString());
-        mascota.setEstatura(Double.parseDouble(mascotaData.get("estatura").toString()));
-        mascota.setColor(mascotaData.get("color").toString());
-        mascota.setPeso(Double.parseDouble(mascotaData.get("peso").toString()));
-        mascota.setOtro2(mascotaData.get("otro2").toString());
+
+        // Manejo seguro de valores nulos o vacíos con valores predeterminados o lanzando excepciones
+        mascota.setId_categoria_animal((String) getOrDefault(mascotaMap.get("id_categoria_animal"), ""));
+        mascota.setId_especie((String) getOrDefault(mascotaMap.get("especie"), ""));
+        mascota.setId_raza((String) getOrDefault(mascotaMap.get("raza"), ""));
+        mascota.setId_sexo((String) getOrDefault(mascotaMap.get("sexo"), ""));
+        mascota.setNombre((String) getOrDefault(mascotaMap.get("nombre"), ""));
+        mascota.setDia_nac((Integer) getOrDefault(mascotaMap.get("dia"), 1));
+        mascota.setMes_nac((Integer) getOrDefault(mascotaMap.get("mes"), 1));
+        mascota.setAnio_nac((Integer) getOrDefault(mascotaMap.get("anio"), 2020));
+        mascota.setOtro((String) getOrDefault(mascotaMap.get("otro"),""));
+        mascota.setColor((String) getOrDefault(mascotaMap.get("color"), ""));
+        mascota.setEstatura((Integer) getOrDefault(mascotaMap.get("estatura"), 0));
+        mascota.setPeso((Integer) getOrDefault(mascotaMap.get("peso"), 0));
+        mascota.setOtro2((String) getOrDefault(mascotaMap.get("otro2"),""));
+
         return mascota;
     }
 
+    private Object getOrDefault(Object value, Object defaultValue) {
+        return value != null ? value : defaultValue;
+    }
+
+    public ArrayList<MascotaEntity> buscarTodosPorUsuario(UsuarioEntity usuario){
+        return mascotaRepository.findAllByUsuario(usuario);
+    }
 
     public void eliminarMascota(Long id){
         mascotaRepository.deleteById(id);

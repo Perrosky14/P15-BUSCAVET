@@ -24,6 +24,9 @@ import theme from "./styles/themeComponent";
 import { ThemeProvider } from "@mui/material/styles";
 import NavbarComponent from "./NavbarComponent";
 import { FormHelperText, Grid } from "@mui/material";
+import LoginService from "../services/LoginService";
+import { jwtDecode } from "jwt-decode";
+import RegisterEmailService from "../services/RegisterEmailService";
 
 const styles = {
     container: {
@@ -91,6 +94,10 @@ export default function UserSessionComponent() {
         email: "",
         contrasenia: "",
     });
+    const [usuarioLogin, setUsuarioLogin] = useState({
+        email: "",
+        password: "",
+    });
     const [confirmPassword , setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -100,6 +107,13 @@ export default function UserSessionComponent() {
     const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
       event.preventDefault();
+    };
+
+    const cambiarCampoLogin = (campo, valor) => {
+        setUsuarioLogin({
+            ...usuarioLogin,
+            [campo]: valor,
+        });
     };
 
     const cambiarCampo = (campo, valor) => {
@@ -119,12 +133,29 @@ export default function UserSessionComponent() {
         return re.test(password);
     };
 
-    const validateDatosUsuario = () => {
+    const validateDatosUsuario = async () => {
         let newErrors = {};
         if (!usuario.email) {
             newErrors.email = "El correo es requerido";
         } else if (!validateEmail(usuario.email)) {
             newErrors.email = "El correo no es valido";
+        } else {
+            //Verificación de si el email ya está registrado
+            try {
+                const response = await RegisterEmailService.verifyEmail(usuario.email);
+                if (response.status === 302) {
+                    newErrors.email = "Este email ya está registrado";
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 302) {
+                    newErrors.email = "Este email ya está registrado";
+                } else if(error.response && error.response.status === 404) {
+
+                } else {
+                    console.error('Error al verificar el email', error);
+                    newErrors.email = "Error al verificar el email. Inténtelo de nuevo más tarde.";
+                }
+            }
         }
 
         if (!usuario.contrasenia && !confirmPassword) {
@@ -137,18 +168,49 @@ export default function UserSessionComponent() {
         
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-    }
+    };
 
-    const handleSubmitRegister = (event) => {
+    const errorLogin = () => {
+        setErrors({
+            emailLogin: "Las credenciales no coinciden vuelva intentarlo nuevamente",
+            password: "Las credenciales no coinciden vuelva intentarlo nuevamente"
+        });
+    };
+
+    const handleSubmitRegister = async (event) => {
+        localStorage.removeItem('token');
         event.preventDefault();
-        if(validateDatosUsuario()) {
+        const isValid = await validateDatosUsuario();
+        if(isValid) {
             navigate('/registro', {state: {usuario}});
         }
     };
 
-    const handleSubmitLogin = (event) => {
-        event.preventDefault();
-        navigate('/HomeComponent.jsx');
+    const handleSubmitLogin = async () => {
+        try {
+            const response = await LoginService.login(usuarioLogin);
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+            const tokenDecodificado = jwtDecode(token);
+            const rol = tokenDecodificado.rol;
+            
+            if(rol === "USUARIO") {
+                navigate('/usuario');
+            } else if (rol === "VETERINARIO") {
+                navigate('/veterinario');
+            } else if (rol === "VETERINARIA") {
+                navigate('/veterinaria');
+            } else if (rol === "SUPERADMIN") {
+                navigate('/superadmin');
+            } else {
+                navigate('/error');
+            }
+            
+            console.log('Usuario logueado exitosamente:', response);
+        } catch (error) {
+            errorLogin();
+            console.error('Error al loguear usuario', error);
+        }
     }
 
     const [value, setValue] = useState(0);
@@ -253,15 +315,19 @@ export default function UserSessionComponent() {
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <TextField id="outlined-basic-email-login" label="Dirección Email" variant="outlined" fullWidth required
+                        <TextField 
+                            id="outlined-basic-email-login" label="Dirección Email" variant="outlined" fullWidth required
+                            value={usuarioLogin.email} onChange={(e) => cambiarCampoLogin("email", e.target.value)}
+                            error={!!errors.emailLogin}
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <FormControl variant="outlined" fullWidth>
+                        <FormControl variant="outlined" fullWidth error={!!errors.password}>
                             <InputLabel htmlFor="outlined-adornment-password-login">Contraseña</InputLabel>
                             <OutlinedInput
-                                id="outlined-adornment-password-login"
+                                id="outlined-adornment-password-login" label="Contraseña" required
                                 type={showPassword ? 'text' : 'password'}
+                                value={usuarioLogin.password} onChange={(e) => cambiarCampoLogin("password", e.target.value)}
                                 endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
@@ -274,8 +340,8 @@ export default function UserSessionComponent() {
                                     </IconButton>
                                 </InputAdornment>
                                 }
-                                label="Contraseña"
                             />
+                            {!!errors.password && <FormHelperText>{errors.password}</FormHelperText>}
                         </FormControl>
                     </Grid>
                 </Grid>
@@ -283,7 +349,7 @@ export default function UserSessionComponent() {
             <CardActions>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Button variant="contained" sx={styles.button} fullWidth>Iniciar Sesión</Button>
+                        <Button variant="contained" sx={styles.button} onClick={handleSubmitLogin} fullWidth>Iniciar Sesión</Button>
                     </Grid>
                 </Grid>
             </CardActions>

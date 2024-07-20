@@ -1,13 +1,18 @@
 package com.example.BUSCAVET.Services;
 
 import com.example.BUSCAVET.Entities.DoctorEntity;
+import com.example.BUSCAVET.Entities.Rol;
 import com.example.BUSCAVET.Entities.VeterinariaEntity;
 import com.example.BUSCAVET.Repositories.VeterinariaRepository;
+import com.example.BUSCAVET.Security.AuthResponse;
+import com.example.BUSCAVET.Security.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class VeterinariaService {
@@ -15,8 +20,17 @@ public class VeterinariaService {
     @Autowired
     VeterinariaRepository veterinariaRepository;
 
-    public void guardarVeterinaria(VeterinariaEntity veterinaria){
+    @Autowired
+    JWTService jwtService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    public AuthResponse guardarVeterinaria(VeterinariaEntity veterinaria){
+        veterinaria.setRol(Rol.VETERINARIA);
+        veterinaria.setContrasenia(passwordEncoder.encode(veterinaria.getContrasenia()));
         veterinariaRepository.save(veterinaria);
+        return AuthResponse.builder().token(jwtService.getToken(veterinaria)).build();
     }
 
     public ArrayList<VeterinariaEntity> obtenerVeterinarias(){
@@ -26,10 +40,14 @@ public class VeterinariaService {
         return veterinariaRepository.findById(id).orElse(null);
     }
 
+    public Optional<VeterinariaEntity> obtenerPorEmail(String email) {
+        return veterinariaRepository.findByEmail(email);
+    }
+
     public VeterinariaEntity actualizarVeterinaria(Long id, VeterinariaEntity veterinariaActualizada){
         VeterinariaEntity veterinariaExistente = veterinariaRepository.findById(id).orElse(null);
         if(veterinariaExistente != null){
-            veterinariaExistente.setContrasenia(veterinariaActualizada.getContrasenia());
+            veterinariaExistente.setContrasenia(passwordEncoder.encode(veterinariaActualizada.getContrasenia()));
             veterinariaExistente.setId_pais(veterinariaActualizada.getId_pais());
             veterinariaExistente.setId_segmento(veterinariaActualizada.getId_segmento());
             veterinariaExistente.setId_tipo_institucion_vet(veterinariaActualizada.getId_tipo_institucion_vet());

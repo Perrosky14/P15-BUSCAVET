@@ -5,8 +5,10 @@ import NavbarComponent from "./NavbarComponent";
 import Modal from './Modal/Modal';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
+import { useNavigate } from "react-router-dom";
 
 const HomeComponent = () => {
+    const navigate = useNavigate();
     const [isModalOpen, setModalOpen] = useState(false);
   
     const openModal = () => {
@@ -24,12 +26,11 @@ const HomeComponent = () => {
             <GlobalStyle /> 
             <button onClick={openModal}>Open Modal</button>
                 <Modal isOpen={isModalOpen} onClose={closeModal}>
-                    <Button variant="light">Registro</Button>{' '}
-                    <Button variant="light">Log in</Button>{' '}
+                    <Button variant="light" onClick={() => navigate('/login')}>Registro</Button>{'\hola'}
+                    <Button variant="light" onClick={() => navigate('/login')}>Log in</Button>{' '}
                     <CloseButton aria-label="Hide" onClick={closeModal}/>
                     <h2>O registrate con tu email</h2>
                 </Modal>
-            <h1>hola</h1>
             <HomeStyle>
             </HomeStyle>
         </div>
