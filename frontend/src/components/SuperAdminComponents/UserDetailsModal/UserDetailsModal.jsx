@@ -8,10 +8,10 @@ import DoctorDetails from './DoctorDetails';
 import UsuarioDetails from './UsuarioDetails';
 import VeterinariaDetails from './VeterinariaDetails';
 import MascotaDetails from './MascotaDetails';
-import DoctorService from '../../../services/DoctorService';
-import UsuarioService from '../../../services/UsuarioService';
-import VeterinariaService from '../../../services/VeterinariaService';
-import MascotaService from '../../../services/MascotaService';
+import DoctorService from '../../../services/DoctorService.jsx';
+import UsuarioService from '../../../services/UsuarioService.jsx';
+import VeterinariaService from '../../../services/VeterinariaService.jsx';
+import MascotaService from '../../../services/MascotaService.jsx';
 
 const styles = {
     modalBox: {
