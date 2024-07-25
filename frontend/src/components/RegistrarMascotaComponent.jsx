@@ -12,7 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { es } from 'date-fns/locale';
 import Navbar2Component from "./Navbar2Component";
 import theme from "./styles/themeComponent";
-import UsuarioService from "../services/UsuarioService";
+import UsuarioService from "../services/UsuarioService.jsx";
 
 const styles = {
     container: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '85vh', backgroundColor: '#FBFBFB' },

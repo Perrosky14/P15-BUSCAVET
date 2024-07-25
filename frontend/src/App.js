@@ -1,9 +1,9 @@
 import './App.module.css';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import SuperAdminControls from './components/SuperAdminComponents/UserList';
 import UserSessionComponent from './components/UserSessionComponent';
 import RegisterComponent from './components/RegisterComponent';
 import RegisterTutorComponent from './components/RegisterTutorComponent'
-
 import HomeComponent from './components/HomeComponent';
 import FichaMascotaComponent from './components/FichaMascotaComponent';
 import RegistarMascotaComponent from './components/RegistrarMascotaComponent';
@@ -13,6 +13,7 @@ import MainViewDoctoresVeterinaria from "./components/DoctoresVeterinariaView/Ma
 import HomeUsuarioComponent from './components/HomeUsuarioComponent';
 import AgendamientoUsuarioComponent from './components/AgendamientoUsuarioComponent';
 import RegisterVeterinariaComponent from './components/RegisterVeterinariaComponent';
+import MainViewSuperAdmin from "./components/SuperAdminComponents/MainViewSuperAdmin";
 function App() {
   return (
     <div>
@@ -31,6 +32,8 @@ function App() {
         <Route path="/veterinaria" element={<HomeVeterinariaComponent/>}/>
         <Route path="/veterinaria/doctores" element={<MainViewDoctoresVeterinaria/>}/>
         <Route path="/registroVeterinaria" element = {<RegisterVeterinariaComponent/>}/>
+        <Route path="/registroCentro"/>
+        <Route path="/admin/usuarios" element={<MainViewSuperAdmin/>}/>
       </Routes>
     </BrowserRouter>
       

@@ -4,7 +4,7 @@ import jwtDecode from 'jwt-decode';
 import NavbarUsuarioComponent from "./NavbarUsuarioComponent";
 import { Grid, TextField, Typography, Card, Button, ThemeProvider, Box } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
-import UsuarioService from '../services/UsuarioService';
+import UsuarioService from '../services/UsuarioService.jsx';
 import theme from './styles/themeComponent';
 import MascotasListComponent from './MascotasUsuarioView/MascotasListComponent';
 import MascotaDetailsComponent from './MascotasUsuarioView/MascotaDetailsComponent';

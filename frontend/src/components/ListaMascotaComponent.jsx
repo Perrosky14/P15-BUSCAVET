@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, Typography, Grid, Button, CircularProgress } from "@mui/material";
-import UsuarioService from '../services/UsuarioService';
+import UsuarioService from '../services/UsuarioService.jsx';
 import Navbar2Component from "./Navbar2Component";
 import {jwtDecode} from 'jwt-decode';
 

@@ -20,7 +20,7 @@ import NavbarComponent from "./NavbarComponent";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
-import UsuarioService from "../services/UsuarioService";
+import UsuarioService from "../services/UsuarioService.jsx";
 
 const styles = {
     container: {
