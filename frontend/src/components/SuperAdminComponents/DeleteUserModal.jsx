@@ -1,8 +1,8 @@
 import React from 'react';
-import DoctorService from '../../services/DoctorService';
-import UsuarioService from '../../services/UsuarioService';
-import MascotaService from '../../services/MascotaService';
-import VeterinariaService from '../../services/VeterinariaService';
+import DoctorService from '../../services/DoctorService.jsx';
+import UsuarioService from '../../services/UsuarioService.jsx';
+import MascotaService from '../../services/MascotaService.jsx';
+import VeterinariaService from '../../services/VeterinariaService.jsx';
 import { Box, Typography, Button, Modal, IconButton } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';

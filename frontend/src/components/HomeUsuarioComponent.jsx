@@ -10,7 +10,7 @@ import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import HomeIcon from '@mui/icons-material/Home';
-import UsuarioService from '../services/UsuarioService';
+import UsuarioService from '../services/UsuarioService.jsx';
 import HealingIcon from '@mui/icons-material/Healing';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';

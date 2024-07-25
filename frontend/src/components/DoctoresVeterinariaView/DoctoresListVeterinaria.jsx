@@ -4,7 +4,7 @@ import DoctorComponent from './DoctorComponent'; // Importa el componente de Doc
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../styles/themeComponent';
 import RefreshIcon from '@mui/icons-material/Refresh'; // Importa el icono de recarga
-import VeterinariaService from "../../services/VeterinariaService";
+import VeterinariaService from "../../services/VeterinariaService.jsx";
 import {jwtDecode} from 'jwt-decode'; // Importa jwt-decode para decodificar el token
 
 const styles = {

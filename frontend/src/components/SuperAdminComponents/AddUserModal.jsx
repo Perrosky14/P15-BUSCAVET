@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Checkbox, FormControlLabel, Grid, Card, CardActionArea, CardContent, Typography } from '@mui/material';
-import DoctorService from '../../services/DoctorService';
-import UsuarioService from '../../services/UsuarioService';
-import MascotaService from '../../services/MascotaService';
-import VeterinariaService from '../../services/VeterinariaService';
+import DoctorService from '../../services/DoctorService.jsx';
+import UsuarioService from '../../services/UsuarioService.jsx';
+import MascotaService from '../../services/MascotaService.jsx';
+import VeterinariaService from '../../services/VeterinariaService.jsx';
 import PersonIcon from '@mui/icons-material/Person'; // Icon for Usuario
 import PetsIcon from '@mui/icons-material/Pets'; // Icon for Mascota
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital'; // Icon for Doctor
