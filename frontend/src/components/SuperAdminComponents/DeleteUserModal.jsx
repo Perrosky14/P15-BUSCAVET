@@ -1,6 +1,6 @@
 import React from 'react';
 import DoctorService from '../../services/DoctorService';
-import UsuarioService from '../../services/UsuarioService.js';
+import UsuarioService from '../../services/UsuarioService';
 import MascotaService from '../../services/MascotaService';
 import VeterinariaService from '../../services/VeterinariaService';
 import { Box, Typography, Button, Modal, IconButton } from '@mui/material';
