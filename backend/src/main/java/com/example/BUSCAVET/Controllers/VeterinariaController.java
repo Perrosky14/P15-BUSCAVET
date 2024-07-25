@@ -83,14 +83,20 @@ public class VeterinariaController {
     @PostMapping("/crear-doctor")
     public ResponseEntity<?> registrarDoctor(@RequestBody Map<String, Object> requestBody){
         Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
-        VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
-        if (veterinaria != null) {
-            DoctorEntity doctor = doctorService.transformarDatosDoctor((Map<String, Object>) requestBody.get("doctor"));
-            doctor.setVeterinaria(veterinaria);
+        DoctorEntity doctor = doctorService.transformarDatosDoctor((Map<String, Object>) requestBody.get("doctor"));
+        if (idVeterinaria == 0) {
             doctorService.guardarDoctor(doctor);
-            return ResponseEntity.status(HttpStatus.CREATED).body("El doctor " + doctor.getNombre1() + " " + doctor.getApellido1() + " ha sido registrado correctamente por la veterinaria con la id: " + idVeterinaria);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga la id: " + idVeterinaria);
+            return ResponseEntity.status(HttpStatus.CREATED).body("El doctor " + doctor.getNombre1() + " " + doctor.getApellido1() + " independiente ha sido registrado correctamente.");
+        }
+        else {
+            VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
+            if (veterinaria != null) {
+                doctor.setVeterinaria(veterinaria);
+                doctorService.guardarDoctor(doctor);
+                return ResponseEntity.status(HttpStatus.CREATED).body("El doctor " + doctor.getNombre1() + " " + doctor.getApellido1() + " ha sido registrado correctamente por la veterinaria con la id: " + idVeterinaria);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga la id: " + idVeterinaria);
+            }
         }
     }
 
