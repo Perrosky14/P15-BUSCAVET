@@ -19,7 +19,6 @@ function App() {
     <div>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SuperAdminControls />} />
         <Route path="/" element={<HomeComponent />} />
         <Route path="/registrar_mascota" element={<RegistarMascotaComponent/>} />
         <Route path="/lista_mascota" element={<ListaMascotaComponent/>} />
