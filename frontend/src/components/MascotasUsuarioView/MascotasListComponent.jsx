@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import { useState, Fragment, useEffect } from "react";
-import UsuarioService from "../../services/UsuarioService";
+import UsuarioService from "../../services/UsuarioService.jsx";
 import { Box, ThemeProvider, Typography, Button } from "@mui/material";
 import theme from "../styles/themeComponent";
 import MascotaComponent from "./MascotaComponent";

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import DoctorService from '../../services/DoctorService';
-import UsuarioService from '../../services/UsuarioService';
-import VeterinariaService from '../../services/VeterinariaService';
-import MascotaService from '../../services/MascotaService';
+import DoctorService from '../../services/DoctorService.jsx';
+import UsuarioService from '../../services/UsuarioService.jsx';
+import VeterinariaService from '../../services/VeterinariaService.jsx';
+import MascotaService from '../../services/MascotaService.jsx';
 import ConfirmModal from './ConfirmModal'; // Asegúrate de que la ruta sea correcta
 import {
     Dialog,

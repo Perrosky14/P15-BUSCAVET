@@ -20,7 +20,7 @@ import NavbarComponent from "./NavbarComponent";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
-import VeterinariaService from "../services/VeterinariaService";
+import VeterinariaService from "../services/VeterinariaService.jsx";
 
 const styles = {
     container: {
