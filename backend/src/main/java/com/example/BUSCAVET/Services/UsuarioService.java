@@ -83,28 +83,29 @@ public class UsuarioService {
 
     public UsuarioEntity transformarDatosUsuario(Map<String, Object> usuarioData) {
         UsuarioEntity usuario = new UsuarioEntity();
+
         usuario.setContrasenia((String) usuarioData.get("contrasenia"));
-        usuario.setId_pais((Integer) usuarioData.get("id_pais"));
+        usuario.setId_pais(parseIntOrNull(usuarioData.get("id_pais")));
         usuario.setRut((String) usuarioData.get("rut"));
         usuario.setNombre1((String) usuarioData.get("nombre1"));
         usuario.setNombre2((String) usuarioData.get("nombre2"));
         usuario.setApellido1((String) usuarioData.get("apellido1"));
         usuario.setApellido2((String) usuarioData.get("apellido2"));
-        usuario.setId_genero((Integer) usuarioData.get("id_genero"));
-        usuario.setDia_nac((Integer) usuarioData.get("dia_nac"));
-        usuario.setMes_nac((Integer) usuarioData.get("mes_nac"));
-        usuario.setAnio_nac((Integer) usuarioData.get("anio_nac"));
-        usuario.setId_nacionalidad((Integer) usuarioData.get("id_nacionalidad"));
+        usuario.setId_genero(parseIntOrNull(usuarioData.get("id_genero")));
+        usuario.setDia_nac(parseIntOrNull(usuarioData.get("dia_nac")));
+        usuario.setMes_nac(parseIntOrNull(usuarioData.get("mes_nac")));
+        usuario.setAnio_nac(parseIntOrNull(usuarioData.get("anio_nac")));
+        usuario.setId_nacionalidad(parseIntOrNull(usuarioData.get("id_nacionalidad")));
         usuario.setOtro((String) usuarioData.get("otro"));
         usuario.setDireccion((String) usuarioData.get("direccion"));
         usuario.setNumero((String) usuarioData.get("numero"));
         usuario.setTipo((String) usuarioData.get("tipo"));
-        usuario.setId_codigo_postal((Integer) usuarioData.get("id_codigo_postal"));
-        usuario.setId_comuna((Integer) usuarioData.get("id_comuna"));
-        usuario.setId_provincia((Integer) usuarioData.get("id_provincia"));
-        usuario.setId_region((Integer) usuarioData.get("id_region"));
+        usuario.setId_codigo_postal(parseIntOrNull(usuarioData.get("id_codigo_postal")));
+        usuario.setId_comuna(parseIntOrNull(usuarioData.get("id_comuna")));
+        usuario.setId_provincia(parseIntOrNull(usuarioData.get("id_provincia")));
+        usuario.setId_region(parseIntOrNull(usuarioData.get("id_region")));
         usuario.setGeolocalizacion((String) usuarioData.get("geolocalizacion"));
-        usuario.setId_zona_BDoc((Integer) usuarioData.get("id_zona_BDoc"));
+        usuario.setId_zona_BDoc(parseIntOrNull(usuarioData.get("id_zona_BDoc")));
         usuario.setOtro2((String) usuarioData.get("otro2"));
         usuario.setTelefono((String) usuarioData.get("telefono"));
         usuario.setCodigo_area((String) usuarioData.get("codigo_area"));
@@ -113,7 +114,19 @@ public class UsuarioService {
         usuario.setRRSS1((String) usuarioData.get("rrss1"));
         usuario.setRRSS2((String) usuarioData.get("rrss2"));
         usuario.setOtro3((String) usuarioData.get("otro3"));
+
         return usuario;
+    }
+
+    private Integer parseIntOrNull(Object value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     public void eliminarUsuario(Long id){usuarioRepository.deleteById(id);}

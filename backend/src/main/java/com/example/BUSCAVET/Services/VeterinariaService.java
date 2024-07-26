@@ -79,11 +79,13 @@ public class VeterinariaService {
 
     public VeterinariaEntity transformarDatosVeterinaria(Map<String, Object> veterinariaData) {
         VeterinariaEntity veterinaria = new VeterinariaEntity();
-        veterinaria.setContrasenia((String) veterinariaData.get("contrasenia"));
-        veterinaria.setId_pais((Integer) veterinariaData.get("id_pais"));
-        veterinaria.setId_segmento((Integer) veterinariaData.get("id_segmento"));
-        veterinaria.setId_tipo_institucion_vet((Integer) veterinariaData.get("id_tipo_institucion_vet"));
-        veterinaria.setId_estado_institucion((Integer) veterinariaData.get("id_estado_institucion"));
+
+        veterinaria.setEmail((String) veterinariaData.get("email"));
+        veterinaria.setContrasenia(passwordEncoder.encode((String) veterinariaData.get("contrasenia")));
+        veterinaria.setId_pais(parseIntOrNull(veterinariaData.get("id_pais")));
+        veterinaria.setId_segmento(parseIntOrNull(veterinariaData.get("id_segmento")));
+        veterinaria.setId_tipo_institucion_vet(parseIntOrNull(veterinariaData.get("id_tipo_institucion_vet")));
+        veterinaria.setId_estado_institucion(parseIntOrNull(veterinariaData.get("id_estado_institucion")));
         veterinaria.setRut((String) veterinariaData.get("rut"));
         veterinaria.setRazon_social((String) veterinariaData.get("razon_social"));
         veterinaria.setNombre_comercial((String) veterinariaData.get("nombre_comercial"));
@@ -93,18 +95,31 @@ public class VeterinariaService {
         veterinaria.setResenia_confirmada((String) veterinariaData.get("resenia_confirmada"));
         veterinaria.setDireccion((String) veterinariaData.get("direccion"));
         veterinaria.setNumero((String) veterinariaData.get("numero"));
-        veterinaria.setTipo((String) veterinariaData.get("telefono"));
+        veterinaria.setTelefono((String) veterinariaData.get("telefono"));
+        veterinaria.setTipo((String) veterinariaData.get("tipo"));
         veterinaria.setCodigo_area((String) veterinariaData.get("codigo_area"));
         veterinaria.setCelular((String) veterinariaData.get("celular"));
-        veterinaria.setId_codigo_postal((Integer) veterinariaData.get("id_codigo_postal"));
-        veterinaria.setId_comuna((Integer) veterinariaData.get("id_comuna"));
-        veterinaria.setId_provincia((Integer) veterinariaData.get("id_provincia"));
-        veterinaria.setId_region((Integer) veterinariaData.get("id_region"));
+        veterinaria.setId_codigo_postal(parseIntOrNull(veterinariaData.get("id_codigo_postal")));
+        veterinaria.setId_comuna(parseIntOrNull(veterinariaData.get("id_comuna")));
+        veterinaria.setId_provincia(parseIntOrNull(veterinariaData.get("id_provincia")));
+        veterinaria.setId_region(parseIntOrNull(veterinariaData.get("id_region")));
         veterinaria.setGeolocalizacion((String) veterinariaData.get("geolocalizacion"));
-        veterinaria.setId_zona_BDoc((Integer) veterinariaData.get("id_zona_BDoc"));
-        veterinaria.setId_servicio((Integer) veterinariaData.get("id_servicio"));
+        veterinaria.setId_zona_BDoc(parseIntOrNull(veterinariaData.get("id_zona_BDoc")));
+        veterinaria.setId_servicio(parseIntOrNull(veterinariaData.get("id_servicio")));
         veterinaria.setValidado((Boolean) veterinariaData.get("validado"));
+
         return veterinaria;
+    }
+
+    private Integer parseIntOrNull(Object value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
     public void eliminarVeterinaria(Long id){veterinariaRepository.deleteById(id);}
 

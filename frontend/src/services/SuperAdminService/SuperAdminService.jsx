@@ -1,4 +1,4 @@
-import axios from "./axiosConfig";
+import axios from "../axiosConfig";
 
 const API_URL = 'http://localhost:8080/superAdmin/';
 

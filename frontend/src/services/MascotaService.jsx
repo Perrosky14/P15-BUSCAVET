@@ -13,7 +13,7 @@ class MascotaService {
   
 
   createMascota(mascota) {
-    return axios.post(API_URL, mascota);
+    return axios.post(API_URL , mascota);
   }
 
   updateMascota(mascotaId, mascota) {

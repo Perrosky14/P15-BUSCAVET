@@ -79,12 +79,18 @@ public class SuperAdminController {
     }
 
     //Veterinaria
+    @GetMapping("/obtener-veterinarias")
+    public ArrayList<VeterinariaEntity> obtenerVeterinarias(){
+        return veterinariaService.obtenerVeterinarias();
+    }
+
     @PostMapping("/crear-veterinaria")
     public ResponseEntity<?> registrarVeterinaria(@RequestBody Map<String, Object> requestBody){
         Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         SuperAdminEntity superAdmin = superAdminService.obtenerPorId(idSuperAdmin);
         if (superAdmin != null) {
             VeterinariaEntity veterinaria = veterinariaService.transformarDatosVeterinaria((Map<String, Object>) requestBody.get("veterinaria"));
+            System.out.println(veterinaria);
             veterinariaService.guardarVeterinaria(veterinaria);
             return ResponseEntity.status(HttpStatus.CREATED).body("La veterinaria " + veterinaria.getNombre_comercial() + " ha sido registrada correctamente por el superAdmin con la id: " + idSuperAdmin);
         } else {
@@ -125,6 +131,25 @@ public class SuperAdminController {
     }
 
     //Doctor
+    //obtenner doctores
+    @GetMapping("/obtener-doctores")
+    public ArrayList<DoctorEntity> obtenerDoctores(){
+        return doctorService.obtenerDoctor();
+    }
+
+    @PostMapping("/crear-doctor")
+    public ResponseEntity<?> crearDoctor(@RequestBody Map<String, Object> requestBody) {
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
+        if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            DoctorEntity nuevoDoctor = doctorService.transformarDatosDoctor((Map<String, Object>) requestBody.get("nuevoDoctor"));
+            doctorService.guardarDoctor(nuevoDoctor);
+            return ResponseEntity.status(HttpStatus.CREATED).body("El Doctor " + nuevoDoctor.getNombre1() + " " + nuevoDoctor.getApellido1() + " ha sido creado correctamente por el superAdmin con la id: " + idSuperAdmin);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
+        }
+    }
+
+
     @PutMapping("/modificar-doctor")
     public ResponseEntity<?> actualizarDoctor(@RequestBody Map<String, Object> requestBody){
         Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
@@ -158,6 +183,24 @@ public class SuperAdminController {
     }
 
     //Usuario
+    //obtener todos los usuarios
+    @GetMapping("/obtener-usuarios")
+    public ArrayList<UsuarioEntity> obtenerUsuarios(){
+        return usuarioService.obtenerUsuarios();
+    }
+    //crear usuario
+    @PostMapping("/crear-usuario")
+    public ResponseEntity<?> crearUsuario(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
+        if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            UsuarioEntity nuevoUsuario = usuarioService.transformarDatosUsuario((Map<String, Object>) requestBody.get("nuevoUsuario"));
+            usuarioService.guardarUsuario(nuevoUsuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body("El usuario " + nuevoUsuario.getNombre1() + " " + nuevoUsuario.getApellido1() + " ha sido creado correctamente por el superAdmin con la id: " + idSuperAdmin);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
+        }
+    }
+
     @PutMapping("/modificar-usuario")
     public ResponseEntity<?> actualizarUsuario(@RequestBody Map<String, Object> requestBody){
         Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
@@ -191,6 +234,24 @@ public class SuperAdminController {
     }
 
     //Mascota
+    //Obtener mascotas
+    @GetMapping("/obtener-mascotas")
+    public ArrayList<MascotaEntity> obtenerMascotas(){
+        return mascotaService.obtenerMascotas();
+    }
+    //Crear mascota
+    @PostMapping("/crear-mascota")
+    public ResponseEntity<?> crearMascota(@RequestBody Map<String, Object> requestBody){
+        Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
+        if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
+            MascotaEntity nuevaMascota = mascotaService.transformarMascota((Map<String, Object>) requestBody.get("nuevaMascota"));
+            mascotaService.guardarMascota(nuevaMascota);
+            return ResponseEntity.status(HttpStatus.CREATED).body("La mascota " + nuevaMascota.getNombre() + " ha sido creada correctamente por el superAdmin con la id: " + idSuperAdmin);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
+        }
+    }
+
     @PutMapping("/modificar-mascota")
     public ResponseEntity<?> actualizarMascota(@RequestBody Map<String, Object> requestBody){
         Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();

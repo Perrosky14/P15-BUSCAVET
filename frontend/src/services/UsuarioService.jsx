@@ -28,6 +28,9 @@ class UsuarioService {
         return axios.delete(USUARIO_API_URL + '/eliminar-mascota', { data: { idUsuario, idMascota } });
 
     }
+    getUsuarios() {
+        return axios.get(USUARIO_API_URL + '/obtener-usuarios');
+    }
 }
 
 export default new UsuarioService();

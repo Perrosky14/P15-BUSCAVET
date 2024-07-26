@@ -201,7 +201,7 @@ export default function UserSessionComponent() {
             } else if (rol === "VETERINARIA") {
                 navigate('/veterinaria');
             } else if (rol === "SUPERADMIN") {
-                navigate('/superadmin');
+                navigate('/admin/usuarios');
             } else {
                 navigate('/error');
             }

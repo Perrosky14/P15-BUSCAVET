@@ -119,7 +119,7 @@ function VerticalNavbarComponent() {
                 </div>
             </UserInfo>
             <List>
-                <ListItemStyled button component="a" href="/veterinaria">
+                <ListItemStyled button component="a" >
                     <ListItemIconStyled><MonitorHeart /></ListItemIconStyled>
                     <ListItemTextStyled primary="Inicio" />
                 </ListItemStyled>
@@ -127,11 +127,11 @@ function VerticalNavbarComponent() {
                     <ListItemIconStyled><Person/></ListItemIconStyled>
                     <ListItemTextStyled primary="Usuarios" />
                 </ListItemStyled>
-                <ListItemStyled button component="a" href="/perfil_usuario">
+                <ListItemStyled button component="a">
                     <ListItemIconStyled><MarkEmailRead /></ListItemIconStyled>
                     <ListItemTextStyled primary="Perfil" />
                 </ListItemStyled>
-                <ListItemStyled button component="a" href="/configuracion">
+                <ListItemStyled button component="a">
                     <ListItemIconStyled><Settings /></ListItemIconStyled>
                     <ListItemTextStyled primary="Configuración" />
                 </ListItemStyled>
