@@ -76,8 +76,8 @@ const MascotaDetails = ({ mascota, isEditMode, handleChange, handleCopy }) => {
                             <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="id_especie"
-                                value={mascota.id_especie}
+                                name="especie"
+                                value={mascota.especie}
                                 onChange={handleChange}
                             />
                         ) : (
@@ -95,8 +95,8 @@ const MascotaDetails = ({ mascota, isEditMode, handleChange, handleCopy }) => {
                             <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="id_raza"
-                                value={mascota.id_raza}
+                                name="raza"
+                                value={mascota.raza}
                                 onChange={handleChange}
                             />
                         ) : (
@@ -114,8 +114,8 @@ const MascotaDetails = ({ mascota, isEditMode, handleChange, handleCopy }) => {
                             <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="id_sexo"
-                                value={mascota.id_sexo}
+                                name="sexo"
+                                value={mascota.sexo}
                                 onChange={handleChange}
                             />
                         ) : (

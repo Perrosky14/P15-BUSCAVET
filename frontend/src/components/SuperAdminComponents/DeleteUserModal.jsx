@@ -1,13 +1,14 @@
 import React from 'react';
-import DoctorService from '../../services/DoctorService.jsx';
-import UsuarioService from '../../services/UsuarioService.jsx';
-import MascotaService from '../../services/MascotaService.jsx';
-import VeterinariaService from '../../services/VeterinariaService.jsx';
+import DoctorService from '../../services/SuperAdminService/SuperAdminDoctorService';
+import UsuarioService from '../../services/SuperAdminService/SuperAdminUsuarioService';
+import MascotaService from '../../services/SuperAdminService/SuperAdminMascotaService';
+import VeterinariaService from '../../services/SuperAdminService/SuperAdminVeterinariaService';
 import { Box, Typography, Button, Modal, IconButton } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import theme from '../styles/themeComponent';
+import {jwtDecode} from "jwt-decode";
 
 const styles = {
     modalBox: {
@@ -79,9 +80,13 @@ const styles = {
 const DeleteUserModal = ({ show, handleClose, user, handleDelete, reloadCurrentPage }) => {
     const handleConfirmDelete = () => {
         const idNumber = parseInt(user.id.match(/\d+/)[0], 10);
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token);
+        const idSuperAdmin = decoded.id;
+
         switch (user.tipo) {
             case 'Doctor':
-                DoctorService.deleteDoctor(idNumber)
+                DoctorService.deleteDoctor(idSuperAdmin, idNumber)
                     .then(response => {
                         console.log("User deleted:", response.data);
                         handleDelete(user.id);
@@ -93,7 +98,7 @@ const DeleteUserModal = ({ show, handleClose, user, handleDelete, reloadCurrentP
                     });
                 break;
             case 'Usuario':
-                UsuarioService.deleteUsuario(idNumber)
+                UsuarioService.deleteUsuario(idSuperAdmin, idNumber)
                     .then(response => {
                         console.log("User deleted:", response.data);
                         handleDelete(user.id);
@@ -105,7 +110,7 @@ const DeleteUserModal = ({ show, handleClose, user, handleDelete, reloadCurrentP
                     });
                 break;
             case 'Veterinaria':
-                VeterinariaService.deleteVeterinaria(idNumber)
+                VeterinariaService.deleteVeterinaria(idSuperAdmin, idNumber)
                     .then(response => {
                         console.log("User deleted:", response.data);
                         handleDelete(user.id);
@@ -117,7 +122,7 @@ const DeleteUserModal = ({ show, handleClose, user, handleDelete, reloadCurrentP
                     });
                 break;
             case 'Mascota':
-                MascotaService.deleteMascota(idNumber)
+                MascotaService.deleteMascota(idSuperAdmin, idNumber)
                     .then(response => {
                         console.log("User deleted:", response.data);
                         handleDelete(user.id);

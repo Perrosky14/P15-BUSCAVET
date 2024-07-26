@@ -298,25 +298,6 @@ const UsuarioDetails = ({ usuario, handleCopy, isEditMode, handleChange }) => {
                 </Grid>
                 <Grid item xs={6}>
                     <Paper sx={styles.detailItem}>
-                        <BusinessIcon sx={styles.detailIcon} />
-                        <Box sx={styles.detailTextContainer}>
-                            <Typography sx={styles.attributeTitle}>Tipo:</Typography>
-                            {isEditMode ? (
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    name="tipo"
-                                    value={usuario.tipo}
-                                    onChange={handleChange}
-                                />
-                            ) : (
-                                <Typography sx={styles.attributeValue}>{usuario.tipo}</Typography>
-                            )}
-                        </Box>
-                    </Paper>
-                </Grid>
-                <Grid item xs={6}>
-                    <Paper sx={styles.detailItem}>
                         <LocationOnIcon sx={styles.detailIcon} />
                         <Box sx={styles.detailTextContainer}>
                             <Typography sx={styles.attributeTitle}>ID Código Postal:</Typography>

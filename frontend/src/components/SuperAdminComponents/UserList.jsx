@@ -5,9 +5,9 @@ import UserDetailsModal from './UserDetailsModal/UserDetailsModal';
 import DeleteUserModal from './DeleteUserModal';
 import AddUserModal from './AddUserModal';
 import DoctorService from '../../services/DoctorService.jsx';
-import UsuarioService from '../../services/UsuarioService.jsx';
-import MascotaService from '../../services/MascotaService.jsx';
-import VeterinariaService from '../../services/VeterinariaService.jsx';
+import UsuarioService from '../../services/SuperAdminService/SuperAdminUsuarioService';
+import MascotaService from '../../services/SuperAdminService/SuperAdminMascotaService';
+import VeterinariaService from '../../services/SuperAdminService/SuperAdminVeterinariaService';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../styles/themeComponent';
@@ -113,7 +113,7 @@ const UserList = () => {
     const fetchData = async () => {
         try {
             const [doctorsResponse, usuariosResponse, mascotasResponse, veterinariasResponse] = await Promise.all([
-                DoctorService.getDoctors(),
+                DoctorService.getDoctores(),
                 UsuarioService.getUsuarios(),
                 MascotaService.getMascotas(),
                 VeterinariaService.getVeterinarias()

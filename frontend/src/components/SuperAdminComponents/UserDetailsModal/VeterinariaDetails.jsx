@@ -283,25 +283,6 @@ const VeterinariaDetails = ({ veterinaria, handleCopy, isEditMode, handleChange 
                 </Grid>
                 <Grid item xs={6}>
                     <Paper sx={styles.detailItem}>
-                        <AssistantIcon sx={styles.detailIcon} />
-                        <Box sx={styles.detailTextContainer}>
-                            <Typography sx={styles.attributeTitle}>Reseña:</Typography>
-                            {isEditMode ? (
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    name="resenia"
-                                    value={veterinaria.resenia}
-                                    onChange={handleChange}
-                                />
-                            ) : (
-                                <Typography sx={styles.attributeValue}>{veterinaria.resenia}</Typography>
-                            )}
-                        </Box>
-                    </Paper>
-                </Grid>
-                <Grid item xs={6}>
-                    <Paper sx={styles.detailItem}>
                         <CheckCircleIcon sx={styles.detailIcon} />
                         <Box sx={styles.detailTextContainer}>
                             <Typography sx={styles.attributeTitle}>Reseña Confirmada:</Typography>
@@ -343,25 +324,6 @@ const VeterinariaDetails = ({ veterinaria, handleCopy, isEditMode, handleChange 
                                 />
                             ) : (
                                 <Typography sx={styles.attributeValue}>{veterinaria.numero}</Typography>
-                            )}
-                        </Box>
-                    </Paper>
-                </Grid>
-                <Grid item xs={6}>
-                    <Paper sx={styles.detailItem}>
-                        <LocationOnIcon sx={styles.detailIcon} />
-                        <Box sx={styles.detailTextContainer}>
-                            <Typography sx={styles.attributeTitle}>Tipo:</Typography>
-                            {isEditMode ? (
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    name="tipo"
-                                    value={veterinaria.tipo}
-                                    onChange={handleChange}
-                                />
-                            ) : (
-                                <Typography sx={styles.attributeValue}>{veterinaria.tipo}</Typography>
                             )}
                         </Box>
                     </Paper>

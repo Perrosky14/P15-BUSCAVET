@@ -14,11 +14,13 @@ import HomeUsuarioComponent from './components/HomeUsuarioComponent';
 import AgendamientoUsuarioComponent from './components/AgendamientoUsuarioComponent';
 import RegisterVeterinariaComponent from './components/RegisterVeterinariaComponent';
 import MainViewSuperAdmin from "./components/SuperAdminComponents/MainViewSuperAdmin";
+import MainHomeView from './components/HomeViewComponents/MainHomeView';
 function App() {
   return (
     <div>
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<MainHomeView />} />
         <Route path="/" element={<HomeComponent />} />
         <Route path="/registrar_mascota" element={<RegistarMascotaComponent/>} />
         <Route path="/lista_mascota" element={<ListaMascotaComponent/>} />

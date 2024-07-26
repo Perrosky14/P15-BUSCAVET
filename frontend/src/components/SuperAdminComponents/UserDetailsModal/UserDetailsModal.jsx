@@ -8,10 +8,11 @@ import DoctorDetails from './DoctorDetails';
 import UsuarioDetails from './UsuarioDetails';
 import VeterinariaDetails from './VeterinariaDetails';
 import MascotaDetails from './MascotaDetails';
-import DoctorService from '../../../services/DoctorService.jsx';
-import UsuarioService from '../../../services/UsuarioService.jsx';
-import VeterinariaService from '../../../services/VeterinariaService.jsx';
-import MascotaService from '../../../services/MascotaService.jsx';
+import DoctorService from '../../../services/SuperAdminService/SuperAdminDoctorService';
+import UsuarioService from '../../../services/SuperAdminService/SuperAdminUsuarioService';
+import VeterinariaService from '../../../services/SuperAdminService/SuperAdminVeterinariaService';
+import MascotaService from '../../../services/SuperAdminService/SuperAdminMascotaService';
+import {jwtDecode} from 'jwt-decode';
 
 const styles = {
     modalBox: {
@@ -117,10 +118,14 @@ const UserDetailsModal = ({ open, handleClose, user, reloadCurrentPage }) => {
     };
 
     const handleSave = () => {
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token);
+        const idSuperAdmin = decoded.id;
+
         const idNumber = parseInt(details.id.match(/\d+/)[0], 10);
         switch (details.tipo) {
             case 'Doctor':
-                DoctorService.updateDoctor(idNumber, details)
+                DoctorService.updateDoctor(idSuperAdmin, idNumber, details)
                     .then(response => {
                         console.log("Changes saved:", response.data);
                         handleClose();
@@ -131,7 +136,7 @@ const UserDetailsModal = ({ open, handleClose, user, reloadCurrentPage }) => {
                     });
                 break;
             case 'Usuario':
-                UsuarioService.updateUsuario(idNumber, details)
+                UsuarioService.updateUsuario(idSuperAdmin, idNumber, details)
                     .then(response => {
                         console.log("Changes saved:", response.data);
                         handleClose();
@@ -142,7 +147,7 @@ const UserDetailsModal = ({ open, handleClose, user, reloadCurrentPage }) => {
                     });
                 break;
             case 'Veterinaria':
-                VeterinariaService.updateVeterinaria(idNumber, details)
+                VeterinariaService.updateVeterinaria(idSuperAdmin, idNumber, details)
                     .then(response => {
                         console.log("Changes saved:", response.data);
                         handleClose();
@@ -153,7 +158,7 @@ const UserDetailsModal = ({ open, handleClose, user, reloadCurrentPage }) => {
                     });
                 break;
             case 'Mascota':
-                MascotaService.updateMascota(idNumber, details)
+                MascotaService.updateMascota(idSuperAdmin, idNumber, details)
                     .then(response => {
                         console.log("Changes saved:", response.data);
                         handleClose();

@@ -20,7 +20,7 @@ axios.interceptors.request.use(
             if (isTokenExpired(token)) {
                 localStorage.removeItem('token');
                 //Redirige al usuario a la pagina login si el token expiro.
-                window.location.href = '/login';
+                //window.location.href = '/login';
                 return Promise.reject(new Error('token expirado'));
             }
             config.headers.Authorization = `Bearer ${token}`;
@@ -44,8 +44,8 @@ axios.interceptors.response.use(
                 return Promise.reject(error);
             } else {
                 //Para otras solicitudes o error de token adulterado, bad request, etc.
-                localStorage.removeItem('token');
-                window.location.href = '/login';
+                //localStorage.removeItem('token');
+                //window.location.href = '/login';
             }
         }
         return Promise.reject(error);

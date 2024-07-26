@@ -50,22 +50,45 @@ public class MascotaService {
     public MascotaEntity transformarMascota(Map<String, Object> mascotaMap) {
         MascotaEntity mascota = new MascotaEntity();
 
+        System.out.println(mascotaMap);
         // Manejo seguro de valores nulos o vacíos con valores predeterminados o lanzando excepciones
         mascota.setId_categoria_animal((String) getOrDefault(mascotaMap.get("id_categoria_animal"), ""));
         mascota.setId_especie((String) getOrDefault(mascotaMap.get("especie"), ""));
         mascota.setId_raza((String) getOrDefault(mascotaMap.get("raza"), ""));
         mascota.setId_sexo((String) getOrDefault(mascotaMap.get("sexo"), ""));
         mascota.setNombre((String) getOrDefault(mascotaMap.get("nombre"), ""));
-        mascota.setDia_nac((Integer) getOrDefault(mascotaMap.get("dia"), 1));
-        mascota.setMes_nac((Integer) getOrDefault(mascotaMap.get("mes"), 1));
-        mascota.setAnio_nac((Integer) getOrDefault(mascotaMap.get("anio"), 2020));
-        mascota.setOtro((String) getOrDefault(mascotaMap.get("otro"),""));
+        mascota.setDia_nac(parseIntOrDefault(mascotaMap.get("dia"), 1));
+        mascota.setMes_nac(parseIntOrDefault(mascotaMap.get("mes"), 1));
+        mascota.setAnio_nac(parseIntOrDefault(mascotaMap.get("anio"), 2020));
+        mascota.setOtro((String) getOrDefault(mascotaMap.get("otro"), ""));
         mascota.setColor((String) getOrDefault(mascotaMap.get("color"), ""));
-        mascota.setEstatura((Integer) getOrDefault(mascotaMap.get("estatura"), 0));
-        mascota.setPeso((Integer) getOrDefault(mascotaMap.get("peso"), 0));
-        mascota.setOtro2((String) getOrDefault(mascotaMap.get("otro2"),""));
+        mascota.setEstatura(parseIntOrDefault(mascotaMap.get("estatura"), 0));
+        mascota.setPeso(parseIntOrDefault(mascotaMap.get("peso"), 0));
+        mascota.setOtro2((String) getOrDefault(mascotaMap.get("otro2"), ""));
 
         return mascota;
+    }
+
+    private Integer parseIntOrNull(Object value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private Integer parseIntOrDefault(Object value, int defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
     private Object getOrDefault(Object value, Object defaultValue) {

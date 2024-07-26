@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Checkbox, FormControlLabel, Grid, Card, CardActionArea, CardContent, Typography } from '@mui/material';
-import DoctorService from '../../services/DoctorService.jsx';
-import UsuarioService from '../../services/UsuarioService.jsx';
-import MascotaService from '../../services/MascotaService.jsx';
-import VeterinariaService from '../../services/VeterinariaService.jsx';
+import DoctorService from '../../services/SuperAdminService/SuperAdminDoctorService';
+import UsuarioService from '../../services/SuperAdminService/SuperAdminUsuarioService';
+import MascotaService from '../../services/SuperAdminService/SuperAdminMascotaService';
+import VeterinariaService from '../../services/SuperAdminService/SuperAdminVeterinariaService';
 import PersonIcon from '@mui/icons-material/Person'; // Icon for Usuario
 import PetsIcon from '@mui/icons-material/Pets'; // Icon for Mascota
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital'; // Icon for Doctor
 import BusinessIcon from '@mui/icons-material/Business'; // Icon for Veterinaria
 import { Box } from '@mui/material';
+import {jwtDecode} from 'jwt-decode';
 
 const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
     const [hoverConfirm, setHoverConfirm] = useState(false);
@@ -48,6 +49,7 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
         asistente_codigo_area: '',
         asistente_celular: '',
         otro: '',
+        id_zona_BDoc: '',
         validado: false,
     });
 
@@ -60,55 +62,64 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
     };
 
     const handleSaveUser = () => {
+        console.log("User data:", userData);
         const { tipo, ...data } = userData;
 
-        switch (tipo) {
-            case 'Doctor':
-                DoctorService.createDoctor(data)
-                    .then(response => {
-                        console.log("User added:", response.data);
-                        handleClose();
-                        reloadCurrentPage();
-                    })
-                    .catch(error => {
-                        console.error("There was an error adding the doctor!", error);
-                    });
-                break;
-            case 'Usuario':
-                UsuarioService.createUsuario(data)
-                    .then(response => {
-                        console.log("User added:", response.data);
-                        handleClose();
-                        reloadCurrentPage();
-                    })
-                    .catch(error => {
-                        console.error("There was an error adding the usuario!", error);
-                    });
-                break;
-            case 'Veterinaria':
-                VeterinariaService.createVeterinaria(data)
-                    .then(response => {
-                        console.log("User added:", response.data);
-                        handleClose();
-                        reloadCurrentPage();
-                    })
-                    .catch(error => {
-                        console.error("There was an error adding the veterinaria!", error);
-                    });
-                break;
-            case 'Mascota':
-                MascotaService.createMascota(data)
-                    .then(response => {
-                        console.log("User added:", response.data);
-                        handleClose();
-                        reloadCurrentPage();
-                    })
-                    .catch(error => {
-                        console.error("There was an error adding the mascota!", error);
-                    });
-                break;
-            default:
-                console.error("Unknown user type:", tipo);
+        try {
+            const token = localStorage.getItem('token');
+            const decoded = jwtDecode(token);
+            const idSuperAdmin = decoded.id;
+
+            switch (tipo) {
+                case 'Doctor':
+                    DoctorService.createDoctor(idSuperAdmin, data)
+                        .then(response => {
+                            console.log("User added:", response.data);
+                            handleClose();
+                            reloadCurrentPage();
+                        })
+                        .catch(error => {
+                            console.error("There was an error adding the doctor!", error);
+                        });
+                    break;
+                case 'Usuario':
+                    UsuarioService.createUsuario(idSuperAdmin, data)
+                        .then(response => {
+                            console.log("User added:", response.data);
+                            handleClose();
+                            reloadCurrentPage();
+                        })
+                        .catch(error => {
+                            console.error("There was an error adding the usuario!", error);
+                        });
+                    break;
+                case 'Veterinaria':
+                    VeterinariaService.createVeterinaria(idSuperAdmin, data)
+                        .then(response => {
+                            console.log("User added:", response.data);
+                            handleClose();
+                            reloadCurrentPage();
+                        })
+                        .catch(error => {
+                            console.error("There was an error adding the veterinaria!", error);
+                        });
+                    break;
+                case 'Mascota':
+                    MascotaService.createMascota(idSuperAdmin, data)
+                        .then(response => {
+                            console.log("User added:", response.data);
+                            handleClose();
+                            reloadCurrentPage();
+                        })
+                        .catch(error => {
+                            console.error("There was an error adding the mascota!", error);
+                        });
+                    break;
+                default:
+                    console.error("Unknown user type:", tipo);
+            }
+        } catch (error) {
+            console.error("Error decoding token or adding user:", error);
         }
     };
 
@@ -119,7 +130,7 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
             id_institucion_vet_1: '',
             id_institucion_vet_2: '',
             id_institucion_vet_3: '',
-            id_pais: '',
+            id_pais: '1',
             rut: '',
             matricula: '',
             nombre1: '',
@@ -149,6 +160,7 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
             asistente_codigo_area: '',
             asistente_celular: '',
             otro: '',
+            id_zona_BDoc: '',
             validado: false,
         });
     };
@@ -251,7 +263,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Institución Veterinaria 1"
-                type="number"
                 name="id_institucion_vet_1"
                 value={userData.id_institucion_vet_1}
                 onChange={handleChange}
@@ -261,7 +272,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Institución Veterinaria 2"
-                type="number"
                 name="id_institucion_vet_2"
                 value={userData.id_institucion_vet_2}
                 onChange={handleChange}
@@ -271,7 +281,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Institución Veterinaria 3"
-                type="number"
                 name="id_institucion_vet_3"
                 value={userData.id_institucion_vet_3}
                 onChange={handleChange}
@@ -281,7 +290,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="País"
-                type="number"
                 name="id_pais"
                 value={userData.id_pais}
                 onChange={handleChange}
@@ -300,7 +308,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Género"
-                type="number"
                 name="id_genero"
                 value={userData.id_genero}
                 onChange={handleChange}
@@ -310,7 +317,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Día de Nacimiento"
-                type="number"
                 name="dia_nac"
                 value={userData.dia_nac}
                 onChange={handleChange}
@@ -320,7 +326,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Mes de Nacimiento"
-                type="number"
                 name="mes_nac"
                 value={userData.mes_nac}
                 onChange={handleChange}
@@ -330,7 +335,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Año de Nacimiento"
-                type="number"
                 name="anio_nac"
                 value={userData.anio_nac}
                 onChange={handleChange}
@@ -340,7 +344,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Nacionalidad"
-                type="number"
                 name="id_nacionalidad"
                 value={userData.id_nacionalidad}
                 onChange={handleChange}
@@ -350,7 +353,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Especialidad 1"
-                type="number"
                 name="id_especialidad_1"
                 value={userData.id_especialidad_1}
                 onChange={handleChange}
@@ -360,7 +362,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Especialidad 2"
-                type="number"
                 name="id_especialidad_2"
                 value={userData.id_especialidad_2}
                 onChange={handleChange}
@@ -370,7 +371,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Especialidad 3"
-                type="number"
                 name="id_especialidad_3"
                 value={userData.id_especialidad_3}
                 onChange={handleChange}
@@ -398,7 +398,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Estado Médico Veterinario"
-                type="number"
                 name="id_estado_medico_vet"
                 value={userData.id_estado_medico_vet}
                 onChange={handleChange}
@@ -417,8 +416,8 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Red Social 1"
-                name="RRSS1"
-                value={userData.RRSS1}
+                name="rrss1"
+                value={userData.rrss1}
                 onChange={handleChange}
                 variant="outlined"
             />
@@ -426,8 +425,8 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Red Social 2"
-                name="RRSS2"
-                value={userData.RRSS2}
+                name="rrss2"
+                value={userData.rrss2}
                 onChange={handleChange}
                 variant="outlined"
             />
@@ -473,6 +472,15 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 label="Otro"
                 name="otro"
                 value={userData.otro}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Convenio"
+                name="id_convenio"
+                value={userData.id_convenio}
                 onChange={handleChange}
                 variant="outlined"
             />
@@ -549,6 +557,15 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
             <TextField
                 fullWidth
                 margin="dense"
+                label="Código de Área"
+                name="codigo_area"
+                value={userData.codigo_area}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
                 label="Celular"
                 name="celular"
                 value={userData.celular}
@@ -585,17 +602,7 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
             <TextField
                 fullWidth
                 margin="dense"
-                label="Tipo"
-                name="tipo"
-                value={userData.tipo}
-                onChange={handleChange}
-                variant="outlined"
-            />
-            <TextField
-                fullWidth
-                margin="dense"
                 label="Código Postal"
-                type="number"
                 name="id_codigo_postal"
                 value={userData.id_codigo_postal}
                 onChange={handleChange}
@@ -605,7 +612,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Comuna"
-                type="number"
                 name="id_comuna"
                 value={userData.id_comuna}
                 onChange={handleChange}
@@ -615,7 +621,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Provincia"
-                type="number"
                 name="id_provincia"
                 value={userData.id_provincia}
                 onChange={handleChange}
@@ -625,7 +630,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Región"
-                type="number"
                 name="id_region"
                 value={userData.id_region}
                 onChange={handleChange}
@@ -644,9 +648,99 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Zona BDoc"
-                type="number"
                 name="id_zona_BDoc"
                 value={userData.id_zona_BDoc}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Contrasenia"
+                type="password"
+                name="contrasenia"
+                value={userData.contrasenia}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="País"
+                name="id_pais"
+                value={userData.id_pais}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Género"
+                name="id_genero"
+                value={userData.id_genero}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Día de Nacimiento"
+                name="dia_nac"
+                value={userData.dia_nac}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Mes de Nacimiento"
+                name="mes_nac"
+                value={userData.mes_nac}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Año de Nacimiento"
+                name="anio_nac"
+                value={userData.anio_nac}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Nacionalidad"
+                name="id_nacionalidad"
+                value={userData.id_nacionalidad}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="RRSS1"
+                name="rrss1"
+                value={userData.rrss1}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="RRSS2"
+                name="rrss2"
+                value={userData.rrss2}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
+                label="Otro"
+                name="otro"
+                value={userData.otro}
                 onChange={handleChange}
                 variant="outlined"
             />
@@ -759,7 +853,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Segmento"
-                type="number"
                 name="id_segmento"
                 value={userData.id_segmento}
                 onChange={handleChange}
@@ -769,7 +862,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Tipo de Institución Veterinaria"
-                type="number"
                 name="id_tipo_institucion_vet"
                 value={userData.id_tipo_institucion_vet}
                 onChange={handleChange}
@@ -779,7 +871,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Estado de la Institución"
-                type="number"
                 name="id_estado_institucion"
                 value={userData.id_estado_institucion}
                 onChange={handleChange}
@@ -843,7 +934,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Código Postal"
-                type="number"
                 name="id_codigo_postal"
                 value={userData.id_codigo_postal}
                 onChange={handleChange}
@@ -853,7 +943,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Comuna"
-                type="number"
                 name="id_comuna"
                 value={userData.id_comuna}
                 onChange={handleChange}
@@ -863,7 +952,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Provincia"
-                type="number"
                 name="id_provincia"
                 value={userData.id_provincia}
                 onChange={handleChange}
@@ -873,7 +961,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Región"
-                type="number"
                 name="id_region"
                 value={userData.id_region}
                 onChange={handleChange}
@@ -891,8 +978,16 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
             <TextField
                 fullWidth
                 margin="dense"
+                label="Pais"
+                name="id_pais"
+                value={userData.id_pais}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
                 label="Zona BDoc"
-                type="number"
                 name="id_zona_BDoc"
                 value={userData.id_zona_BDoc}
                 onChange={handleChange}
@@ -901,8 +996,16 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
             <TextField
                 fullWidth
                 margin="dense"
+                label="Codigo de area"
+                name="codigo_area"
+                value={userData.codigo_area}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
                 label="Servicio"
-                type="number"
                 name="id_servicio"
                 value={userData.id_servicio}
                 onChange={handleChange}
@@ -928,7 +1031,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Categoría Animal"
-                type="number"
                 name="id_categoria_animal"
                 value={userData.id_categoria_animal}
                 onChange={handleChange}
@@ -937,10 +1039,18 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
             <TextField
                 fullWidth
                 margin="dense"
+                label="ID Dueño animal"
+                name="id_dueno_animal"
+                value={userData.id_dueno_animal}
+                onChange={handleChange}
+                variant="outlined"
+            />
+            <TextField
+                fullWidth
+                margin="dense"
                 label="Especie"
-                type="number"
-                name="id_especie"
-                value={userData.id_especie}
+                name="especie"
+                value={userData.especie}
                 onChange={handleChange}
                 variant="outlined"
             />
@@ -948,9 +1058,8 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Raza"
-                type="number"
-                name="id_raza"
-                value={userData.id_raza}
+                name="raza"
+                value={userData.raza}
                 onChange={handleChange}
                 variant="outlined"
             />
@@ -958,9 +1067,8 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Sexo"
-                type="number"
-                name="id_sexo"
-                value={userData.id_sexo}
+                name="sexo"
+                value={userData.sexo}
                 onChange={handleChange}
                 variant="outlined"
             />
@@ -977,7 +1085,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Día de Nacimiento"
-                type="number"
                 name="dia_nac"
                 value={userData.dia_nac}
                 onChange={handleChange}
@@ -987,7 +1094,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Mes de Nacimiento"
-                type="number"
                 name="mes_nac"
                 value={userData.mes_nac}
                 onChange={handleChange}
@@ -997,7 +1103,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Año de Nacimiento"
-                type="number"
                 name="anio_nac"
                 value={userData.anio_nac}
                 onChange={handleChange}
@@ -1016,7 +1121,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Estatura"
-                type="number"
                 name="estatura"
                 value={userData.estatura}
                 onChange={handleChange}
@@ -1035,7 +1139,6 @@ const AddUserModal = ({ show, handleClose, reloadCurrentPage }) => {
                 fullWidth
                 margin="dense"
                 label="Peso"
-                type="number"
                 name="peso"
                 value={userData.peso}
                 onChange={handleChange}
