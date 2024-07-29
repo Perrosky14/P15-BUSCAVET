@@ -29,7 +29,8 @@ public class SecurityConfig {
                 .csrf(csrf ->
                         csrf.disable())
                 .authorizeHttpRequests(authRequest -> authRequest
-                                .requestMatchers(HttpMethod.POST,"/login", "/doctor/nuevo-doctor", "/superAdmin/nuevo-superAdmin", "/usuario/nuevo-usuario", "/veterinaria/nueva-veterinaria", "/registroEmail").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/login", "/doctor/nuevo-doctor", "/superAdmin/nuevo-superAdmin", "/usuario/nuevo-usuario", "/veterinaria/nueva-veterinaria", "/registroEmail", "/veterinaria/crear-doctor").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/veterinaria/obtener-veterinarias").permitAll()
                                 .anyRequest().authenticated()
                         )
                 .sessionManagement( sessionManager -> sessionManager

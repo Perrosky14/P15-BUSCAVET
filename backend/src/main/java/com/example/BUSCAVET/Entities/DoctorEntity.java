@@ -30,9 +30,9 @@ public class DoctorEntity implements CustomUserDetails {
     @Column(unique = true, nullable = false)
     private Long id;
     private String contrasenia;
-    private int id_institucion_vet_1;
-    private int id_institucion_vet_2;
-    private int id_institucion_vet_3;
+    private String id_institucion_vet_1;
+    private String id_institucion_vet_2;
+    private String id_institucion_vet_3;
     private int id_pais;
     private String rut;
     private String matricula;
@@ -45,7 +45,7 @@ public class DoctorEntity implements CustomUserDetails {
     private int mes_nac;
     private int anio_nac;
     private int id_nacionalidad;
-    private int id_especialidad_1;
+    private String id_especialidad_1;
     private int id_especialidad_2;
     private int id_especialidad_3;
     private String resenia;

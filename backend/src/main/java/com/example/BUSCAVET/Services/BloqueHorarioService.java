@@ -1,16 +1,16 @@
 package com.example.BUSCAVET.Services;
 
 import com.example.BUSCAVET.Entities.BloqueHorarioEntity;
+import com.example.BUSCAVET.DTO.CrearBloques;
 import com.example.BUSCAVET.Entities.DoctorEntity;
 import com.example.BUSCAVET.Repositories.BloqueHorarioRepository;
 import com.example.BUSCAVET.Repositories.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 @Service
 public class BloqueHorarioService {
@@ -36,10 +36,18 @@ public class BloqueHorarioService {
         return bloqueHorarioRepository.findById(id).orElse(null);
     }
 
-    public BloqueHorarioEntity obtenerPorVeterinario(Long idVeterinario) {
+    /*public BloqueHorarioEntity obtenerPorVeterinario(Long idVeterinario) {
         DoctorEntity veterinario = doctorRepository.findById(idVeterinario).orElse(null);
         if (veterinario != null) {
             return bloqueHorarioRepository.findByDoctor(veterinario);
+        }
+        return null;
+    }*/
+
+    public List<BloqueHorarioEntity> obtenerPorVeterinario(Long idVeterinario) {
+        DoctorEntity veterinario = doctorRepository.findById(idVeterinario).orElse(null);
+        if (veterinario != null) {
+            return bloqueHorarioRepository.findAllByDoctor(veterinario);
         }
         return null;
     }
@@ -60,15 +68,15 @@ public class BloqueHorarioService {
         return null;
     }
 
-    public BloqueHorarioEntity transformarBloqueHorario(Map<String, Object> bloqueHorarioData) {
+    public BloqueHorarioEntity transformarBloqueHorario(CrearBloques bloqueHorarioData) {
         BloqueHorarioEntity bloqueHorario = new BloqueHorarioEntity();
-        bloqueHorario.setTurno((String) bloqueHorarioData.get("turno"));
-        bloqueHorario.setCantidadBloquesPorDia((Integer) bloqueHorarioData.get("cantidadBloquesPorDia"));
-        bloqueHorario.setTiempoBloques(LocalTime.parse((String) bloqueHorarioData.get("tiempoBloques")));
-        bloqueHorario.setTiempoPausas(LocalTime.parse((String) bloqueHorarioData.get("tiempoPausas")));
-        bloqueHorario.setTiempoTrabajoTurno(LocalTime.parse((String) bloqueHorarioData.get("tiempoTrabajoTurno")));
-        bloqueHorario.setHoraInicio(LocalTime.parse((String) bloqueHorarioData.get("horaInicio")));
-        bloqueHorario.setHoraFinal(LocalTime.parse((String) bloqueHorarioData.get("horaFinal")));
+        bloqueHorario.setTurno((String) bloqueHorarioData.turno);
+        bloqueHorario.setCantidadBloquesPorDia((Integer) bloqueHorarioData.cantidadBloquesPorDia);
+        bloqueHorario.setTiempoBloques(LocalTime.parse((String) bloqueHorarioData.tiempoBloques));
+        bloqueHorario.setTiempoPausas(LocalTime.parse((String) bloqueHorarioData.tiempoPausas));
+        bloqueHorario.setTiempoTrabajoTurno(LocalTime.parse((String) bloqueHorarioData.tiempoTrabajoTurno));
+        bloqueHorario.setHoraInicio(LocalTime.parse((String) bloqueHorarioData.horaInicio));
+        bloqueHorario.setHoraFinal(LocalTime.parse((String) bloqueHorarioData.horaFinal));
         return bloqueHorario;
     }
 

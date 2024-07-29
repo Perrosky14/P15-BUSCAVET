@@ -1,6 +1,6 @@
 package com.example.BUSCAVET.Controllers;
 
-import com.example.BUSCAVET.Entities.BloqueHorarioEntity;
+import com.example.BUSCAVET.DTO.CrearDoctorDTO;
 import com.example.BUSCAVET.Entities.DoctorEntity;
 import com.example.BUSCAVET.Entities.VeterinariaEntity;
 import com.example.BUSCAVET.Services.BloqueHorarioService;
@@ -52,19 +52,39 @@ public class DoctorController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(doctor.get());
     }
 
-    @PostMapping("/nuevo-doctor")
+    /*@PostMapping("/nuevo-doctor")
     public ResponseEntity<?> guardarDoctor(@RequestBody Map<String, Object> requestBody) {
-        Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
+        Object idVeterinariaObj = requestBody.get("idVeterinaria");
+
+        if (idVeterinariaObj == null || !(idVeterinariaObj instanceof Number)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El campo 'idVeterinaria' es requerido y debe ser un número.");
+        }
+
+        Long idVeterinaria = ((Number) idVeterinariaObj).longValue();
         VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
+
         if (veterinaria != null) {
             DoctorEntity doctor = doctorService.transformarDatosDoctor((Map<String, Object>) requestBody.get("doctor"));
+            doctor.setVeterinaria(veterinaria);
+            return ResponseEntity.status(HttpStatus.CREATED).body(doctorService.guardarDoctor(doctor));
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga la id: " + idVeterinaria);
+    }*/
+
+    @PostMapping("/nuevo-doctor")
+    public ResponseEntity<?> guardarDoctor(@RequestBody CrearDoctorDTO requestBody) {
+        Long idVeterinaria = (requestBody.idVeterinaria);
+        VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
+        if (veterinaria != null) {
+            DoctorEntity doctor = doctorService.transformarDatosDoctor(requestBody);
             doctor.setVeterinaria(veterinaria);
             return ResponseEntity.status(HttpStatus.CREATED).body(doctorService.guardarDoctor(doctor));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga la id: " + idVeterinaria);
     }
 
-    @PostMapping("/crear-bloquesHora")
+    /*@PostMapping("/crear-bloquesHora")
     public ResponseEntity<?> crearBloquesHora(@RequestBody Map<String, Object> requestBody) {
         Long idVeterinario = ((Number) requestBody.get("idVeterinario")).longValue();
         DoctorEntity veterinario = doctorService.obtenerPorId(idVeterinario);
@@ -74,9 +94,9 @@ public class DoctorController {
         BloqueHorarioEntity bloqueHorario = bloqueHorarioService.transformarBloqueHorario((Map<String, Object>) requestBody.get("bloqueHorario"));
         bloqueHorarioService.crearBloquesHoras(veterinario, bloqueHorario);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Se ha creado los bloques de hora para el veterinario de forma correcta.");
-    }
+    }*/
 
-    @PutMapping("/actualizar-doctor")
+    /*@PutMapping("/actualizar-doctor")
     public ResponseEntity<?> actualizarDoctor(@RequestBody Map<String, Object> requestBody){
         Long idDoctor = ((Number) requestBody.get("idDoctor")).longValue();
         if (doctorService.obtenerPorId(idDoctor) == null) {
@@ -84,7 +104,7 @@ public class DoctorController {
         }
         DoctorEntity doctorActualizado = doctorService.transformarDatosDoctor((Map<String, Object>) requestBody.get("doctorActualizado"));
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(doctorService.actualizarDoctor(idDoctor, doctorActualizado));
-    }
+    }*/
 
     @DeleteMapping("/eliminar-doctor")
     public ResponseEntity<?> eliminarDoctor(@RequestBody Map<String, Object> requestBody){

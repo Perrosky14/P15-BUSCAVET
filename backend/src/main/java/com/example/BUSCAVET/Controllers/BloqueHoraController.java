@@ -37,7 +37,7 @@ public class BloqueHoraController {
         return bloqueHoraService.obtenerBloquesHoras();
     }
 
-    @PostMapping("/obtener-bloqueHora")
+    @GetMapping("/obtener-bloqueHora")
     public ResponseEntity<?> obtenerBloqueHoraPorId(@RequestBody Map<String, Object> requestBody) {
         Long idBloqueHora = ((Number) requestBody.get("idBloqueHora")).longValue();
         BloqueHoraEntity bloqueHora = bloqueHoraService.obtenerPorId(idBloqueHora);
@@ -47,7 +47,7 @@ public class BloqueHoraController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(bloqueHora);
     }
 
-    @PostMapping("/obtener-bloquesHora-usuario")
+    @GetMapping("/obtener-bloquesHora-usuario")
     public ResponseEntity<?> obtenerBloquesHoraPorUsuario(@RequestBody Map<String, Object> requesBody) {
         Long idUsuario = ((Number) requesBody.get("idUsuario")).longValue();
         UsuarioEntity usuario = usuarioService.obtenerPorId(idUsuario);
@@ -57,7 +57,7 @@ public class BloqueHoraController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún usuario que tenga la id: " + idUsuario);
     }
 
-    @PostMapping("/obtener-bloquesHora-veterinario")
+    @GetMapping("/obtener-bloquesHora-veterinario")
     public ResponseEntity<?> obtenerBloquesHoraPorVeterinario(@RequestBody Map<String, Object> requestBody) {
         Long idVeterinario = ((Number) requestBody.get("idVeterinario")).longValue();
         DoctorEntity veterinario = doctorService.obtenerPorId(idVeterinario);
@@ -67,7 +67,7 @@ public class BloqueHoraController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún veterinario que tenga la id: " + idVeterinario);
     }
 
-    @PostMapping("/obtener-bloquesHora-mascota")
+    @GetMapping("/obtener-bloquesHora-mascota")
     public ResponseEntity<?> obtenerBloquesHoraPorMascota(@RequestBody Map<String, Object> requestBody) {
         Long idMascota = ((Number) requestBody.get("idMascota")).longValue();
         MascotaEntity mascota = mascotaService.obtenerPorId(idMascota);

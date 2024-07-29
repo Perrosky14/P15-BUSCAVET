@@ -1,14 +1,14 @@
 package com.example.BUSCAVET.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.antlr.v4.runtime.misc.NotNull;
+        import com.fasterxml.jackson.annotation.JsonBackReference;
+        import com.fasterxml.jackson.annotation.JsonFormat;
+        import jakarta.persistence.*;
+        import lombok.AllArgsConstructor;
+        import lombok.Data;
+        import lombok.NoArgsConstructor;
+        import org.antlr.v4.runtime.misc.NotNull;
 
-import java.time.LocalTime;
+        import java.time.LocalTime;
 
 @Entity
 @Table(name = "BloqueHorario")

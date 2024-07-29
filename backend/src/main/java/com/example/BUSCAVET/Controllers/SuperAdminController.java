@@ -125,7 +125,7 @@ public class SuperAdminController {
     }
 
     //Doctor
-    @PutMapping("/modificar-doctor")
+    /*@PutMapping("/modificar-doctor")
     public ResponseEntity<?> actualizarDoctor(@RequestBody Map<String, Object> requestBody){
         Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();
         if (superAdminService.obtenerPorId(idSuperAdmin) != null) {
@@ -140,7 +140,8 @@ public class SuperAdminController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ningún superAdmin que tenga la id: " + idSuperAdmin);
         }
-    }
+    }*/
+
     @DeleteMapping("/eliminar-doctor")
     public ResponseEntity<?> eliminarDoctor(@RequestBody Map<String, Object> requestBody){
         Long idSuperAdmin = ((Number) requestBody.get("idSuperAdmin")).longValue();

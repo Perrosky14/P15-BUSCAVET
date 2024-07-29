@@ -1,5 +1,6 @@
 package com.example.BUSCAVET.Controllers;
 
+import com.example.BUSCAVET.DTO.CrearDoctorDTO;
 import com.example.BUSCAVET.Entities.DoctorEntity;
 import com.example.BUSCAVET.Entities.VeterinariaEntity;
 import com.example.BUSCAVET.Services.DoctorService;
@@ -81,9 +82,9 @@ public class VeterinariaController {
     }
 
     @PostMapping("/crear-doctor")
-    public ResponseEntity<?> registrarDoctor(@RequestBody Map<String, Object> requestBody){
-        Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
-        DoctorEntity doctor = doctorService.transformarDatosDoctor((Map<String, Object>) requestBody.get("doctor"));
+    public ResponseEntity<?> registrarDoctor(@RequestBody CrearDoctorDTO requestBody){
+        Long idVeterinaria = requestBody.idVeterinaria;
+        DoctorEntity doctor = doctorService.transformarDatosDoctor(requestBody);
         if (idVeterinaria == 0) {
             doctorService.guardarDoctor(doctor);
             return ResponseEntity.status(HttpStatus.CREATED).body("El doctor " + doctor.getNombre1() + " " + doctor.getApellido1() + " independiente ha sido registrado correctamente.");
@@ -100,7 +101,7 @@ public class VeterinariaController {
         }
     }
 
-    @PutMapping("/modificar-doctor")
+    /*@PutMapping("/modificar-doctor")
     public ResponseEntity<?> modificarDoctor(@RequestBody Map<String, Object> requestBody){
         Long idVeterinaria = ((Number) requestBody.get("idVeterinaria")).longValue();
         VeterinariaEntity veterinaria = veterinariaService.obtenerPorId(idVeterinaria);
@@ -121,7 +122,7 @@ public class VeterinariaController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado ninguna veterinaria que tenga la id: " + idVeterinaria + " para eliminar el doctor.");
         }
-    }
+    }*/
 
     @DeleteMapping("/eliminar-doctor")
     public ResponseEntity<?> eliminarDoctor(@RequestBody Map<String, Object> requestBody){

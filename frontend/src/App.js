@@ -4,6 +4,7 @@ import SuperAdminControls from './components/SuperAdminComponents/UserList';
 import UserSessionComponent from './components/UserSessionComponent';
 import RegisterComponent from './components/RegisterComponent';
 import RegisterTutorComponent from './components/RegisterTutorComponent'
+import RegisterVeterinarioComponent from './components/RegisterVeterinarioComponent'
 import HomeComponent from './components/HomeComponent';
 import FichaMascotaComponent from './components/FichaMascotaComponent';
 import RegistarMascotaComponent from './components/RegistrarMascotaComponent';
@@ -13,6 +14,9 @@ import MainViewDoctoresVeterinaria from "./components/DoctoresVeterinariaView/Ma
 import HomeUsuarioComponent from './components/HomeUsuarioComponent';
 import AgendamientoUsuarioComponent from './components/AgendamientoUsuarioComponent';
 import RegisterVeterinariaComponent from './components/RegisterVeterinariaComponent';
+import HomeDoctorComponent from './components/HomeDoctorComponent';
+import CalendarioVeterinarioComponent from './components/CalendarioVeterinarioComponent';
+
 import MainViewSuperAdmin from "./components/SuperAdminComponents/MainViewSuperAdmin";
 function App() {
   return (
@@ -25,13 +29,15 @@ function App() {
         <Route path="/ficha_mascota" element={<FichaMascotaComponent />} />
         <Route path="/agendar_hora" element={<AgendamientoUsuarioComponent />} />
         <Route path="/usuario" element={<HomeUsuarioComponent />} />
+        <Route path="/veterinario" element={<HomeDoctorComponent />} />
         <Route path="/login" element={< UserSessionComponent/>}/>
         <Route path="/registro" element={<RegisterComponent/>}/>
         <Route path="/registroTutor" element = {<RegisterTutorComponent/>}/>
-        <Route path="/registroVeterinario"/>
         <Route path="/veterinaria" element={<HomeVeterinariaComponent/>}/>
         <Route path="/veterinaria/doctores" element={<MainViewDoctoresVeterinaria/>}/>
         <Route path="/registroVeterinaria" element = {<RegisterVeterinariaComponent/>}/>
+        <Route path="/registroVeterinario" element = {<RegisterVeterinarioComponent/>}/>
+        <Route path="/calendario" element = {<CalendarioVeterinarioComponent/>} />
         <Route path="/registroCentro"/>
         <Route path="/admin/usuarios" element={<MainViewSuperAdmin/>}/>
       </Routes>

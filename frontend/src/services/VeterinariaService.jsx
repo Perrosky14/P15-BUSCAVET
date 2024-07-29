@@ -3,6 +3,7 @@ import axios from "./axiosConfig";
 const API_URL = 'http://localhost:8080/veterinaria/';
 
 class VeterinariaService {
+
     getVeterinarias() {
         return axios.get(API_URL + 'obtener-veterinarias');
     }
@@ -23,14 +24,15 @@ class VeterinariaService {
         return axios.delete(API_URL + 'eliminar-veterinaria', { data: { idVeterinaria } });
     }
 
-    createDoctor(idVeterinaria, doctor) {
-        return axios.post(API_URL + 'crear-doctor', { idVeterinaria, doctor });
+    createDoctor(doctor) {
+        console.log(doctor.idVeterinaria);
+        return axios.post(API_URL + 'crear-doctor', doctor);
     }
 
     updateDoctor(idVeterinaria, idDoctor, doctorActualizado) {
         return axios.put(API_URL + 'modificar-doctor', { idVeterinaria, idDoctor, doctorActualizado });
     }
-
+    
     deleteDoctor(idVeterinaria, idDoctor) {
         return axios.delete(API_URL + 'eliminar-doctor', { data: { idVeterinaria, idDoctor } });
     }
