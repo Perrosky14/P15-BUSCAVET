@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class MascotaDTO {
     private Long id;
     private String nombre;
+    private String id_sexo;
+    private String id_especie;
 }

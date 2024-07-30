@@ -22,7 +22,9 @@ public class DTOService {
     public static MascotaDTO toMascotaDTO(MascotaEntity mascota) {
         return new MascotaDTO(
                 mascota.getId(),
-                mascota.getNombre()
+                mascota.getNombre(),
+                mascota.getId_sexo(),
+                mascota.getId_especie()
         );
     }
 
