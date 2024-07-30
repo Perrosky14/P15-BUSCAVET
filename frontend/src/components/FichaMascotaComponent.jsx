@@ -82,7 +82,7 @@ const FichaMascotaComponent = () => {
                     <div style={styles.header}>
                         <div>
                             <Typography style={styles.welcomeMessage}>Buenos días</Typography>
-                            <Typography style={styles.subtitle2}>Hay 3 nuevas citas programadas para hoy</Typography>
+                            <Typography style={styles.subtitle2}>Estas son las fichas de tus mascotas</Typography>
                         </div>
                         <div style={styles.searchBar}>
                             <SearchIcon color="action" />

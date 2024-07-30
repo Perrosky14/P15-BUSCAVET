@@ -88,6 +88,10 @@ export default function RegistarMascotaComponent() {
         setMascotaData({ ...mascotaData, [name]: files[0] });
     };
 
+    const navigateToFichaMascota = () => {
+        navigate('/ficha_mascota', {state:{user}});
+      }
+
     const validateStep1 = () => {
         let newErrors = {};
         if (!mascotaData.especie) newErrors.especie = 'Especie es requerida';
@@ -361,8 +365,8 @@ export default function RegistarMascotaComponent() {
                             <Typography variant="body1">Se ha guardado los datos de la mascota exitosamente.</Typography>
                         </CardContent>
                         <CardActions disableSpacing>
-                            <Button variant="contained" sx={styles.button} onClick={() => navigate('/lista_mascota')}>
-                                Ver lista de mascotas
+                            <Button variant="contained" sx={styles.button} onClick={() => navigateToFichaMascota('/ficha_mascota')}>
+                                Ver Fichas de mascotas
                             </Button>
                         </CardActions>
                     </Card>

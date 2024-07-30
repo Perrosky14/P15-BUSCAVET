@@ -17,6 +17,7 @@ import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import GridViewIcon from '@mui/icons-material/GridView';
 import theme from './styles/themeComponent';
+import BloquesHoraListComponent from './BloqueHoraUsuarioPrincipalView/BloquesHoraListPrincipalComponent';
 
 
 const styles = {
@@ -24,13 +25,13 @@ const styles = {
   content: { flexGrow: 1, padding: '20px', display: 'flex', flexDirection: 'column' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
   welcomeMessage: { fontSize: '24px', fontWeight: 'bold', padding: '8px 10px' },
-  searchBar: { display: 'flex', alignItems: 'center', border: '2px solid #FF4081', borderRadius: '40px', padding: '8px 16px', maxWidth: '600px', width: '100%' },
+  searchBar: { display: 'flex', alignItems: 'center', border: '2px solid #ff436f  ', borderRadius: '40px', padding: '8px 16px', maxWidth: '600px', width: '100%' },
   searchInput: { marginLeft: '8px', width: '100%', border: 'none', outline: 'none' },
   mascotaListContainer: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 4 },
-  mascotaCard: { width: '409px', maxWidth: 600, margin: '10px', height: '350px', borderRadius: '15px' },
+  mascotaCard: { width: '100%', height: '350px', borderRadius: '15px' },
   doctorListContainer: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 4 },
   doctorCard: { width: '750px', maxWidth: 750, borderRadius: '15px' },
-  consultaCard: { backgroundColor: '#FF4081', color: 'white', padding: '20px', marginBottom: '20px', borderRadius: '10px', textAlign: 'center', width: '100%', maxWidth: '750px', height: '100px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' },
+  consultaCard: { backgroundColor: '#ff436f', color: 'white', padding: '20px', marginBottom: '20px', borderRadius: '10px', textAlign: 'center', width: '100%', maxWidth: '750px', height: '100px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' },
   title: { fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' },
   subtitle: { fontSize: '14px' },
   title2: { fontSize: '18px', fontWeight: 'bold', padding: '4px 16px', textAlign: 'center' },
@@ -47,35 +48,6 @@ const styles = {
   headerContainer: {display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2},
 };
 
-const doctorData = [
-  {
-    id: 1,
-    nombre: 'Isabella Gabriella',
-    especialidad: 'Veterinaria general',
-    lugar: 'Domicilio',
-    fecha: 'Hoy',
-    hora: '12:30 PM',
-    avatar: '/static/images/avatar/1.jpg',
-  },
-  {
-    id: 2,
-    nombre: 'Isabella Gabriella',
-    especialidad: 'Veterinaria general',
-    lugar: 'C. Vet',
-    fecha: 'Hoy',
-    hora: '12:30 PM',
-    avatar: '/static/images/avatar/2.jpg',
-  },
-  {
-    id: 3,
-    nombre: 'Isabella Gabriella',
-    especialidad: 'Veterinaria general',
-    lugar: 'C. Vet',
-    fecha: 'Hoy',
-    hora: '12:30 PM',
-    avatar: '/static/images/avatar/3.jpg',
-  },
-];
 
 const HomeUsuarioComponent = () => {
   const navigate = useNavigate();
@@ -175,122 +147,73 @@ const confirmDelete = async () => {
           </div>
         </div>
         <Grid container spacing={2}>
-          <Grid item xs={8}>
-            <Card style={styles.consultaCard}>
-              <Typography style={styles.title}>Consulta veterinaria fácil y rápida</Typography>
-              <Typography style={styles.subtitle}>Lorem ipsum dolor sit amet, consectetur adipiscing elit</Typography>
-            </Card>
+          <Grid container xs={8}>
+            <Grid item xs={12}>
+              <Card style={styles.consultaCard}>
+                <Typography style={styles.title}>Consulta veterinaria fácil y rápida</Typography>
+                <Typography style={styles.subtitle}>Lorem ipsum dolor sit amet, consectetur adipiscing elit</Typography>
+              </Card>
+            </Grid>
             <Grid container spacing={2} style={styles.especialidadesContainer}>
               <Grid item xs={12}>
                 <Typography style={styles.title2}>Encuentra un veterinario especialista</Typography>
                 <Typography style={styles.subtitle2}>Elige una de las categorías según tus necesidades</Typography>
               </Grid>
-              <Grid container spacing={3}>
-                    <Grid item xs={10} sm={3} md={2.3}>
-                        <Paper sx={styles.paper}>
-                            <HealingIcon sx={styles.icon} />
-                            <Typography variant="h6" sx={styles.statText}>Traumatología</Typography>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={10} sm={3} md={2.3}>
-                        <Paper sx={styles.paper}>
-                            <MonitorHeartIcon sx={styles.icon} />
-                            <Typography variant="h6" sx={styles.statText}>Cirugía</Typography>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={10} sm={3} md={2.3}>
-                        <Paper sx={styles.paper}>
-                            <MedicalInformationIcon sx={styles.icon} />
-                            <Typography variant="h6" sx={styles.statText}>Ecografía</Typography>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={10} sm={3} md={2.3}>
-                        <Paper sx={styles.paper}>
-                            <VaccinesIcon sx={styles.icon} />
-                            <Typography variant="h6" sx={styles.statText}>General</Typography>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={10} sm={3} md={2.3}>
-                        <Paper sx={styles.paper}>
-                            <GridViewIcon sx={styles.icon} />
-                            <Typography variant="h6" sx={styles.statText}>Todo</Typography>
-                        </Paper>
-                    </Grid>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6} md={2.3}>
+                  <Paper sx={styles.paper}>
+                    <HealingIcon sx={styles.icon} />
+                      <Typography variant="h6" sx={styles.statText}>Traumatología</Typography>
+                  </Paper>
                 </Grid>
+                <Grid item xs={12} sm={6} md={2.3}>
+                  <Paper sx={styles.paper}>
+                    <MonitorHeartIcon sx={styles.icon} />
+                      <Typography variant="h6" sx={styles.statText}>Cirugía</Typography>
+                  </Paper>
                 </Grid>
-            <Box style={styles.doctorListContainer}>
+                <Grid item xs={12} sm={6} md={2.3}>
+                  <Paper sx={styles.paper}>
+                    <MedicalInformationIcon sx={styles.icon} />
+                      <Typography variant="h6" sx={styles.statText}>Ecografía</Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6} md={2.3}>
+                  <Paper sx={styles.paper}>
+                    <VaccinesIcon sx={styles.icon} />
+                      <Typography variant="h6" sx={styles.statText}>General</Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6} md={2.3}>
+                  <Paper sx={styles.paper}>
+                    <GridViewIcon sx={styles.icon} />
+                      <Typography variant="h6" sx={styles.statText}>Todo</Typography>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
               <Typography style={styles.title2}>Próximas horas agendadas</Typography>
               <Typography style={styles.subtitle2}>Asegúrate que tu mascota esté saludable</Typography>
-              <Grid item xs={10}>
-                <Card style={styles.doctorCard}>
-                  <CardContent>
-                    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                      {doctorData.map((doctor, index) => (
-                        <React.Fragment key={doctor.id}>
-                          <ListItem alignItems="flex-start">
-                            <ListItemAvatar>
-                              <Avatar alt={doctor.nombre} src={doctor.avatar} />
-                            </ListItemAvatar>
-                            <ListItemText
-                              primary={doctor.nombre}
-                              secondary={
-                                <React.Fragment>
-                                  <Typography
-                                    sx={{ display: 'inline' }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                  >
-                                    {doctor.especialidad}
-                                  </Typography>
-                                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                                    <HomeIcon fontSize="small" sx={{ mr: 0.5, color: '#FF4081' }} />
-                                    <Typography variant="body2">{doctor.lugar}</Typography>
-                                    <CalendarMonthIcon fontSize="small" sx={{ mx: 1, color: '#FF4081' }} />
-                                    <Typography variant="body2">{doctor.fecha}</Typography>
-                                    <AccessTimeIcon fontSize="small" sx={{ mx: 1, color: '#FF4081' }} />
-                                    <Typography variant="body2">{doctor.hora}</Typography>
-                                  </Box>
-                                </React.Fragment>
-                              }
-                            />
-                            <IconButton
-                              aria-label="more"
-                              aria-controls="long-menu"
-                              aria-haspopup="true"
-                              onClick={(event) => handleClick(event, index)}
-                              sx={{ color: '#FF4081' }}
-                            >
-                              <MoreVert />
-                            </IconButton>
-                            <Menu
-                              anchorEl={anchorEl}
-                              open={Boolean(anchorEl) && selectedIndex === index}
-                              onClose={handleClose}
-                            >
-                              <MenuItem onClick={handleClose}>Ver</MenuItem>
-                              <MenuItem onClick={handleClose}>Editar</MenuItem>
-                              <MenuItem onClick={handleClose}>Eliminar</MenuItem>
-                            </Menu>
-                          </ListItem>
-                          {index < doctorData.length - 1 && <Divider component="li" />}
-                        </React.Fragment>
-                      ))}
-                    </List>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Box>
+            </Grid>
+            <Grid item xs={11}>
+              <BloquesHoraListComponent></BloquesHoraListComponent>
+            </Grid>
           </Grid>
+
           <Grid item xs={4}>
-            <Box style={styles.mascotaListContainer}>
+            <Grid xs={12}>
               <Typography style={styles.title2}>Tus mascotas</Typography>
               <Typography style={styles.subtitle2}>Lista de mascotas registradas</Typography>
-              <Box sx={{ display: 'flex', gap: 1, marginBottom: '16px' }}>
-                <Button variant="contained" sx={{ backgroundColor: '#FF4081', borderRadius: '10px', '&:hover': { backgroundColor: '#FF80AB' } }} onClick={() => navigateToRegistrarMascota('/registrar_mascota')}>Añadir Mascota</Button>
-                <Button variant="contained" sx={{ backgroundColor: '#FF4081', borderRadius: '10px', '&:hover': { backgroundColor: '#FF80AB' } }} onClick={() => navigateToFichaMascota('/ficha_mascota')}>Lista de Mascotas</Button>
-              </Box>
-              <Grid item xs={10}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Button variant="contained" sx={{ width: '100%', backgroundColor: '#ff436f', borderRadius: '10px', '&:hover': { backgroundColor: '#FF80AB' } }} onClick={() => navigateToRegistrarMascota('/registrar_mascota')}>Añadir Mascota</Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button variant="contained" sx={{ width: '100%',  backgroundColor: '#ff436f', borderRadius: '10px', '&:hover': { backgroundColor: '#FF80AB' } }} onClick={() => navigateToFichaMascota('/ficha_mascota')}>Lista de Mascotas</Button>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} mt={2}>
                 <Card style={styles.mascotaCard}>
                   <CardContent>
                     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
@@ -313,11 +236,11 @@ const confirmDelete = async () => {
                                     {mascota.especie}
                                   </Typography>
                                   <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                                    <StarBorderIcon fontSize="small" sx={{ mr: 0.5, color: '#FF4081' }} />
+                                    <StarBorderIcon fontSize="small" sx={{ mr: 0.5, color: '#ff436f' }} />
                                     <Typography variant="body2">{mascota.estatura} cm</Typography>
-                                    <ColorLens fontSize="small" sx={{ mx: 1, color: '#FF4081' }} />
+                                    <ColorLens fontSize="small" sx={{ mx: 1, color: '#ff436f' }} />
                                     <Typography variant="body2">{mascota.color}</Typography>
-                                    <FitnessCenter fontSize="small" sx={{ mx: 1, color: '#FF4081' }} />
+                                    <FitnessCenter fontSize="small" sx={{ mx: 1, color: '#ff436f' }} />
                                     <Typography variant="body2">{mascota.peso} kg</Typography>
                                   </Box>
                                 </React.Fragment>
@@ -338,32 +261,34 @@ const confirmDelete = async () => {
                   </CardContent>
                 </Card> 
                 <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-                <DialogTitle>Confirmar Eliminación</DialogTitle>
-                <DialogContent>
+                  <DialogTitle>Confirmar Eliminación</DialogTitle>
+                  <DialogContent>
                     <DialogContentText>
                         ¿Estás seguro que deseas eliminar la mascota {selectedMascota?.nombre}?
                     </DialogContentText>
-                </DialogContent>
-                <DialogActions>
+                  </DialogContent>
+                  <DialogActions>
                     <Button onClick={() => setOpenDialog(false)} color="primary">No</Button>
                     <Button onClick={confirmDelete} color="primary">Sí</Button>
-                </DialogActions>
-            </Dialog>
+                  </DialogActions>
+                </Dialog>
               </Grid>
-            </Box>
-            <Card style={styles.telemedicinaCard}>
-              <Typography style={styles.title2}>
-                <LocalHospitalRoundedIcon />
-                Telemedicina
-              </Typography>
-              <Typography style={styles.subtitle}>hola</Typography>
-              <Button variant="contained" sx={{ width: '100%', height: '50px', borderRadius: '30px', backgroundColor: '#FF4081', '&:hover': { backgroundColor: '#FF80AB' }}} onClick={() => navigateToAgendarHora('/agendar_hora')}>Consulta ahora</Button>
-              <Typography style={styles.title2}>
-                <AccessAlarmsIcon />
-                Horarios
-              </Typography>
-              <Typography style={styles.subtitle}>hola</Typography>
-            </Card>
+            </Grid>
+            <Grid  mt={2}>
+              <Card style={styles.telemedicinaCard}>
+                <Typography style={styles.title2}>
+                  <LocalHospitalRoundedIcon />
+                  Telemedicina
+                </Typography>
+                <Typography style={styles.subtitle}>Aqui puedes agendar una cita con un veterinario</Typography>
+                <Button variant="contained" sx={{ width: '100%', height: '50px', borderRadius: '30px', backgroundColor: '#ff436f', '&:hover': { backgroundColor: '#FF80AB' }}} onClick={() => navigateToAgendarHora('/agendar_hora')}>Consulta ahora</Button>
+                <Typography style={styles.title2}>
+                  <AccessAlarmsIcon />
+                  Horarios
+                </Typography>
+                <Typography style={styles.subtitle}>hola</Typography>
+              </Card>
+            </Grid>
           </Grid>
         </Grid>
       </div>

@@ -13,6 +13,8 @@ import MainViewDoctoresVeterinaria from "./components/DoctoresVeterinariaView/Ma
 import HomeUsuarioComponent from './components/HomeUsuarioComponent';
 import AgendamientoUsuarioComponent from './components/AgendamientoUsuarioComponent';
 import RegisterVeterinariaComponent from './components/RegisterVeterinariaComponent';
+import PerfilUsuarioComponent from './components/PerfilUsuarioComponent';
+import ListaHorasUsuarioComponent from './components/ListaHorasUsuarioComponent';
 function App() {
   return (
     <div>
@@ -31,6 +33,8 @@ function App() {
         <Route path="/veterinaria" element={<HomeVeterinariaComponent/>}/>
         <Route path="/veterinaria/doctores" element={<MainViewDoctoresVeterinaria/>}/>
         <Route path="/registroVeterinaria" element = {<RegisterVeterinariaComponent/>}/>
+        <Route path="/perfil_usuario" element = {<PerfilUsuarioComponent/>}/>
+        <Route path="/mis_horas" element = {<ListaHorasUsuarioComponent/>}/>
       </Routes>
     </BrowserRouter>
       

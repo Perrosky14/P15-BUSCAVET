@@ -43,7 +43,7 @@ const AvatarStyled = styled(Avatar)({
 });
 
 const UserName = styled('div')({
-  color: '#FF4081', // Color rosado
+  color: '#ff436f', // Color rosado
 });
 
 const UserWelcome = styled('div')({
@@ -54,7 +54,7 @@ const UserWelcome = styled('div')({
 const ListItemStyled = styled(ListItem)({
   padding: '10px 20px',
   '&:hover': {
-    backgroundColor: '#FF4081', // Fondo rosado al pasar el mouse
+    backgroundColor: '#ff436f', // Fondo rosado al pasar el mouse
     '& .MuiListItemIcon-root': {
       color: '#fff', // Icono blanco al pasar el mouse
     },
@@ -74,14 +74,14 @@ const ListItemIconStyled = styled(ListItemIcon)({
 });
 
 const ListItemIconLogoutStyled = styled(ListItemIcon)({
-  color: '#FF4081', // Color rosado del icono de cerrar sesión
+  color: '#ff436f', // Color rosado del icono de cerrar sesión
 });
 
 const Logout = styled(ListItemStyled)({
   marginTop: 'auto',
-  color: '#FF4081',
+  color: '#ff436f',
   '&:hover': {
-    backgroundColor: '#FF4081',
+    backgroundColor: '#ff436f',
     color: '#fff',
     '& .MuiListItemIcon-root': {
       color: '#fff',
@@ -126,7 +126,7 @@ function VerticalNavbarComponent() {
   };
 
   const navigateToFacturaUsuario = () => {
-    navigate('/factura_usuario', { state: { user } });
+    navigate('/usuario', { state: { user } });
   };
 
   const navigateToConfiguracion = () => {
